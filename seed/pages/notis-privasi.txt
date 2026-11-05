@@ -9,7 +9,7 @@ Bergantung pada interaksi anda dengan kami, maklumat yang mungkin dikumpulkan te
 ### A. Maklumat pengenalan dan hubungan
 * Nama.
 * Nombor telefon.
-* Alamat e-mel, jika diberikan.
+* Alamat mel elektronik, jika diberikan.
 ### B. Maklumat temu janji dan perkhidmatan
 * Perkhidmatan yang anda minati atau tempah.
 * Tarikh dan masa temu janji.
@@ -117,7 +117,7 @@ Depending on your interaction with us, we may collect the following categories o
 ### A. Identification and contact information
 * Name.
 * Telephone number.
-* Email address, if provided.
+* Electronic mail address, if provided.
 ### B. Appointment and service information
 * Services you enquire about or book.
 * Appointment dates and times.

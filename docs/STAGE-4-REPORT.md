@@ -142,7 +142,7 @@
   - The image is a 3 KB transparent PNG, typeset in Manrope in the article text colour.
   - It is rendered at 3× and displayed at 231×28 px (219×27 on phones). It scales with the text (em-based width, `height: auto`), so it never distorts.
   - Alt text: "Hubungi Him & Me untuk pertanyaan privasi" / "Contact Him & Me for privacy enquiries".
-- **No "e-mel" / "email" words served:** the labels were removed, and the image file, CSS class and alt text don't use the words. Test H4 scans the pages, RSS, sitemaps, CSS and JS. **Two exceptions, pending your decision:** the notice's own data-category lines, "Alamat e-mel, jika diberikan." (2A) and "Email address, if provided." (2A, English).
+- **No "e-mel" / "email" words served:** the labels were removed, and the image file, CSS class and alt text don't use the words. The notice's data list (2A) now reads "Alamat mel elektronik, jika diberikan." / "Electronic mail address, if provided." (your wording). Test H4 scans the pages, RSS, sitemaps, CSS and JS with **no exceptions**. A manual sweep of all 26 sitemap and archive URLs plus the 404 page also found none.
   - The address and phone stay normal text.
 - **No JavaScript obfuscation**, contact form, CAPTCHA or backend.
 - **Accessibility note:** the alt text names the purpose, not the address, as you specified. So screen-reader users hear "Contact Him & Me for privacy enquiries" but not the address itself; they can use the WhatsApp/telephone line. This is the trade-off of hiding the address from machines.
@@ -150,7 +150,7 @@
   - H1: no email text or `mailto:` on `/`, `/disfungsi-ereksi/`, `/notis-privasi/` or `/blog/`, and no email line in any footer.
   - H2: one image asset for both languages, alt texts, address and phone as text.
   - H3 (browser): the image loads (693×84), stays in proportion and is at least 200px wide at 1440px and 390px.
-  - H4: no "e-mel" / "email" in any served file, apart from the two notice lines.
+  - H4: no "e-mel" / "email" in any served file.
 - **Screenshots:**
   - `docs/stage-4/email-footer-desktop.jpg`, `email-footer-mobile.jpg`
   - `email-privasi-bm-desktop.jpg`, `email-privasi-bm-mobile.jpg`

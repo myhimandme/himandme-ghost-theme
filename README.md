@@ -126,7 +126,7 @@ If the block is unpublished, the approved copy is shown, still using `offer_pric
 
 The email address is **never in the site HTML as text**: there's no email in the footer (desktop or mobile), and no `mailto:` link. On the Notis Privasi page it appears as an image, `assets/images/hubungi-himandme.png` (theme asset, transparent PNG, 3 KB). The image is used in both the BM and English contact sections, inside an **HTML card**, with no "E-mel"/"Email" label. Its alt text is "Hubungi Him & Me untuk pertanyaan privasi" / "Contact Him & Me for privacy enquiries".
 
-The words "e-mel" and "email" are kept out of everything the site serves: the image file name, CSS class (`hm-contact-img`) and alt text avoid them. The only exceptions are the notice's two data-category lines ("Alamat e-mel, jika diberikan." / "Email address, if provided."). This deters simple harvesters; it is not proof against OCR.
+The words "e-mel" and "email" are kept out of everything the site serves: the image file name, CSS class (`hm-contact-img`) and alt text avoid them. The notice's data list says "Alamat mel elektronik" / "Electronic mail address" instead (owner's wording). This deters simple harvesters; it is not proof against OCR.
 
 To change the address, edit `ADDRESS` in `scripts/make-contact-image.mjs` and run `node scripts/make-contact-image.mjs`. Then compress the PNG to a palette image (the committed file was reduced from 12 KB to 3 KB with Pillow `quantize(48)`), rebuild and upload the theme. Don't type the address into a page, block or setting.
 

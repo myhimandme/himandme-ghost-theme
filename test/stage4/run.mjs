@@ -172,13 +172,14 @@ const footers = Object.values(emailPages).map((x) => (x.match(/<footer[\s\S]*?<\
 check('H1', 'Email address not in any page HTML (no text, no mailto:); footers have no email line (desktop + mobile markup)',
   Object.values(emailPages).every((x) => !EMAIL_RX.test(x)) && footers.every((f) => f && !/e-?mel|email|hm-contact-img/i.test(f)),
   Object.keys(emailPages).join(' '));
-// H4 — the words "e-mel" / "email" are not served anywhere (pages, RSS, sitemaps, theme CSS/JS), except the
-// two data-category lines of the owner's notice text ("Alamat e-mel, jika diberikan." / "Email address, if provided.").
-const NOTICE_LINES = ['Alamat e-mel, jika diberikan.', 'Email address, if provided.'];
+// H4 — the words "e-mel" / "email" are not served anywhere: pages, RSS, sitemaps, theme CSS/JS
+// (the notice's data list says "alamat mel elektronik" / "electronic mail address" instead).
 const served = { ...emailPages, '/blog/rss/': await page('/blog/rss/'), '/sitemap-pages.xml': await page('/sitemap-pages.xml'), '/sitemap-posts.xml': await page('/sitemap-posts.xml') };
 for (const a of ['built/screen.css', 'built/main.js']) served[a] = await page('/assets/' + a);
-const wordHits = Object.entries(served).flatMap(([u, x]) => { let t = x; NOTICE_LINES.forEach((l) => { t = t.split(l).join(''); }); return (t.match(/e-?mel|e-?mail/gi) || []).map((w) => `${u}: ${w}`); });
-check('H4', 'No "e-mel"/"email" anywhere in the served HTML, RSS, sitemaps, CSS or JS (owner\'s two notice data-category lines aside)', wordHits.length === 0, wordHits.slice(0, 6).join('; ') || `${Object.keys(served).length} files scanned`);
+const wordHits = Object.entries(served).flatMap(([u, x]) => (x.match(/e-?mel|e-?mail/gi) || []).map((w) => `${u}: ${w}`));
+check('H4', 'No "e-mel"/"email" anywhere in the served HTML, RSS, sitemaps, CSS or JS; data list uses "alamat mel elektronik" / "electronic mail address"',
+  wordHits.length === 0 && emailPages['/notis-privasi/'].includes('Alamat mel elektronik, jika diberikan.') && emailPages['/notis-privasi/'].includes('Electronic mail address, if provided.'),
+  wordHits.slice(0, 6).join('; ') || `${Object.keys(served).length} files scanned`);
 // H2 — Notis Privasi shows the email as one local image asset, in both language versions, with alt text
 const imgs = [...np.matchAll(/<img class="hm-contact-img"[^>]*>/g)].map((m) => m[0]);
 const srcs = new Set(imgs.map((t) => (t.match(/src="([^"]+)"/) || [])[1]));
