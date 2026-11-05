@@ -95,7 +95,7 @@
       },
       "opening_hours_short": {
         "type": "text",
-        "default": "[Waktu operasi]",
+        "default": "10 pagi – 7 malam · dengan temu janji sahaja",
         "description": "One-line opening hours for the top bar and contact panel."
       },
       "consultation_duration": {
@@ -105,7 +105,7 @@
       },
       "consultation_fee": {
         "type": "text",
-        "default": "[RM —]",
+        "default": "RM150 (percuma dengan First Trial)",
         "description": "Consultation fee on the Disfungsi Ereksi page."
       },
       "shockwave_session_duration": {
@@ -115,7 +115,7 @@
       },
       "shockwave_session_count": {
         "type": "text",
-        "default": "[Ditentukan doktor]",
+        "default": "Anggaran 7–10 (tahap rendah–sederhana)",
         "description": "Shockwave therapy: number of sessions."
       },
       "shockwave_price": {
@@ -130,7 +130,7 @@
       },
       "kegel_ems_session_count": {
         "type": "text",
-        "default": "[Ditentukan doktor]",
+        "default": "Anggaran 7–10 (tahap rendah–sederhana)",
         "description": "Kegel EMS: number of sessions."
       },
       "kegel_ems_price": {

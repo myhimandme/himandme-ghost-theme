@@ -16,7 +16,7 @@ export const BLOCKS = [
     slug: 'blok-maklumat-hubungan', tags: ['hash-blok'],
     title: 'Maklumat hubungan (footer)',
     excerpt: '[Alamat penuh]\n[Poskod, Bandar, Negeri]',
-    html: '<p>[Isnin – Jumaat: 00:00 – 00:00]</p><p>[Sabtu: 00:00 – 00:00]</p><p>[Ahad &amp; cuti umum: Tutup]</p>',
+    html: '<p>[Hari operasi]: 10:00 pagi – 7:00 malam</p><p>Slot pesakit baharu: 11:00 pagi – 5:00 petang</p><p>Dengan temu janji sahaja — tiada walk-in, untuk menjaga privasi pesakit</p>',
   },
   {
     slug: 'blok-penafian', tags: ['hash-blok'],
@@ -64,7 +64,7 @@ export const BLOCKS = [
   {
     slug: 'blok-utama-privasi', tags: ['hash-blok', 'hash-blok-utama'],
     title: 'Privasi anda bukan tambahan. Ia asas cara kami bekerja.',
-    html: '<ul><li>Rekod perubatan dirahsiakan dan dilindungi di bawah Akta Perlindungan Data Peribadi 2010.</li><li>Konsultasi dalam bilik tertutup, berdua bersama doktor.</li><li>[Butiran tambahan — cth. bil/resit tanpa nama perkhidmatan, jika benar]</li></ul>',
+    html: '<ul><li>Rekod perubatan dirahsiakan dan dilindungi di bawah Akta Perlindungan Data Peribadi 2010.</li><li>Konsultasi dalam bilik tertutup, berdua bersama doktor.</li><li>Tiada pesakit lain pada slot temu janji anda.</li></ul>',
   },
   {
     slug: 'blok-utama-pasukan', tags: ['hash-blok', 'hash-blok-utama'],
@@ -80,9 +80,9 @@ export const BLOCKS = [
     title: 'Soalan yang ramai segan tanya',
     html: [
       toggle('Adakah konsultasi saya benar-benar sulit?', 'Ya. Perbincangan dan rekod perubatan anda hanya diakses oleh doktor dan pembantu perubatan berlesen yang terlibat dalam rawatan anda, selaras dengan PDPA 2010.'),
-      toggle('Perlukah saya dirujuk oleh doktor lain dahulu?', '[Jawapan — akan disahkan]'),
-      toggle('Berapakah kos konsultasi?', '[Jawapan — akan disahkan]'),
-      toggle('Bolehkah saya bertanya melalui WhatsApp dahulu?', '[Jawapan — akan disahkan]'),
+      toggle('Perlukah saya dirujuk oleh doktor lain dahulu?', 'Tidak perlu. Anda boleh datang terus jika anda rasa ada tanda-tanda awal.'),
+      toggle('Berapakah kos konsultasi?', 'RM150 untuk sesi konsultasi — percuma jika anda mengambil sesi First Trial.'),
+      toggle('Bolehkah saya bertanya melalui WhatsApp dahulu?', 'Boleh, untuk pertanyaan ringkas. Namun doktor tidak dibenarkan membuat konsultasi dalam talian, jadi kami syorkan anda datang ke sesi First Trial untuk konsultasi penuh.'),
     ].join(''),
   },
   {

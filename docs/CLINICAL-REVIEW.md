@@ -51,8 +51,8 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 |---|---|---|---|
 | A18 | **"Otot lantai pelvis membantu mengawal aliran darah keluar dari zakar semasa ereksi."** | Block body, paragraph 1 | ✅ Accepted |
 | A19 | "merangsang otot-otot ini untuk mengecut secara berulang — seperti senaman Kegel… untuk membantu menguatkannya" | Block body, paragraph 1 | ✏️ "Kegel EMS memberikan rangsangan otot dan kecutan yang lebih kuat dan konsisten berbanding senaman Kegel. Satu sesi bersamaan dengan 12,000 kontraksi senaman Kegel." |
-| A20 | "Mungkin dipertimbangkan untuk": weak pelvic-floor muscles; as part of a combined plan | Block body, list | ✏️ Heading "Disyorkan" + "Dibuat sebagai sebahagian daripada sesi rawatan, untuk kesan yang lebih konsisten" (heading wording: see Open items) |
-| A21 | Tiles: session length, number of sessions, **BERPAKAIAN: [Sahkan]**, price | Settings + theme text | ✅ Accepted. Price set to RM350 / sesi. ❓ "BERPAKAIAN" value still needed |
+| A20 | "Mungkin dipertimbangkan untuk": weak pelvic-floor muscles; as part of a combined plan | Block body, list | ✏️ Heading "Disyorkan" + "Dibuat sebagai sebahagian daripada sesi rawatan, untuk kesan yang lebih konsisten" (heading "Disyorkan" confirmed) |
+| A21 | Tiles: session length, number of sessions, **BERPAKAIAN: [Sahkan]**, price | Settings + theme text | ✅ Accepted. Price set to RM350 / sesi. "BERPAKAIAN: Ya" confirmed |
 
 ### Comparison table (theme text, `partials/ed/comparison.hbs`)
 | # | Statement | Status |
@@ -84,8 +84,8 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 | B3 | Hero checklist: "Bilik konsultasi tertutup & peribadi", "Penilaian sebelum sebarang cadangan rawatan", "Penjelasan jelas tentang kos & pilihan" | Theme text | ✏️ First item now "Slot rawatan khas untuk setiap pesakit — tiada pesakit lain pada waktu yang sama" (other two unchanged) |
 | B4 | Trust strip: "Pilihan rawatan bukan invasif" | Theme text | ✅ Accepted |
 | B5 | Process steps 1–4 (incl. "Doktor menilai simptom, sejarah kesihatan dan faktor risiko anda") | Theme text | ✅ Accepted |
-| B6 | Privacy: "Rekod perubatan dirahsiakan… Akta Perlindungan Data Peribadi 2010", "Konsultasi dalam bilik tertutup, berdua bersama doktor", **"[Butiran tambahan…]"** | Block `blok-utama-privasi` | ✅ Accepted. ❓ The third bullet is still a placeholder |
-| B7 | FAQ: "Ya. Perbincangan dan rekod perubatan anda hanya diakses oleh pasukan…" + 3 **[Jawapan — akan disahkan]** | Block `blok-utama-faq` | ✏️ Q1: "…hanya diakses oleh doktor dan pembantu perubatan berlesen yang terlibat dalam rawatan anda…". ❓ Q2–Q4 answers still open |
+| B6 | Privacy: "Rekod perubatan dirahsiakan… Akta Perlindungan Data Peribadi 2010", "Konsultasi dalam bilik tertutup, berdua bersama doktor", **"[Butiran tambahan…]"** | Block `blok-utama-privasi` | ✏️ Third bullet: "Tiada pesakit lain pada slot temu janji anda." |
+| B7 | FAQ: "Ya. Perbincangan dan rekod perubatan anda hanya diakses oleh pasukan…" + 3 **[Jawapan — akan disahkan]** | Block `blok-utama-faq` | ✏️ Q1: "…hanya diakses oleh doktor dan pembantu perubatan berlesen yang terlibat dalam rawatan anda…". Q2–Q4 ✏️ answered (no referral needed; RM150, free with First Trial; WhatsApp for brief questions only, no online consultation) |
 | B8 | Doctor card credentials | Theme setting `doctor_credentials` | ✏️ Credentials line set to "Doktor yang sah" |
 
 ## C. Site-wide
@@ -109,12 +109,9 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 First trial session **RM288**, including consultation, Shockwave therapy and Kegel EMS. Where to show this is an open decision (below).
 
 ## Open items
-1. **A12: consultation tiles** (TEMPOH / YURAN). An empty theme setting now hides its own tile, so this can be handled entirely in Ghost Admin. Options: (a) set `consultation_fee` to e.g. "Termasuk dalam sesi percubaan RM288"; (b) leave `consultation_fee` empty to hide the YURAN tile; (c) also leave `consultation_duration` empty to hide the TEMPOH tile.
-2. **The RM288 first-trial offer** is not shown anywhere yet. The prototype has no offer element, so adding one would be new content or design and needs your approval. Options without any design change: the YURAN tile text (item 1), the homepage FAQ "Berapakah kos konsultasi?" answer, and the ED FAQ "Berapakah kos rawatan?" answer.
-3. **A21: "BERPAKAIAN" (clothed) tile** for Kegel EMS still shows "[Sahkan]". Please give the value (e.g. "Ya, berpakaian lengkap"), or ask for the tile to be removed.
-4. **A20 heading:** "Disyorkan" was chosen as the heading for your sentence. Confirm, or give another heading.
-5. **Session details:** session length and number-of-sessions text for Shockwave and Kegel EMS (or leave empty to hide those tiles).
-6. **Homepage FAQ Q2–Q4 answers** (B7): "Perlukah saya dirujuk oleh doktor lain dahulu?", "Berapakah kos konsultasi?", "Bolehkah saya bertanya melalui WhatsApp dahulu?"
-7. **Privacy bullet 3** (B6) placeholder: provide the text, or remove the bullet.
-8. **Notis Privasi** and **Dasar Editorial** page content; address and opening hours (`address_short`, `opening_hours_short`, block `blok-maklumat-hubungan`).
-9. **Advertising check:** the quantified claim "12,000 kontraksi" and the published prices are fine to show if they match the device specification and your current price list. It's worth keeping the source on file.
+1. **A12: consultation tiles.** ✏️ Fee set to "RM150 (percuma dengan First Trial)". **TEMPOH** (consultation length) is still unknown: give it, or leave the setting empty to hide the tile.
+2. **RM288 First Trial offer.** Design proposal sent for approval (see the Stage 4 follow-up). Not implemented yet.
+3. **Session length** for Shockwave and Kegel EMS is still unknown: give it, or leave the settings empty to hide those tiles. The number of sessions is set to "Anggaran 7–10 (tahap rendah–sederhana)" for both treatments; confirm it applies to Kegel EMS as well.
+4. **Operating days** for "10:00 pagi – 7:00 malam" (footer block `blok-maklumat-hubungan` shows "[Hari operasi]").
+5. **Notis Privasi** and **Dasar Editorial** page content; `address_short` and the full address (footer block excerpt).
+6. **Advertising check:** keep the source for "12,000 kontraksi" and the published prices on file. If a combined "nilai biasa" (normal value) is shown with the RM288 offer, it must reflect genuine normal prices.

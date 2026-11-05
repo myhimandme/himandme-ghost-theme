@@ -55,7 +55,7 @@ check('S6', 'WhatsApp links use the theme settings (number + default message)', 
 check('S7', 'Booking buttons point to /disfungsi-ereksi/#temujanji', home.includes(`${BASE}/disfungsi-ereksi/#temujanji`));
 check('S8', 'Utility bar shows address + hours settings', home.includes(`<span>${custom.address_short}</span>`) && home.includes(`<span>${custom.opening_hours_short}</span>`));
 const info = (await admin('/posts/slug/blok-maklumat-hubungan/?formats=html')).posts[0];
-check('S9', 'Footer address/hours come from block "blok-maklumat-hubungan"', home.includes(info.custom_excerpt.split('\n')[0]) && home.includes('Isnin – Jumaat'));
+check('S9', 'Footer address/hours come from block "blok-maklumat-hubungan"', home.includes(info.custom_excerpt.split('\n')[0]) && home.includes((info.html.match(/<p>([^<]+)<\/p>/) || [])[1].replace(/&/g, '&amp;').slice(0, 20)));
 const pen = (await admin('/posts/slug/blok-penafian/?formats=html')).posts[0];
 check('S10', 'Footer disclaimer: block body on main site, block excerpt on the blog', home.includes(pen.html.replace(/<\/?p>/g, '').slice(0, 60)) && blog.includes(pen.custom_excerpt.slice(0, 60)));
 
