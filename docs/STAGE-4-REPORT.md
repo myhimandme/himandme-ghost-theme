@@ -114,10 +114,16 @@
 | 3 | **Phone content parity** (carried over from Stage 4). | The phone page shows all content (it's longer than the board). | A (recommended): keep. B: hide those elements on phones. |
 | 4 | **D3–D4 offer wording** (`docs/CLINICAL-REVIEW.md`, section D). | Reworded from accepted statements. | Confirm or edit in the block. No developer needed. |
 
+**Applied after the report:**
+- **Address:**
+  - Footer: "Him & Me Mens Health Setiawangsa / 1-3, Eight Setiawangsa / Jalan Setiawangsa 13, Taman Setiawangsa / 54200 Kuala Lumpur".
+  - Top bar: "Eight Setiawangsa, Kuala Lumpur".
+- **Operating days:** Isnin – Sabtu.
+- **Footer fix:** each address line is now rendered as its own element. A long line that wraps stays tight, and real line breaks keep the designed 10px gap.
+
 **Still needed from you (content):**
-- Consultation and session durations (or leave the settings empty to hide those tiles).
-- Operating days.
-- Address.
+- Consultation and session durations (or leave them empty to hide those tiles).
+- Public email address (or leave it empty).
 - Notis Privasi and Dasar Editorial page content.
 - Confirmation that 601157912606 is the WhatsApp number.
 

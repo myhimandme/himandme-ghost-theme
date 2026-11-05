@@ -9,7 +9,7 @@
         "posts": [
           {
             "id": "6a0000080000000000000000",
-            "uuid": "94284431-47f3-4ace-aa83-79fd7b7ae2b2",
+            "uuid": "c2487114-9db7-4ed4-a542-c9dde5d171ff",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -27,7 +27,7 @@
           },
           {
             "id": "6a0000090000000000000000",
-            "uuid": "e47e4da7-ee58-4f86-885a-ec48e70ec7fb",
+            "uuid": "0e1995a1-e3b6-419f-bee1-8bb7ec421f9e",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -45,7 +45,7 @@
           },
           {
             "id": "6a00000a0000000000000000",
-            "uuid": "0376a50f-251c-4399-8191-4f139ecacdaf",
+            "uuid": "9b2295aa-1040-47df-a8a1-ef93168e2997",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -63,7 +63,7 @@
           },
           {
             "id": "6a00000b0000000000000000",
-            "uuid": "9c524ef7-7c80-4a79-90c8-a250dc482b91",
+            "uuid": "49501490-51d6-4405-b22a-58b8b04fb2c6",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -81,7 +81,7 @@
           },
           {
             "id": "6a00000c0000000000000000",
-            "uuid": "31d6789a-3492-4959-9783-c12b5e4b6592",
+            "uuid": "94d6e49e-f859-4653-89f8-859765df29af",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -90,13 +90,13 @@
             "updated_at": "2026-11-05T02:00:00.000Z",
             "slug": "blok-maklumat-hubungan",
             "title": "Maklumat hubungan (footer)",
-            "custom_excerpt": "[Alamat penuh]\n[Poskod, Bandar, Negeri]",
-            "html": "<p>[Hari operasi]: 10:00 pagi – 7:00 malam</p><p>Slot pesakit baharu: 11:00 pagi – 5:00 petang</p><p>Dengan temu janji sahaja — tiada walk-in, untuk menjaga privasi pesakit</p>",
+            "custom_excerpt": "Him & Me Mens Health Setiawangsa\n1-3, Eight Setiawangsa\nJalan Setiawangsa 13, Taman Setiawangsa\n54200 Kuala Lumpur",
+            "html": "<p>Isnin – Sabtu: 10:00 pagi – 7:00 malam</p><p>Slot pesakit baharu: 11:00 pagi – 5:00 petang</p><p>Dengan temu janji sahaja — tiada walk-in, untuk menjaga privasi pesakit</p>",
             "published_at": "2026-11-05T02:00:00.000Z"
           },
           {
             "id": "6a00000d0000000000000000",
-            "uuid": "67b08070-feb1-4b22-b123-bd6db51ff900",
+            "uuid": "135a5b19-0797-4690-9335-2796497f4d7c",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -111,7 +111,7 @@
           },
           {
             "id": "6a00000e0000000000000000",
-            "uuid": "5819458d-6bd1-4756-82b7-317b322566fb",
+            "uuid": "c86cfba2-a0d1-48f7-b850-f29b73527f74",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -126,7 +126,7 @@
           },
           {
             "id": "6a00000f0000000000000000",
-            "uuid": "e4015352-9497-47cf-915d-3daf70bacdd1",
+            "uuid": "3905efb5-d78b-4c8c-8d1f-6ca64b1a2e7f",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -141,7 +141,7 @@
           },
           {
             "id": "6a0000100000000000000000",
-            "uuid": "28975b08-9495-4f76-adc0-283675f3bb74",
+            "uuid": "09273cf8-6b1f-412f-8805-de4a4fdfac30",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -156,7 +156,7 @@
           },
           {
             "id": "6a0000110000000000000000",
-            "uuid": "e1a82b0d-59b6-48b9-a9d2-b91252fa1fd8",
+            "uuid": "826f7489-0c8c-419b-8c88-9d4be93bf695",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -171,7 +171,7 @@
           },
           {
             "id": "6a0000120000000000000000",
-            "uuid": "d6ce7aca-f4aa-42d9-8875-89b10949ed1c",
+            "uuid": "d764bc9c-d926-4179-9935-cbcb4ce6b7c6",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -186,7 +186,7 @@
           },
           {
             "id": "6a0000130000000000000000",
-            "uuid": "f8b5a290-76ae-401b-a9bc-5a38edbd30ce",
+            "uuid": "90152e2c-4542-4358-9a7c-1f13cdc1136f",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -201,7 +201,7 @@
           },
           {
             "id": "6a0000140000000000000000",
-            "uuid": "8eb96886-d6b3-49d6-852e-23710f4b22c1",
+            "uuid": "85d89b22-b0e8-4a9f-a999-f0a9b7eedcc1",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -216,7 +216,7 @@
           },
           {
             "id": "6a0000150000000000000000",
-            "uuid": "5e1476ec-625a-4002-80ba-9543113c6c10",
+            "uuid": "6c3eee45-da7d-4679-b4b9-72d601b85694",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -231,7 +231,7 @@
           },
           {
             "id": "6a0000160000000000000000",
-            "uuid": "cab2022e-da5f-4228-83a7-2f793740cafd",
+            "uuid": "42789de5-8c5d-48b6-b9df-37248703534b",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -246,7 +246,7 @@
           },
           {
             "id": "6a0000170000000000000000",
-            "uuid": "83315732-4bf3-4bc9-8ac5-c09652f907e6",
+            "uuid": "550fc896-9e93-435f-9bef-e769f73984f6",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -261,7 +261,7 @@
           },
           {
             "id": "6a0000180000000000000000",
-            "uuid": "4e30113c-fb89-4e20-ac5b-bcf98f488d3d",
+            "uuid": "14808df9-3832-450d-be70-ab8f6615c7b0",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -276,7 +276,7 @@
           },
           {
             "id": "6a0000190000000000000000",
-            "uuid": "3358221b-d81d-472e-8990-d8553bb5d767",
+            "uuid": "8a68f777-b307-4890-87ab-66453ecd8c7b",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -291,7 +291,7 @@
           },
           {
             "id": "6a00001a0000000000000000",
-            "uuid": "f343444f-3803-4019-988d-ef0ed71cd768",
+            "uuid": "cb52e9d2-02de-456b-a0a8-4359bae8db3a",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -306,7 +306,7 @@
           },
           {
             "id": "6a00001b0000000000000000",
-            "uuid": "03c885ea-ceee-423d-84b4-e0a3855518a2",
+            "uuid": "a90f3f6f-d940-4da4-adf1-5f731d8c2002",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -321,7 +321,7 @@
           },
           {
             "id": "6a00001c0000000000000000",
-            "uuid": "9e44060c-f479-4bb4-85dd-0554ab81c0ee",
+            "uuid": "ba51b5c2-29d6-4d4f-b3c8-98c2032743b8",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -336,7 +336,7 @@
           },
           {
             "id": "6a00001d0000000000000000",
-            "uuid": "a086c6ef-4481-4e1c-90b6-4adeb5cbd1ef",
+            "uuid": "65474a3e-85a3-4f8e-898e-68bf7281010a",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -351,7 +351,7 @@
           },
           {
             "id": "6a00001e0000000000000000",
-            "uuid": "90131aa7-8f8a-432a-ad44-bed313f7b81c",
+            "uuid": "ac0b6db7-1848-4cb7-8fec-2538e3454cb5",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -366,7 +366,7 @@
           },
           {
             "id": "6a00001f0000000000000000",
-            "uuid": "60cf6b5e-63bd-4764-b1e0-fe89354e297c",
+            "uuid": "ecb4bea3-92ea-4c1c-a2a2-f404060a487f",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -381,7 +381,7 @@
           },
           {
             "id": "6a0000200000000000000000",
-            "uuid": "8e608da8-28a2-4dc2-8ae7-c2845ad87e75",
+            "uuid": "71f6fb47-f8a7-48bd-a7c8-7e2ff9ae520c",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -396,7 +396,7 @@
           },
           {
             "id": "6a0000210000000000000000",
-            "uuid": "ff081d47-cea1-4aee-8b5f-664b99b9502d",
+            "uuid": "1a245f36-542c-41e1-b594-944ed7218230",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -411,7 +411,7 @@
           },
           {
             "id": "6a0000220000000000000000",
-            "uuid": "07a61c93-b81f-4b22-a3f6-199072b6df61",
+            "uuid": "a9a33ef0-bf0a-444f-aa9a-339405074dd1",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -426,7 +426,7 @@
           },
           {
             "id": "6a0000230000000000000000",
-            "uuid": "bf4ef367-efb1-4e69-8439-85aeeec311db",
+            "uuid": "658183c9-a3ef-4384-8b5a-8c554b5018c3",
             "status": "published",
             "visibility": "public",
             "featured": true,
@@ -441,7 +441,7 @@
           },
           {
             "id": "6a0000240000000000000000",
-            "uuid": "313dd52d-5a31-45ec-8abe-71fff0b33582",
+            "uuid": "496f08a9-f8b7-45ff-b0b4-b07dfd266b3b",
             "status": "published",
             "visibility": "public",
             "featured": true,
@@ -456,7 +456,7 @@
           },
           {
             "id": "6a0000250000000000000000",
-            "uuid": "47674fe8-8988-4248-a6e5-548a18353d17",
+            "uuid": "cfc917eb-9367-41bb-92b8-99da0b3f6304",
             "status": "published",
             "visibility": "public",
             "featured": true,
@@ -471,7 +471,7 @@
           },
           {
             "id": "6a0000260000000000000000",
-            "uuid": "1db6f943-322b-4654-b349-02e316cdd75e",
+            "uuid": "5321cf20-aeaf-40b3-950d-745bf57b7ae5",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -486,7 +486,7 @@
           },
           {
             "id": "6a0000270000000000000000",
-            "uuid": "c003fd70-3615-4e04-b5a6-3d432884fdd1",
+            "uuid": "622dbd8d-36c0-443c-afce-c0bfcbc4249d",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -501,7 +501,7 @@
           },
           {
             "id": "6a0000280000000000000000",
-            "uuid": "2a3a18f2-373d-4dcf-bef8-b37a12324d85",
+            "uuid": "4e8e0d84-6122-45fb-b6dc-62df83f99552",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -516,7 +516,7 @@
           },
           {
             "id": "6a0000290000000000000000",
-            "uuid": "8b5b6485-e7b2-4fa9-837d-09a587c6a063",
+            "uuid": "ac57e9c7-fe02-4fd7-9d83-3f851648593e",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -531,7 +531,7 @@
           },
           {
             "id": "6a00002a0000000000000000",
-            "uuid": "4d2b4433-80e6-4b26-809b-73d143581e28",
+            "uuid": "9885b8be-8b09-45f5-b500-49cc70cb9e93",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -546,7 +546,7 @@
           },
           {
             "id": "6a00002b0000000000000000",
-            "uuid": "47c2f660-b878-4783-95ad-7ba890a7315a",
+            "uuid": "c422853b-9774-4ea9-9300-ccd687895e64",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -561,7 +561,7 @@
           },
           {
             "id": "6a00002c0000000000000000",
-            "uuid": "64a2a645-7832-4d37-9499-817fccab4336",
+            "uuid": "d97a0730-8552-4cdd-924b-bfa2dc8a42f3",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -576,7 +576,7 @@
           },
           {
             "id": "6a00002d0000000000000000",
-            "uuid": "7e4245b2-83dc-451b-841f-ae5d936f62b9",
+            "uuid": "fa2348c6-c0f4-4d36-8490-d88cf9548cb9",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -591,7 +591,7 @@
           },
           {
             "id": "6a00002e0000000000000000",
-            "uuid": "35b9b91f-5334-4938-87a1-70ac509babc4",
+            "uuid": "ae09970d-0540-4143-ab97-cfe86196c8d6",
             "status": "published",
             "visibility": "public",
             "featured": false,

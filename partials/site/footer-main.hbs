@@ -10,12 +10,12 @@
             </div>
             <div class="hm-footer__col hm-footer__col--lokasi">
                 <strong class="hm-footer__heading">{{t "LOKASI"}}</strong>
-                {{#foreach info}}<span class="hm-footer__address">{{#if custom_excerpt}}{{custom_excerpt}}{{else}}[Alamat penuh]{{/if}}</span>{{else}}<span class="hm-footer__address">[Alamat penuh]</span>{{/foreach}}
+                {{#foreach info}}<span class="hm-footer__address">{{#if custom_excerpt}}{{> "site/address-lines" text=custom_excerpt}}{{else}}{{> "site/fallback-address"}}{{/if}}</span>{{else}}<span class="hm-footer__address">{{> "site/fallback-address"}}</span>{{/foreach}}
                 {{#if @custom.google_maps_url}}<a class="hm-footer__maps" href="{{@custom.google_maps_url}}" target="_blank" rel="noopener">{{t "Lihat di Google Maps"}}</a>{{/if}}
             </div>
             <div class="hm-footer__col hm-footer__col--waktu">
                 <strong class="hm-footer__heading">{{t "WAKTU"}}</strong>
-                {{#foreach info}}<div class="hm-footer__hours">{{content}}</div>{{else}}<span>[Waktu operasi]</span>{{/foreach}}
+                {{#foreach info}}<div class="hm-footer__hours">{{content}}</div>{{else}}<span>{{@custom.opening_hours_short}}</span>{{/foreach}}
             </div>
             <div class="hm-footer__col hm-footer__col--hubungi">
                 <strong class="hm-footer__heading">{{t "HUBUNGI"}}</strong>
@@ -39,7 +39,7 @@
         {{> "components/logo"}}
         <div class="hm-footer__m-info">
             <strong class="hm-footer__heading">{{t "LOKASI"}}</strong>
-            {{#foreach info}}<span class="hm-footer__address">{{#if custom_excerpt}}{{custom_excerpt}}{{else}}[Alamat penuh]{{/if}}</span><div class="hm-footer__hours">{{content}}</div>{{else}}<span>[Alamat penuh]</span><span>[Waktu operasi]</span>{{/foreach}}
+            {{#foreach info}}<span class="hm-footer__address">{{#if custom_excerpt}}{{> "site/address-lines" text=custom_excerpt}}{{else}}{{> "site/fallback-address"}}{{/if}}</span><div class="hm-footer__hours">{{content}}</div>{{else}}<span class="hm-footer__address">{{> "site/fallback-address"}}</span><span>{{@custom.opening_hours_short}}</span>{{/foreach}}
             <span>{{@custom.phone_display}}{{#if @custom.contact_email}} · {{@custom.contact_email}}{{/if}}</span>
         </div>
         <div class="hm-footer__m-links">

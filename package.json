@@ -85,7 +85,7 @@
       },
       "address_short": {
         "type": "text",
-        "default": "[Alamat ringkas]",
+        "default": "Eight Setiawangsa, Kuala Lumpur",
         "description": "Short address for the top bar. Full address: content block 'maklumat-hubungan'."
       },
       "google_maps_url": {
@@ -95,7 +95,7 @@
       },
       "opening_hours_short": {
         "type": "text",
-        "default": "10 pagi – 7 malam · dengan temu janji sahaja",
+        "default": "Isnin – Sabtu, 10 pagi – 7 malam · dengan temu janji sahaja",
         "description": "One-line opening hours for the top bar and contact panel."
       },
       "offer_price": {

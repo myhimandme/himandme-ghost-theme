@@ -15,8 +15,8 @@ export const BLOCKS = [
   {
     slug: 'blok-maklumat-hubungan', tags: ['hash-blok'],
     title: 'Maklumat hubungan (footer)',
-    excerpt: '[Alamat penuh]\n[Poskod, Bandar, Negeri]',
-    html: '<p>[Hari operasi]: 10:00 pagi – 7:00 malam</p><p>Slot pesakit baharu: 11:00 pagi – 5:00 petang</p><p>Dengan temu janji sahaja — tiada walk-in, untuk menjaga privasi pesakit</p>',
+    excerpt: 'Him & Me Mens Health Setiawangsa\n1-3, Eight Setiawangsa\nJalan Setiawangsa 13, Taman Setiawangsa\n54200 Kuala Lumpur',
+    html: '<p>Isnin – Sabtu: 10:00 pagi – 7:00 malam</p><p>Slot pesakit baharu: 11:00 pagi – 5:00 petang</p><p>Dengan temu janji sahaja — tiada walk-in, untuk menjaga privasi pesakit</p>',
   },
   {
     slug: 'blok-penafian', tags: ['hash-blok'],

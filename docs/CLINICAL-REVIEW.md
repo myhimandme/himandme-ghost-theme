@@ -116,6 +116,10 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 | `kegel_ems_price` | RM350 / sesi (normal price) |
 | `doctor_credentials` | Doktor yang sah |
 | `offer_price` | RM288 |
+| `address_short` | Eight Setiawangsa, Kuala Lumpur |
+| `opening_hours_short` | Isnin – Sabtu, 10 pagi – 7 malam · dengan temu janji sahaja |
+| Full address (block `blok-maklumat-hubungan` excerpt) | Him & Me Mens Health Setiawangsa · 1-3, Eight Setiawangsa · Jalan Setiawangsa 13, Taman Setiawangsa · 54200 Kuala Lumpur |
+| Operating days (same block, body) | Isnin – Sabtu: 10:00 pagi – 7:00 malam |
 | `consultation_fee` | RM150 (percuma dengan First Trial) |
 
 First Trial **RM288** (1 consultation + 1 Shockwave Therapy + 1 Kegel EMS): implemented, see section D. Set in theme setting `offer_price`.
@@ -124,6 +128,6 @@ First Trial **RM288** (1 consultation + 1 Shockwave Therapy + 1 Kegel EMS): impl
 1. **A12: consultation tiles.** ✏️ Fee set to "RM150 (percuma dengan First Trial)". **TEMPOH** (consultation length) is still unknown: give it, or leave the setting empty to hide the tile.
 2. **RM288 First Trial offer:** ✅ implemented (section D). D3–D4 wording still to confirm.
 3. **Session length** for Shockwave and Kegel EMS is still unknown: give it, or leave the settings empty to hide those tiles. **Number of sessions:** now the combined programme "Anggaran 7–10 sesi rawatan" (A25). The separate per-treatment estimates were removed.
-4. **Operating days** for "10:00 pagi – 7:00 malam" (footer block `blok-maklumat-hubungan` shows "[Hari operasi]").
-5. **Notis Privasi** and **Dasar Editorial** page content; `address_short` and the full address (footer block excerpt).
+4. **Operating days:** ✅ Isnin – Sabtu.
+5. **Notis Privasi** and **Dasar Editorial** page content. (Address ✅ applied. `contact_email` is still "[E-mel]": give the address, or leave it empty to hide it.)
 6. **Advertising check:** keep the source for "12,000 kontraksi" and the published prices on file. (No "nilai biasa" comparison is shown with the offer.)
