@@ -1,0 +1,29 @@
+{{!-- Doctor section. Block "blok-utama-pasukan": title = H2, excerpt = text (desktop).
+      Card: the single Ghost staff profile named in theme setting "doctor_author_slug"
+      (name, photo) + the verified credentials line from theme setting "doctor_credentials". --}}
+<section class="hm-container hm-team" aria-labelledby="hm-team-title">
+    <div class="hm-team__text">
+        <span class="hm-label"><span class="hm-label__slash">/</span> {{t "PASUKAN PERUBATAN"}}</span>
+        {{#get "posts" filter="slug:blok-utama-pasukan" limit="1"}}
+            {{#foreach posts}}<h2 class="hm-h2" id="hm-team-title">{{title}}</h2>{{#if custom_excerpt}}<p class="hm-team__intro">{{custom_excerpt}}</p>{{/if}}
+            {{else}}<h2 class="hm-h2" id="hm-team-title">{{t "Kenali doktor anda sebelum datang"}}</h2><p class="hm-team__intro">{{t "Mengetahui siapa yang akan anda temui menjadikan langkah pertama lebih mudah."}}</p>{{/foreach}}
+        {{/get}}
+    </div>
+    <div class="hm-team__cards">
+        {{#if @custom.doctor_author_slug}}
+        {{#get "authors" filter="slug:{{@custom.doctor_author_slug}}" limit="1"}}
+            {{#foreach authors}}
+                <a class="hm-doctor" href="{{url}}">
+                    {{> "components/image" src=profile_image alt=name class="hm-doctor__img" sizes="(max-width: 599px) 88px, 300px"}}
+                    <span class="hm-doctor__body"><strong class="hm-doctor__name">{{name}}</strong>{{#if @custom.doctor_credentials}}<span class="hm-doctor__role">{{@custom.doctor_credentials}}</span>{{/if}}</span>
+                </a>
+            {{else}}
+                <div class="hm-doctor"><div class="hm-doctor__img hm-ph" role="presentation"></div><span class="hm-doctor__body"><strong class="hm-doctor__name">[Nama Penuh]</strong><span class="hm-doctor__role">[Peranan]</span></span></div>
+            {{/foreach}}
+        {{/get}}
+        {{else}}
+            {{!-- Theme setting "doctor_author_slug" not set yet --}}
+            <div class="hm-doctor"><div class="hm-doctor__img hm-ph" role="presentation"></div><span class="hm-doctor__body"><strong class="hm-doctor__name">[Nama Penuh]</strong><span class="hm-doctor__role">[Peranan]</span></span></div>
+        {{/if}}
+    </div>
+</section>

@@ -1,0 +1,8 @@
+{{!-- Privacy band. Block "blok-utama-privasi": title = H2, body = bullet list, feature image = photo. --}}
+{{#get "posts" filter="slug:blok-utama-privasi" limit="1"}}
+    {{#foreach posts}}
+        {{> "home/privacy-view" title=title html=html img=feature_image alt=feature_image_alt}}
+    {{else}}
+        {{> "home/privacy-view" title=(t "Privasi anda bukan tambahan. Ia asas cara kami bekerja.") fallback=true}}
+    {{/foreach}}
+{{/get}}

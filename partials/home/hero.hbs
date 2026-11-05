@@ -1,0 +1,8 @@
+{{!-- Hero. Block "blok-utama-hero": title = H1, excerpt = intro, feature image = hero photo. --}}
+{{#get "posts" filter="slug:blok-utama-hero" limit="1"}}
+    {{#foreach posts}}
+        {{> "home/hero-view" title=title intro=custom_excerpt img=feature_image alt=feature_image_alt}}
+    {{else}}
+        {{> "home/hero-view" title=(t "Kesihatan lelaki, dibincang dengan tenang dan profesional.") intro=(t "Penilaian dan rawatan disfungsi ereksi (erectile dysfunction) dalam suasana yang sulit dan selesa. Kami bermula dengan memahami keadaan anda — bukan dengan menjual rawatan.")}}
+    {{/foreach}}
+{{/get}}

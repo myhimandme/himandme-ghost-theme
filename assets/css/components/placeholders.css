@@ -1,0 +1,10 @@
+/* Image placeholders (patterned warm grey) — used only when no image has been uploaded. */
+.hm-ph { background-color: var(--hm-ph); background-image: repeating-linear-gradient(135deg, rgba(36, 36, 36, .05) 0 1px, transparent 1px 14px); }
+.hm-ph-dark { background-color: #33302E; background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px 14px); }
+.is-blog .hm-ph { background-color: var(--hm-ph-blog); }
+/* The 32° corner cut from the logo's slash (hero images) */
+.hm-cut { clip-path: polygon(0 0, 100% 0, 100% 82%, 86% 100%, 0 100%); }
+@media (max-width: 599px) { .hm-cut { clip-path: polygon(0 0, 100% 0, 100% 84%, 82% 100%, 0 100%); } }
+/* Checklist item with red tick */
+.hm-check { display: flex; gap: 10px; font-size: 14px; line-height: 1.45; color: var(--hm-text-2); }
+.hm-check svg { flex-shrink: 0; margin-top: 1px; color: var(--hm-red); }

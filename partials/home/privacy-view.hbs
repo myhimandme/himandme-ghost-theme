@@ -1,0 +1,17 @@
+<section class="hm-privacy" aria-labelledby="hm-privacy-title">
+    <div class="hm-container hm-privacy__inner">
+        {{> "components/image" src=img alt=alt class="hm-privacy__img" sizes="(max-width: 599px) 100vw, 50vw" dark=true}}
+        <div class="hm-privacy__text">
+            <img class="hm-privacy__mark" src="{{asset "images/logo-mark.png"}}" alt="" width="60" height="60">
+            <h2 class="hm-h2 hm-privacy__title" id="hm-privacy-title">{{title}}</h2>
+            <div class="hm-privacy__list">
+                {{#if fallback}}
+                    <ul>
+                        <li>{{t "Rekod perubatan dirahsiakan dan dilindungi di bawah Akta Perlindungan Data Peribadi 2010."}}</li>
+                        <li>{{t "Konsultasi dalam bilik tertutup, berdua bersama doktor."}}</li>
+                    </ul>
+                {{else}}{{{html}}}{{/if}}
+            </div>
+        </div>
+    </div>
+</section>
