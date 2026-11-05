@@ -21,8 +21,11 @@
     "gscan": "gscan . --v6",
     "zip": "npm run build && node scripts/zip.mjs",
     "gscan:zip": "gscan -z dist/himandme-ghost-theme.zip --v6",
-    "test": "npm run build && npm run gscan",
-    "test:stage1": "node test/stage1/run.mjs"
+    "test": "npm run build && npm run guard && npm run gscan",
+    "test:stage1": "node test/stage1/run.mjs",
+    "guard": "node scripts/check-blok-guard.mjs",
+    "test:stage2": "node test/stage2/run.mjs",
+    "visual": "node test/visual/compare.mjs"
   },
   "devDependencies": {
     "bestzip": "4.0.3",

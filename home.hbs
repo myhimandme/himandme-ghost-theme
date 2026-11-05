@@ -1,6 +1,9 @@
 {{!< default}}
+{{#contentFor "mode"}}main{{/contentFor}}
+{{> "site/utility-bar"}}
+{{> "site/header-main"}}
 {{!-- STAGE 1 VERIFICATION SCAFFOLD — replaced by the approved homepage design in Stage 3. --}}
-<main data-template="home">
+<main id="main" data-template="home">
     {{> "stage1-settings-probe"}}
     {{!-- Hero H1 / intro / image from block "blok-utama-hero"; approved copy as fallback. --}}
     {{#get "posts" filter="slug:blok-utama-hero" limit="1"}}
@@ -34,3 +37,5 @@
         {{/get}}
     </section>
 </main>
+{{> "site/footer-main"}}
+{{> "site/mobile-bar"}}

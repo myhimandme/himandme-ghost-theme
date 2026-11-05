@@ -1,9 +1,14 @@
 {{!< default}}
+{{#contentFor "mode"}}blog{{/contentFor}}
+{{#contentFor "preload"}}<link rel="preload" href="{{asset "fonts/newsreader-latin-standard-normal.woff2"}}" as="font" type="font/woff2" crossorigin>{{/contentFor}}
+{{> "site/blog-topbar"}}
+{{> "site/header-blog"}}
 {{!-- STAGE 1 VERIFICATION SCAFFOLD — replaced by the approved topic page design in Stage 5. --}}
-<main data-template="tag">
+<main id="main" data-template="tag">
     {{#tag}}<h1>{{name}}</h1>{{/tag}}
     <ul data-test="post-list">
         {{#foreach posts}}<li data-slug="{{slug}}"><a href="{{url}}">{{title}}</a></li>{{/foreach}}
     </ul>
     {{pagination}}
 </main>
+{{> "site/footer-blog" links=true}}

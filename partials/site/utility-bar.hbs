@@ -1,0 +1,10 @@
+{{!-- Charcoal utility bar above the main header (Utama desktop). Values from theme settings. --}}
+<div class="hm-utility">
+    <div class="hm-container hm-utility__inner">
+        <span>{{t "Konsultasi sulit & peribadi bersama doktor"}}</span>
+        <span class="hm-utility__meta">
+            {{#if @custom.address_short}}<span>{{@custom.address_short}}</span>{{/if}}
+            {{#if @custom.opening_hours_short}}<span>{{@custom.opening_hours_short}}</span>{{/if}}
+        </span>
+    </div>
+</div>

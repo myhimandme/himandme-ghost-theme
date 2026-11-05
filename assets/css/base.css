@@ -1,0 +1,45 @@
+/* Base — reset and element defaults matching the prototype. */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--hm-font-sans);
+  color: var(--hm-charcoal);
+  background: var(--hm-white);
+  line-height: normal; /* the prototype never set a base line-height */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body.is-blog { background: var(--hm-warm); }
+
+h1, h2, h3, h4, h5, h6 { font-family: var(--hm-font-heading); margin: 0; }
+p { margin: 0; }
+img, svg { display: block; max-width: 100%; }
+img { height: auto; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+a { color: var(--hm-red-deep); }
+a:hover { color: var(--hm-red-darker); }
+
+:focus-visible { outline: 3px solid rgba(197, 38, 38, .45); outline-offset: 2px; }
+
+.hm-serif { font-family: var(--hm-font-serif); }
+
+/* Accessibility helpers */
+.hm-visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.hm-skip-link {
+  position: absolute; left: 16px; top: -100px; z-index: 100;
+  background: var(--hm-charcoal); color: var(--hm-white); padding: 12px 16px;
+  border-radius: var(--hm-radius-btn); font-weight: 700; text-decoration: none;
+}
+.hm-skip-link:focus { top: 16px; color: var(--hm-white); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

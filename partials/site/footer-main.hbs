@@ -1,0 +1,51 @@
+{{!-- Full main-site footer (Utama). Address/hours: block "blok-maklumat-hubungan"
+      (excerpt = full address, body = opening hours). Contact values: theme settings. --}}
+<footer class="hm-footer">
+    {{#get "posts" filter="slug:blok-maklumat-hubungan" limit="1" as |info|}}
+    <div class="hm-container hm-footer__inner hm-hide-mobile">
+        <div class="hm-footer__cols">
+            <div class="hm-footer__brand">
+                {{> "components/logo"}}
+                <p class="hm-footer__desc">{{t "Memberi tumpuan kepada penilaian dan rawatan disfungsi ereksi."}}</p>
+            </div>
+            <div class="hm-footer__col hm-footer__col--lokasi">
+                <strong class="hm-footer__heading">{{t "LOKASI"}}</strong>
+                {{#foreach info}}<span class="hm-footer__address">{{#if custom_excerpt}}{{custom_excerpt}}{{else}}[Alamat penuh]{{/if}}</span>{{else}}<span class="hm-footer__address">[Alamat penuh]</span>{{/foreach}}
+                {{#if @custom.google_maps_url}}<a class="hm-footer__maps" href="{{@custom.google_maps_url}}" target="_blank" rel="noopener">{{t "Lihat di Google Maps"}}</a>{{/if}}
+            </div>
+            <div class="hm-footer__col hm-footer__col--waktu">
+                <strong class="hm-footer__heading">{{t "WAKTU"}}</strong>
+                {{#foreach info}}<div class="hm-footer__hours">{{content}}</div>{{else}}<span>[Waktu operasi]</span>{{/foreach}}
+            </div>
+            <div class="hm-footer__col hm-footer__col--hubungi">
+                <strong class="hm-footer__heading">{{t "HUBUNGI"}}</strong>
+                {{#if @custom.phone_display}}<span>{{@custom.phone_display}}</span>{{/if}}
+                <a class="hm-footer__plain" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">WhatsApp</a>
+                {{#if @custom.contact_email}}<span>{{@custom.contact_email}}</span>{{/if}}
+            </div>
+            <div class="hm-footer__col hm-footer__col--laman">
+                <strong class="hm-footer__heading">{{t "LAMAN"}}</strong>
+                {{#foreach @site.navigation}}<a class="hm-footer__plain" href="{{url absolute="true"}}">{{label}}</a>{{/foreach}}
+            </div>
+        </div>
+        <div class="hm-footer__bottom">
+            <div class="hm-footer__disclaimer">{{> "components/disclaimer"}}</div>
+            <span>© {{date format="YYYY"}} {{t "Him & Me Men's Health"}} · <a href="{{@site.url}}/notis-privasi/">{{t "Notis Privasi"}}</a></span>
+        </div>
+    </div>
+
+    {{!-- Phone layout (Utama mobile board) --}}
+    <div class="hm-footer__m hm-show-mobile">
+        {{> "components/logo"}}
+        <div class="hm-footer__m-info">
+            <strong class="hm-footer__heading">{{t "LOKASI"}}</strong>
+            {{#foreach info}}<span class="hm-footer__address">{{#if custom_excerpt}}{{custom_excerpt}}{{else}}[Alamat penuh]{{/if}}</span><div class="hm-footer__hours">{{content}}</div>{{else}}<span>[Alamat penuh]</span><span>[Waktu operasi]</span>{{/foreach}}
+            <span>{{@custom.phone_display}}{{#if @custom.contact_email}} · {{@custom.contact_email}}{{/if}}</span>
+        </div>
+        <div class="hm-footer__m-links">
+            {{#foreach @site.navigation}}<a href="{{url absolute="true"}}">{{label}}</a>{{/foreach}}
+        </div>
+        <div class="hm-footer__m-disclaimer">{{> "components/disclaimer"}} © {{date format="YYYY"}} {{t "Him & Me Men's Health"}}</div>
+    </div>
+    {{/get}}
+</footer>

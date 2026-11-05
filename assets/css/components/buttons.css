@@ -1,0 +1,39 @@
+/* Buttons — design system board. One red primary per view, one charcoal WhatsApp, one outline. */
+.hm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 52px; padding: 0 26px; border: 0; border-radius: var(--hm-radius-btn);
+  font-family: var(--hm-font-sans); font-weight: 700; font-size: 16px; line-height: 1;
+  text-decoration: none; white-space: nowrap; box-sizing: border-box;
+  transition: background-color .15s ease, color .15s ease;
+}
+.hm-btn svg { flex-shrink: 0; }
+
+.hm-btn--primary { background: var(--hm-red); color: var(--hm-white); }
+.hm-btn--primary:hover, .hm-btn--primary:active { background: var(--hm-red-deep); color: var(--hm-white); }
+
+.hm-btn--whatsapp { background: var(--hm-charcoal); color: var(--hm-white); padding: 0 24px; }
+.hm-btn--whatsapp:hover { background: #000; color: var(--hm-white); }
+.hm-btn--whatsapp svg { stroke: var(--hm-whatsapp-glyph); }
+
+.hm-btn--outline { background: var(--hm-white); color: var(--hm-charcoal); border: 1.5px solid var(--hm-charcoal); padding: 0 24px; }
+.hm-btn--outline:hover { background: var(--hm-warm); color: var(--hm-charcoal); }
+.hm-btn--outline svg { stroke: currentColor; }
+
+/* Sizes */
+.hm-btn--lg { height: 56px; padding-left: 28px; padding-right: 28px; }
+.hm-btn--md { height: 48px; padding-left: 22px; padding-right: 22px; font-size: 15px; }
+.hm-btn--header { height: 44px; padding: 0 18px; font-size: 14px; gap: 8px; }
+.hm-btn--outline.hm-btn--header { padding: 0 16px; }
+.hm-btn--sm { height: 40px; padding: 0 16px; font-size: 14px; border-radius: var(--hm-radius-btn-sm); }
+.hm-btn--block { width: 100%; }
+
+/* Text link with arrow */
+.hm-link-arrow { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: var(--hm-red-deep); text-decoration: none; }
+.hm-link-arrow:hover { color: var(--hm-red-darker); }
+
+/* Square icon-only buttons (menu, search, share) */
+.hm-icon-btn {
+  width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  border: 0; background: transparent; padding: 0; color: var(--hm-charcoal); border-radius: var(--hm-radius-btn);
+}
+.hm-icon-btn--framed { border: 1.5px solid var(--hm-grey-light); background: var(--hm-white); }
