@@ -8,7 +8,7 @@
 | Check | Result |
 |---|---|
 | `npm test`: build + content-block guard (81 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings. **14 theme settings** (of Ghost's 20), all used. |
-| `test/stage4/run.mjs`: ED page + offer + Notis Privasi + email | ✅ **37 passed, 0 failed** |
+| `test/stage4/run.mjs`: ED page + offer + Notis Privasi + email | ✅ **39 passed, 0 failed** |
 | `test/stage3/run.mjs`: homepage | ✅ **12 / 12** |
 | `test/stage2/run.mjs`: site chrome | ✅ **23 / 23** |
 | `test/stage1/run.mjs`: routing and `#blok` safeguards (now **23** blocks, incl. `blok-tawaran`) | ✅ **32 passed, 0 failed** (3 informational) |
@@ -150,6 +150,7 @@
   - H2: one image asset for both languages, alt texts, address and phone as text.
   - H3 (browser): the image loads (693×84), stays in proportion and is at least 200px wide at 1440px and 390px.
   - H4: no "e-mel" / "email" in any served file.
+  - H5: no `/dasar-editorial/` link anywhere (main site, blog home, an article, RSS, sitemaps, CSS/JS); `/dasar-editorial/` returns 404.
 - **Screenshots:**
   - `docs/stage-4/email-footer-desktop.jpg`, `email-footer-mobile.jpg`
   - `email-privasi-bm-desktop.jpg`, `email-privasi-bm-mobile.jpg`

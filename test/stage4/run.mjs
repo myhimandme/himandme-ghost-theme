@@ -180,6 +180,13 @@ const wordHits = Object.entries(served).flatMap(([u, x]) => (x.match(/e-?mel|e-?
 check('H4', 'No "e-mel"/"email" anywhere in the served HTML, RSS, sitemaps, CSS or JS; data list uses "alamat mel elektronik" / "electronic mail address"',
   wordHits.length === 0 && emailPages['/notis-privasi/'].includes('Alamat mel elektronik, jika diberikan.') && emailPages['/notis-privasi/'].includes('Electronic mail address, if provided.'),
   wordHits.slice(0, 6).join('; ') || `${Object.keys(served).length} files scanned`);
+// H5 — the Dasar Editorial page is dropped: no /dasar-editorial/ link anywhere; the page itself is gone (404)
+const articleUrl = ((served['/sitemap-posts.xml'].match(/<loc>([^<]+)<\/loc>/) || [])[1] || '').replace(BASE, '');
+const linkScan = { ...served, [articleUrl || '/']: await page(articleUrl || '/') };
+const deHits = Object.entries(linkScan).filter(([, x]) => /dasar-editorial|dasar editorial/i.test(x)).map(([u]) => u);
+const deStatus = (await fetch(BASE + '/dasar-editorial/')).status;
+check('H5', 'No /dasar-editorial/ link on any page (main site, blog home, article, RSS, sitemaps, CSS/JS); the page returns 404',
+  deHits.length === 0 && deStatus === 404, deHits.join(', ') || `${Object.keys(linkScan).length} files scanned · /dasar-editorial/ → ${deStatus}`);
 // H2 — Notis Privasi shows the email as one local image asset, in both language versions, with alt text
 const imgs = [...np.matchAll(/<img class="hm-contact-img"[^>]*>/g)].map((m) => m[0]);
 const srcs = new Set(imgs.map((t) => (t.match(/src="([^"]+)"/) || [])[1]));
