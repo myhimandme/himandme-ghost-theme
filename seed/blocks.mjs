@@ -204,5 +204,4 @@ export const PAGES = [
   { slug: 'jurnal', title: 'Jurnal Kesihatan Lelaki', meta_title: 'Jurnal Kesihatan Lelaki — Him & Me', meta_description: 'Artikel pendidikan tentang kesihatan lelaki.', excerpt: 'Route data for /blog/ (SEO title, description and social image).', html: '<p>Halaman data untuk /blog/. Jangan nyahterbit.</p>' },
   { slug: 'notis-privasi', title: 'Notis Privasi', meta_title: 'Notis Privasi | Him & Me', meta_description: 'Bagaimana Him & Me mengumpul, menggunakan dan melindungi maklumat peribadi anda (PDPA 2010). English version included.',
     html: '<p><a href="#privacy-notice">English version: Privacy Notice ↓</a></p>' + legalPage('notis-privasi.txt') },
-  { slug: 'dasar-editorial', title: 'Dasar Editorial', html: '<p>[Kandungan Dasar Editorial — akan dibekalkan]</p>' },
 ];

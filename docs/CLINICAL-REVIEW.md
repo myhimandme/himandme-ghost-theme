@@ -130,5 +130,5 @@ First Trial **RM288** (1 consultation + 1 Shockwave Therapy + 1 Kegel EMS): impl
 2. **RM288 First Trial offer:** ✅ implemented (section D); D3–D4 wording accepted.
 3. **Session length:** ✅ not shown (tiles hidden, as instructed). **Number of sessions:** now the combined programme "Anggaran 7–10 sesi rawatan" (A25). The separate per-treatment estimates were removed.
 4. **Operating days and hours:** ✅ Isnin – Sabtu, 10:00 pagi – 6:00 petang (new-patient slots 11:00 pagi – 5:00 petang).
-5. **Notis Privasi:** ✅ supplied (BM + English, operator Him & Me Wellness PLT) and loaded as the page body. **Dasar Editorial** page content still to be supplied. Address ✅ applied. Email shown only as an image on the Notis Privasi page.
+5. **Notis Privasi:** ✅ supplied (BM + English, operator Him & Me Wellness PLT) and loaded as the page body. Dasar Editorial page: not needed for now (removed). Address ✅ applied. Email shown only as an image on the Notis Privasi page.
 6. **Advertising check:** keep the source for "12,000 kontraksi" and the published prices on file. (No "nilai biasa" comparison is shown with the offer.)

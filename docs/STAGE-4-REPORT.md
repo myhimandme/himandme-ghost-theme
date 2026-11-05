@@ -125,10 +125,9 @@
 - **Footer fix:** each address line is now rendered as its own element. A long line that wraps stays tight, and real line breaks keep the designed 10px gap.
 
 **Still needed from you (content):**
-- Dasar Editorial page content.
 
 ## Notis Privasi page (styled, as approved)
-- **Template:** `page.hbs` now styles every plain page (Notis Privasi, and later Dasar Editorial) like the prototype's blog article: warm-white background, breadcrumb "Utama / …", centred serif title, a 680px reading column with the article's paragraph, heading and red-slash list styles.
+- **Template:** `page.hbs` now styles every plain page (currently Notis Privasi) like the prototype's blog article: warm-white background, breadcrumb "Utama / …", centred serif title, a 680px reading column with the article's paragraph, heading and red-slash list styles.
 - **Contents:** "Dalam halaman ini" is built automatically from the section headings (14 links: 13 BM sections + "Privacy Notice"). It's a sticky rail on wide screens and a collapsible box on tablets and phones (as on the Artikel mobile board). The section in view is marked.
 - **Navigation:** main-site header (Utama · Disfungsi Ereksi · Blog), and the compact main-site footer, which keeps the **Notis Privasi** link. Notis Privasi is not added to the header menu.
 - **Not used here:** the article's feature image, author/reviewer line, share buttons, CTA sidebar, references, tags and "Baca seterusnya". They don't apply to a legal page.
@@ -156,6 +155,10 @@
   - `email-privasi-bm-desktop.jpg`, `email-privasi-bm-mobile.jpg`
   - `email-privasi-en-desktop.jpg`, `email-privasi-en-mobile.jpg`
 - **Limitation:** an image deters simple harvesters but not OCR-based scraping.
+
+## Dasar Editorial page
+- Not needed for now (your decision). The page has been removed from the seed content, so it isn't created on import.
+- The blog footer linked to it in two places: the link row on the blog home, topic and author pages, and the copyright line on articles. Both links now point to **Notis Privasi**, in the same position and style, so there are no broken links and every blog page links to the privacy notice.
 
 ## Safeguards preserved
 - `#blok` content is excluded from listings, archives, RSS, the sitemap and search. Stage 1 passes 32/0 with all 23 blocks present (incl. `blok-tawaran`).

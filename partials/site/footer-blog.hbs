@@ -1,5 +1,5 @@
 {{!-- Blog footer. links=true (blog home, topic, author): logo + menu row.
-      Article pages: logo + disclaimer with the Dasar Editorial link. --}}
+      Article pages: logo + disclaimer with the Notis Privasi link (Dasar Editorial page dropped for now). --}}
 <footer class="hm-bfooter{{#if links}} hm-bfooter--links{{/if}}">
     <div class="hm-container-blog hm-bfooter__inner">
         <div class="hm-bfooter__brand">
@@ -7,13 +7,13 @@
             {{#if links}}
                 <span class="hm-bfooter__links">
                     {{#foreach @site.navigation}}<a href="{{url absolute="true"}}">{{label}}</a>{{/foreach}}
-                    <a href="{{@site.url}}/dasar-editorial/">{{t "Dasar Editorial"}}</a>
+                    <a href="{{@site.url}}/notis-privasi/">{{t "Notis Privasi"}}</a>
                 </span>
             {{/if}}
         </div>
         <div class="hm-bfooter__text">
             {{> "components/disclaimer" variant="blog"}}
-            © {{date format="YYYY"}} {{t "Him & Me Mens Health"}}{{#unless links}} · <a href="{{@site.url}}/dasar-editorial/">{{t "Dasar Editorial"}}</a>{{/unless}}
+            © {{date format="YYYY"}} {{t "Him & Me Mens Health"}}{{#unless links}} · <a href="{{@site.url}}/notis-privasi/">{{t "Notis Privasi"}}</a>{{/unless}}
         </div>
     </div>
 </footer>
