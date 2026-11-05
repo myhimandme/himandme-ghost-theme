@@ -6,6 +6,31 @@
 //
 // Field mapping per block is documented in README.md ("Content blocks").
 
+import { readFileSync } from 'node:fs';
+
+// Minimal text → HTML for legal pages (seed/pages/*.txt): "## " h2, "### " h3, "# " second-language
+// title (its sections drop one level), "* " bullets, "1. " numbered items, "---" divider,
+// **bold**, [text](url). Every other line is a paragraph. The wording is the owner's, verbatim.
+const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const inline = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+function legalPage(file) {
+  const out = []; let list = null; let shift = 0;
+  const close = () => { if (list) { out.push(`</${list}>`); list = null; } };
+  for (const raw of readFileSync(new URL(`./pages/${file}`, import.meta.url), 'utf8').split('\n')) {
+    const l = raw.trim(); if (!l) continue;
+    const item = l.match(/^(\*|\d+\.) (.*)$/);
+    if (item) { const t = item[1] === '*' ? 'ul' : 'ol'; if (list !== t) { close(); out.push(`<${t}>`); list = t; } out.push(`<li>${inline(item[2])}</li>`); continue; }
+    close();
+    if (l === '---') out.push('<hr>');
+    else if (l.startsWith('### ')) out.push(`<h${3 + shift}>${inline(l.slice(4))}</h${3 + shift}>`);
+    else if (l.startsWith('## ')) out.push(`<h${2 + shift}>${inline(l.slice(3))}</h${2 + shift}>`);
+    else if (l.startsWith('# ')) { shift = 1; out.push(`<h2>${inline(l.slice(2))}</h2>`); }
+    else out.push(`<p>${inline(l)}</p>`);
+  }
+  close();
+  return out.join('');
+}
+
 const toggle = (q, a) =>
   `<div class="kg-card kg-toggle-card" data-kg-toggle-state="close"><div class="kg-toggle-heading"><h4 class="kg-toggle-heading-text">${q}</h4></div><div class="kg-toggle-content"><p>${a}</p></div></div>`;
 
@@ -16,7 +41,7 @@ export const BLOCKS = [
     slug: 'blok-maklumat-hubungan', tags: ['hash-blok'],
     title: 'Maklumat hubungan (footer)',
     excerpt: 'Him & Me Mens Health Setiawangsa\n1-3, Eight Setiawangsa\nJalan Setiawangsa 13, Taman Setiawangsa\n54200 Kuala Lumpur',
-    html: '<p>Isnin – Sabtu: 10:00 pagi – 7:00 malam</p><p>Slot pesakit baharu: 11:00 pagi – 5:00 petang</p><p>Dengan temu janji sahaja — tiada walk-in, untuk menjaga privasi pesakit</p>',
+    html: '<p>Isnin – Sabtu: 10:00 pagi – 6:00 petang</p><p>Slot pesakit baharu: 11:00 pagi – 5:00 petang</p><p>Dengan temu janji sahaja — tiada walk-in, untuk menjaga privasi pesakit</p>',
   },
   {
     slug: 'blok-penafian', tags: ['hash-blok'],
@@ -172,6 +197,7 @@ export const PAGES = [
     ].join(''),
   },
   { slug: 'jurnal', title: 'Jurnal Kesihatan Lelaki', meta_title: 'Jurnal Kesihatan Lelaki — Him & Me', meta_description: 'Artikel pendidikan tentang kesihatan lelaki.', excerpt: 'Route data for /blog/ (SEO title, description and social image).', html: '<p>Halaman data untuk /blog/. Jangan nyahterbit.</p>' },
-  { slug: 'notis-privasi', title: 'Notis Privasi', html: '<p>[Kandungan Notis Privasi (PDPA 2010) — akan dibekalkan]</p>' },
+  { slug: 'notis-privasi', title: 'Notis Privasi', meta_title: 'Notis Privasi | Him & Me', meta_description: 'Bagaimana Him & Me mengumpul, menggunakan dan melindungi maklumat peribadi anda (PDPA 2010). English version included.',
+    html: '<p><a href="#privacy-notice">English version: Privacy Notice ↓</a></p>' + legalPage('notis-privasi.txt') },
   { slug: 'dasar-editorial', title: 'Dasar Editorial', html: '<p>[Kandungan Dasar Editorial — akan dibekalkan]</p>' },
 ];

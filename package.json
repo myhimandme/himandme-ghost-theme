@@ -80,7 +80,7 @@
       },
       "contact_email": {
         "type": "text",
-        "default": "[E-mel]",
+        "default": "myhimandme@gmail.com",
         "description": "Public contact email address."
       },
       "address_short": {
@@ -95,7 +95,7 @@
       },
       "opening_hours_short": {
         "type": "text",
-        "default": "Isnin – Sabtu, 10 pagi – 7 malam · dengan temu janji sahaja",
+        "default": "Isnin – Sabtu, 10 pagi – 6 petang · dengan temu janji sahaja",
         "description": "One-line opening hours for the top bar and contact panel."
       },
       "offer_price": {
@@ -105,8 +105,8 @@
       },
       "consultation_duration": {
         "type": "text",
-        "default": "[± minit]",
-        "description": "Consultation length on the Disfungsi Ereksi page, e.g. 30 minit."
+        "default": "",
+        "description": "Consultation length on the Disfungsi Ereksi page, e.g. 30 minit. Leave empty to hide this tile."
       },
       "consultation_fee": {
         "type": "text",
@@ -115,8 +115,8 @@
       },
       "shockwave_session_duration": {
         "type": "text",
-        "default": "[± minit]",
-        "description": "Shockwave therapy: length of one session."
+        "default": "",
+        "description": "Shockwave therapy: length of one session. Leave empty to hide this tile."
       },
       "shockwave_session_count": {
         "type": "text",
@@ -130,8 +130,8 @@
       },
       "kegel_ems_session_duration": {
         "type": "text",
-        "default": "[± minit]",
-        "description": "Kegel EMS: length of one session."
+        "default": "",
+        "description": "Kegel EMS: length of one session. Leave empty to hide this tile."
       },
       "kegel_ems_session_count": {
         "type": "text",

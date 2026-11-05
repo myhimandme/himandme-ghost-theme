@@ -67,7 +67,8 @@ check('E5', 'FAQ questions are the toggle cards in the page body', faqCount === 
 
 // E6 — settings drive the tiles; show_prices hides fee/price tiles; city label fallback
 const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
-const setCS = (vals) => admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key in vals ? vals[s.key] : s.value })) } });
+const csCur = {}; // test values accumulate across steps (the real values are restored afterwards)
+const setCS = (vals) => { Object.assign(csCur, vals); return admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key in csCur ? csCur[s.key] : s.value })) } }); };
 await setCS({ consultation_duration: '30 minit', consultation_fee: 'RM 99', shockwave_session_duration: '20 minit', shockwave_price: 'RM 999 / pakej', kegel_ems_session_duration: '25 minit', show_prices: true, city: 'Kuala Lumpur' });
 const withP = await page(); const homeCity = await page('/');
 await setCS({ consultation_fee: '', shockwave_session_duration: '' });

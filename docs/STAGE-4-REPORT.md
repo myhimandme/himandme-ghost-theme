@@ -100,7 +100,6 @@
 **`docs/CLINICAL-REVIEW.md`** lists every clinical or service statement: ED page (A1–A30), homepage (B1–B8), First Trial offer (D1–D6) and site-wide (C1–C2), each with where to edit it. The doctor's review answers have been applied; ✅ / ✏️ mark verified or reworded items.
 - **Still open:**
   - D3–D4, the offer item descriptions and intro line (reworded from accepted statements).
-  - Consultation and session durations.
   - Notis Privasi page content.
 - **All earlier placeholders are resolved:** additional tests removed; Shockwave sensation and aftercare; Kegel EMS "Berpakaian: Ya"; "Malam" removed; all FAQ answers; the third privacy bullet.
 - **No claims, success rates, guarantees, contraindications, evidence or credentials were added.** "Anggaran 7–10 sesi rawatan" is the doctor's estimate, worded as an estimate and not a guarantee. New non-clinical text: the form, CTA and First Trial WhatsApp wording.
@@ -109,23 +108,25 @@
 
 | # | Item | Current behaviour | Options |
 |---|---|---|---|
-| 1 | **Obsolete per-treatment session-count settings.** The combined programme replaces separate counts, but `shockwave_session_count` and `kegel_ems_session_count` remain. **The theme is at Ghost's 20 / 20 setting limit**, so any future setting needs a free slot. | Both settings are empty and their "BILANGAN SESI" tiles are hidden. Nothing is visible. | **A (recommended):** remove both settings and their tiles, freeing 2 slots. This is an architecture change (the Admin fields disappear). **B:** merge them into one `programme_sessions` setting shown once (frees 1 slot). **C:** leave as is. |
+| 1 | **Unused settings.** Five settings are now empty and their tiles hidden: `shockwave_session_count`, `kegel_ems_session_count` (replaced by the combined programme), and `consultation_duration`, `shockwave_session_duration`, `kegel_ems_session_duration` (durations not shown, as instructed). **The theme is at Ghost's 20 / 20 setting limit.** | Nothing is visible. The fields still appear in Admin, so the tiles can be switched back on by typing a value. | **A (recommended):** remove all five settings and their tiles, freeing 5 slots for Stage 5–6 needs. This is an architecture change: the Admin fields disappear. **B:** remove only the two session counts. **C:** leave as is. |
 | 2 | **Combined programme in the comparison table.** Currently the combined wording appears only in FAQ A25. | No session row in the table. | **A:** add one full-width row "Bilangan sesi: Anggaran 7–10 sesi rawatan (gabungan)" (theme text). **B (current):** FAQ only. |
 | 3 | **Phone content parity** (carried over from Stage 4). | The phone page shows all content (it's longer than the board). | A (recommended): keep. B: hide those elements on phones. |
+| 5 | **Notis Privasi page design.** The content is in place, but the general page template (`page.hbs`) is still the unstyled Stage 1 scaffold: full-width text, no margins. The prototype has no board for legal pages. | Readable but unstyled. | **A (recommended):** style it in Stage 5 together with the article template, reusing the article reading column and typography (~720px, same headings/lists), with no new design elements. **B:** do it now as a small Stage 4 add-on. |
 | 4 | **D3–D4 offer wording** (`docs/CLINICAL-REVIEW.md`, section D). | Reworded from accepted statements. | Confirm or edit in the block. No developer needed. |
 
 **Applied after the report:**
 - **Address:**
   - Footer: "Him & Me Mens Health Setiawangsa / 1-3, Eight Setiawangsa / Jalan Setiawangsa 13, Taman Setiawangsa / 54200 Kuala Lumpur".
   - Top bar: "Eight Setiawangsa, Kuala Lumpur".
-- **Operating days:** Isnin – Sabtu.
+- **Operating days and hours:** Isnin – Sabtu, 10:00 pagi – 6:00 petang (footer, top bar, menu, booking panel). New-patient slots stay 11:00 pagi – 5:00 petang.
+- **WhatsApp number** 601157912606 confirmed. **Public email** myhimandme@gmail.com (footer).
+- **Notis Privasi:** your BM and English text, verbatim, loaded as the page body. The BM version comes first, then a divider and the English "Privacy Notice", with an "English version ↓" link at the top. Source: `seed/pages/notis-privasi.txt`, converted by the seed. After launch, edit it in Ghost Admin → Pages → Notis Privasi.
+- **Durations:** not shown. The three TEMPOH tiles (consultation, Shockwave, Kegel EMS) are hidden; their settings are empty.
+- **Name spelling:** "Him & Me Mens Health" everywhere, including the copyright line.
 - **Footer fix:** each address line is now rendered as its own element. A long line that wraps stays tight, and real line breaks keep the designed 10px gap.
 
 **Still needed from you (content):**
-- Consultation and session durations (or leave them empty to hide those tiles).
-- Public email address (or leave it empty).
-- Notis Privasi and Dasar Editorial page content.
-- Confirmation that 601157912606 is the WhatsApp number.
+- Dasar Editorial page content.
 
 ## Safeguards preserved
 - `#blok` content is excluded from listings, archives, RSS, the sitemap and search. Stage 1 passes 32/0 with all 23 blocks present (incl. `blok-tawaran`).

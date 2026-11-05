@@ -122,6 +122,10 @@ One block, one setting. **The price lives only in the theme setting `offer_price
 
 If the block is unpublished, the approved copy is shown, still using `offer_price`.
 
+### Legal pages
+
+`seed/pages/notis-privasi.txt` holds the owner's Notis Privasi text (BM, then English). `seed/blocks.mjs` converts it to the page body: `## ` heading, `### ` subheading, `* ` / `1. ` lists, `---` divider, `# ` second-language title. Once imported, edit it in Ghost Admin → Pages → Notis Privasi.
+
 ## Repository layout (Stage 0–1)
 
 ```
