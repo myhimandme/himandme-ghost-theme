@@ -1,0 +1,8 @@
+node_modules/
+dist/
+assets/built/
+test/stage1/.local/
+*.log
+.DS_Store
+.env
+.env.*
