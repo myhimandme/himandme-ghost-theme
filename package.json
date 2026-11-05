@@ -1,0 +1,149 @@
+{
+  "name": "himandme-ghost-theme",
+  "description": "Custom Ghost theme for Him & Me (himandme.my): clinical-inspired main site and editorial blog.",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Him & Me",
+    "email": "hello@himandme.my",
+    "url": "https://himandme.my"
+  },
+  "engines": {
+    "ghost": ">=6.0.0"
+  },
+  "keywords": [
+    "ghost-theme"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --watch",
+    "gscan": "gscan . --v6",
+    "zip": "npm run build && node scripts/zip.mjs",
+    "gscan:zip": "gscan -z dist/himandme-ghost-theme.zip --v6",
+    "test": "npm run build && npm run gscan",
+    "test:stage1": "node test/stage1/run.mjs"
+  },
+  "devDependencies": {
+    "bestzip": "4.0.3",
+    "esbuild": "0.28.2",
+    "gscan": "6.7.0"
+  },
+  "config": {
+    "posts_per_page": 9,
+    "image_sizes": {
+      "xs": {
+        "width": 160
+      },
+      "s": {
+        "width": 320
+      },
+      "m": {
+        "width": 600
+      },
+      "l": {
+        "width": 1000
+      },
+      "xl": {
+        "width": 1600
+      },
+      "xxl": {
+        "width": 2400
+      }
+    },
+    "card_assets": true,
+    "custom": {
+      "whatsapp_number": {
+        "type": "text",
+        "default": "60000000000",
+        "description": "Digits only, international format, e.g. 60123456789. Used by all WhatsApp buttons."
+      },
+      "whatsapp_default_message": {
+        "type": "text",
+        "default": "Salam, saya ingin bertanya tentang perkhidmatan Him & Me.",
+        "description": "Prefilled message for general WhatsApp buttons (header, sticky bar)."
+      },
+      "phone_display": {
+        "type": "text",
+        "default": "[No. telefon]",
+        "description": "Phone number exactly as it should be shown."
+      },
+      "contact_email": {
+        "type": "text",
+        "default": "[E-mel]",
+        "description": "Public contact email address."
+      },
+      "address_short": {
+        "type": "text",
+        "default": "[Alamat ringkas]",
+        "description": "Short address for the top bar. Full address: content block 'maklumat-hubungan'."
+      },
+      "google_maps_url": {
+        "type": "text",
+        "default": "",
+        "description": "Google Maps link. Leave empty to hide the link."
+      },
+      "opening_hours_short": {
+        "type": "text",
+        "default": "[Waktu operasi]",
+        "description": "One-line opening hours for the top bar and contact panel."
+      },
+      "consultation_duration": {
+        "type": "text",
+        "default": "[± minit]",
+        "description": "Consultation length on the Disfungsi Ereksi page, e.g. 30 minit."
+      },
+      "consultation_fee": {
+        "type": "text",
+        "default": "[RM —]",
+        "description": "Consultation fee on the Disfungsi Ereksi page."
+      },
+      "shockwave_session_duration": {
+        "type": "text",
+        "default": "[± minit]",
+        "description": "Shockwave therapy: length of one session."
+      },
+      "shockwave_session_count": {
+        "type": "text",
+        "default": "[Ditentukan doktor]",
+        "description": "Shockwave therapy: number of sessions."
+      },
+      "shockwave_price": {
+        "type": "text",
+        "default": "[RM — / pakej]",
+        "description": "Shockwave therapy: price."
+      },
+      "kegel_ems_session_duration": {
+        "type": "text",
+        "default": "[± minit]",
+        "description": "Kegel EMS: length of one session."
+      },
+      "kegel_ems_session_count": {
+        "type": "text",
+        "default": "[Ditentukan doktor]",
+        "description": "Kegel EMS: number of sessions."
+      },
+      "kegel_ems_price": {
+        "type": "text",
+        "default": "[RM — / pakej]",
+        "description": "Kegel EMS: price."
+      },
+      "show_prices": {
+        "type": "boolean",
+        "default": true,
+        "description": "Show the fee and price tiles on the Disfungsi Ereksi page."
+      },
+      "doctor_author_slug": {
+        "type": "text",
+        "default": "",
+        "description": "Slug of the doctor's staff profile, used for the homepage doctor card."
+      },
+      "doctor_credentials": {
+        "type": "text",
+        "default": "",
+        "group": "post",
+        "description": "Verified credentials shown under 'Ditulis dan disemak oleh' on articles."
+      }
+    }
+  }
+}
