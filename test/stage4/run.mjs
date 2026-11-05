@@ -152,6 +152,15 @@ check('F9', 'Combined programme: one estimate ("Anggaran 7–10 sesi rawatan …
 check('F10', 'Theme settings: 20 registered (Ghost/GScan maximum), offer_price among them', (await admin('/custom_theme_settings/')).custom_theme_settings.length === 20 && cs.some((s) => s.key === 'offer_price'));
 
 // Browser checks
+
+// G1 — Notis Privasi: article-style page, main-site header, footer keeps the Notis Privasi link
+const np = await page('/notis-privasi/');
+const npH2 = (np.match(/<h2 id="[^"]+">/g) || []).length;
+check('G1', 'Notis Privasi: article-style page with main-site header and footer link, owner text in BM + English, no placeholders',
+  np.includes('class="hm-doc"') && (np.match(/<h1/g) || []).length === 1 && np.includes('hm-header') && /hm-footer[\s\S]*href="[^"]*\/notis-privasi\/"/.test(np)
+  && npH2 === 14 && np.includes('Him &amp; Me Wellness PLT') && np.includes('href="#privacy-notice"') && np.includes('id="privacy-notice"') && !/\[(Kandungan|Alamat|E-mel)/.test(np),
+  `${npH2} section headings (13 BM + "Privacy Notice")`);
+
 let chromium; try { ({ chromium } = createRequire(import.meta.url)('playwright')); } catch { console.log('SKIP  browser checks — Playwright not available'); }
 if (chromium) {
   const b = await chromium.launch();
@@ -206,6 +215,16 @@ if (chromium) {
   // E20 — FAQ first question open
   const faq = await p.$$eval('#soalan .kg-toggle-card', (els) => els.map((e) => e.dataset.kgToggleState));
   check('E20', 'FAQ: first question open, others closed', faq[0] === 'open' && faq.slice(1).every((s) => s === 'close'), faq.join(','));
+  // G2 — Notis Privasi contents: rail on desktop, collapsed box on phones, no overflow
+  const g = {};
+  for (const w of [1440, 390]) {
+    const pg = await b.newPage({ viewport: { width: w, height: 900 } }); await pg.goto(BASE + '/notis-privasi/'); await pg.waitForTimeout(300);
+    g[w] = await pg.evaluate(() => ({ n: document.querySelectorAll('.hm-doc__toc-list a').length, open: document.querySelector('[data-hm-toc]').open, sw: document.documentElement.scrollWidth,
+      ok: [...document.querySelectorAll('.hm-doc__toc-list a')].every((a) => document.getElementById(a.hash.slice(1))) }));
+    await pg.close();
+  }
+  check('G2', 'Notis Privasi contents list: 14 working links; open rail at 1440px, collapsed at 390px; no overflow',
+    g[1440].n === 14 && g[1440].ok && g[1440].open && !g[390].open && g[1440].sw === 1440 && g[390].sw === 390, JSON.stringify(g));
   await b.close();
 }
 

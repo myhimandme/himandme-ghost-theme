@@ -126,6 +126,8 @@ If the block is unpublished, the approved copy is shown, still using `offer_pric
 
 `seed/pages/notis-privasi.txt` holds the owner's Notis Privasi text (BM, then English). `seed/blocks.mjs` converts it to the page body: `## ` heading, `### ` subheading, `* ` / `1. ` lists, `---` divider, `# ` second-language title. Once imported, edit it in Ghost Admin → Pages → Notis Privasi.
 
+Plain pages use `page.hbs`, styled like a blog article. Each **H2 heading** becomes an entry in the "Dalam halaman ini" contents list (shown when there are at least 3). Use H3 for subsections. The page keeps the main-site header and the compact footer with the Notis Privasi link.
+
 ## Repository layout (Stage 0–1)
 
 ```

@@ -140,3 +140,34 @@
     });
   });
 })();
+
+// Plain pages: "Dalam halaman ini" contents, built from the H2 headings (Ghost gives each an id).
+// Open as a sticky rail on wide screens, a collapsed box on smaller ones; marks the section in view.
+(function () {
+  const toc = document.querySelector('[data-hm-toc]');
+  if (!toc) return;
+  const heads = [...document.querySelectorAll('.hm-doc__body h2[id]')];
+  if (heads.length < 3) return;
+  const list = toc.querySelector('ol');
+  const links = heads.map((h) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#' + h.id; a.textContent = h.textContent.trim();
+    li.appendChild(a); list.appendChild(li);
+    return a;
+  });
+  const wide = window.matchMedia('(min-width: 1101px)');
+  const sync = () => { toc.open = wide.matches; };
+  sync(); wide.addEventListener('change', sync);
+  toc.hidden = false;
+  list.addEventListener('click', (e) => { if (e.target.closest('a') && !wide.matches) toc.open = false; });
+  const mark = (i) => links.forEach((a, j) => a.setAttribute('aria-current', String(i === j)));
+  mark(0);
+  if ('IntersectionObserver' in window) {
+    // A heading entering the top quarter of the screen becomes the current section.
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) mark(heads.indexOf(en.target)); });
+    }, { rootMargin: '0px 0px -75% 0px' });
+    heads.forEach((h) => io.observe(h));
+  }
+})();

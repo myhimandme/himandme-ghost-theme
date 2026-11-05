@@ -8,7 +8,7 @@
 | Check | Result |
 |---|---|
 | `npm test`: build + content-block guard (81 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings. **20 / 20 theme settings** (Ghost's maximum), all used. |
-| `test/stage4/run.mjs`: ED page + offer | ✅ **32 passed, 0 failed** |
+| `test/stage4/run.mjs`: ED page + offer + Notis Privasi | ✅ **34 passed, 0 failed** |
 | `test/stage3/run.mjs`: homepage | ✅ **12 / 12** |
 | `test/stage2/run.mjs`: site chrome | ✅ **23 / 23** |
 | `test/stage1/run.mjs`: routing and `#blok` safeguards (now **23** blocks, incl. `blok-tawaran`) | ✅ **32 passed, 0 failed** (3 informational) |
@@ -99,7 +99,6 @@
 ## Clinical content requiring your review
 **`docs/CLINICAL-REVIEW.md`** lists every clinical or service statement: ED page (A1–A30), homepage (B1–B8), First Trial offer (D1–D6) and site-wide (C1–C2), each with where to edit it. The doctor's review answers have been applied; ✅ / ✏️ mark verified or reworded items.
 - **Still open:**
-  - D3–D4, the offer item descriptions and intro line (reworded from accepted statements).
   - Notis Privasi page content.
 - **All earlier placeholders are resolved:** additional tests removed; Shockwave sensation and aftercare; Kegel EMS "Berpakaian: Ya"; "Malam" removed; all FAQ answers; the third privacy bullet.
 - **No claims, success rates, guarantees, contraindications, evidence or credentials were added.** "Anggaran 7–10 sesi rawatan" is the doctor's estimate, worded as an estimate and not a guarantee. New non-clinical text: the form, CTA and First Trial WhatsApp wording.
@@ -111,8 +110,8 @@
 | 1 | **Unused settings.** Five settings are now empty and their tiles hidden: `shockwave_session_count`, `kegel_ems_session_count` (replaced by the combined programme), and `consultation_duration`, `shockwave_session_duration`, `kegel_ems_session_duration` (durations not shown, as instructed). **The theme is at Ghost's 20 / 20 setting limit.** | Nothing is visible. The fields still appear in Admin, so the tiles can be switched back on by typing a value. | **A (recommended):** remove all five settings and their tiles, freeing 5 slots for Stage 5–6 needs. This is an architecture change: the Admin fields disappear. **B:** remove only the two session counts. **C:** leave as is. |
 | 2 | **Combined programme in the comparison table.** Currently the combined wording appears only in FAQ A25. | No session row in the table. | **A:** add one full-width row "Bilangan sesi: Anggaran 7–10 sesi rawatan (gabungan)" (theme text). **B (current):** FAQ only. |
 | 3 | **Phone content parity** (carried over from Stage 4). | The phone page shows all content (it's longer than the board). | A (recommended): keep. B: hide those elements on phones. |
-| 5 | **Notis Privasi page design.** The content is in place, but the general page template (`page.hbs`) is still the unstyled Stage 1 scaffold: full-width text, no margins. The prototype has no board for legal pages. | Readable but unstyled. | **A (recommended):** style it in Stage 5 together with the article template, reusing the article reading column and typography (~720px, same headings/lists), with no new design elements. **B:** do it now as a small Stage 4 add-on. |
-| 4 | **D3–D4 offer wording** (`docs/CLINICAL-REVIEW.md`, section D). | Reworded from accepted statements. | Confirm or edit in the block. No developer needed. |
+| — | ~~Notis Privasi page design~~ | ✅ Done, see "Notis Privasi page" below. | |
+| — | ~~D3–D4 offer wording~~ | ✅ Accepted. | |
 
 **Applied after the report:**
 - **Address:**
@@ -127,6 +126,15 @@
 
 **Still needed from you (content):**
 - Dasar Editorial page content.
+
+## Notis Privasi page (styled, as approved)
+- **Template:** `page.hbs` now styles every plain page (Notis Privasi, and later Dasar Editorial) like the prototype's blog article: warm-white background, breadcrumb "Utama / …", centred serif title, a 680px reading column with the article's paragraph, heading and red-slash list styles.
+- **Contents:** "Dalam halaman ini" is built automatically from the section headings (14 links: 13 BM sections + "Privacy Notice"). It's a sticky rail on wide screens and a collapsible box on tablets and phones (as on the Artikel mobile board). The section in view is marked.
+- **Navigation:** main-site header (Utama · Disfungsi Ereksi · Blog), and the compact main-site footer, which keeps the **Notis Privasi** link. Notis Privasi is not added to the header menu.
+- **Not used here:** the article's feature image, author/reviewer line, share buttons, CTA sidebar, references, tags and "Baca seterusnya". They don't apply to a legal page.
+- **Derived, as the prototype has none:** the H3 size (A–D subsections) uses the article's 25px serif card-title size, and numbered lists use the article list layout with a red number in place of the slash.
+- **Tests:** G1 (template, header, footer link, BM + English content, no placeholders) and G2 (browser: 14 working contents links, open rail at 1440px, collapsed at 390px, no overflow).
+- **Screenshots:** `docs/stage-4/notis-privasi-desktop.jpg`, `-mobile.jpg`, `full-notis-privasi-desktop.jpg`, `full-notis-privasi-mobile.jpg`.
 
 ## Safeguards preserved
 - `#blok` content is excluded from listings, archives, RSS, the sitemap and search. Stage 1 passes 32/0 with all 23 blocks present (incl. `blok-tawaran`).

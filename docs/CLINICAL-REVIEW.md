@@ -93,8 +93,8 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 |---|---|---|---|
 | D1 | Package: "First Trial" / "Sesi percubaan pertama" = **1 × Konsultasi doktor, 1 × Shockwave Therapy, 1 × Kegel EMS** | Block `blok-tawaran` (title, body list) | ✅ As instructed |
 | D2 | Price **RM288** | Theme setting `offer_price` only | ✅ As instructed. No "nilai biasa" or "Biasa RM…" comparison is shown |
-| D3 | Item descriptions: consultation "Sejarah perubatan, pemeriksaan fizikal dan perbincangan pilihan rawatan"; Shockwave "terapi gelombang kejutan intensiti rendah, tanpa pembedahan dan tanpa ubat"; Kegel EMS "rangsangan otot lantai pelvis, dalam keadaan berpakaian" | Block `blok-tawaran` body | ☐ Reworded from statements already accepted (A11, A13–A14, A21). Please confirm |
-| D4 | "Sesi percubaan pertama — untuk memahami keadaan anda dan merasai kedua-dua rawatan." | Block `blok-tawaran`, first paragraph | ☐ Please confirm |
+| D3 | Item descriptions: consultation "Sejarah perubatan, pemeriksaan fizikal dan perbincangan pilihan rawatan"; Shockwave "terapi gelombang kejutan intensiti rendah, tanpa pembedahan dan tanpa ubat"; Kegel EMS "rangsangan otot lantai pelvis, dalam keadaan berpakaian" | Block `blok-tawaran` body | ✅ Accepted (5 Nov 2026) |
+| D4 | "Sesi percubaan pertama — untuk memahami keadaan anda dan merasai kedua-dua rawatan." | Block `blok-tawaran`, first paragraph | ✅ Accepted (5 Nov 2026) |
 | D5 | "Slot pesakit baharu 11:00 pagi – 5:00 petang · Dengan temu janji sahaja, tiada walk-in." | Block `blok-tawaran`, last paragraph | ✅ Verified hours |
 | D6 | WhatsApp message: "Salam Him & Me, saya berminat untuk menempah First Trial RM288." | Theme text + block title + `offer_price` | ✅ As instructed |
 
@@ -127,7 +127,7 @@ First Trial **RM288** (1 consultation + 1 Shockwave Therapy + 1 Kegel EMS): impl
 
 ## Open items
 1. **A12: consultation tiles.** ✏️ Fee set to "RM150 (percuma dengan First Trial)". ✅ No duration shown (TEMPOH tile hidden, as instructed).
-2. **RM288 First Trial offer:** ✅ implemented (section D). D3–D4 wording still to confirm.
+2. **RM288 First Trial offer:** ✅ implemented (section D); D3–D4 wording accepted.
 3. **Session length:** ✅ not shown (tiles hidden, as instructed). **Number of sessions:** now the combined programme "Anggaran 7–10 sesi rawatan" (A25). The separate per-treatment estimates were removed.
 4. **Operating days and hours:** ✅ Isnin – Sabtu, 10:00 pagi – 6:00 petang (new-patient slots 11:00 pagi – 5:00 petang).
 5. **Notis Privasi:** ✅ supplied (BM + English, operator Him & Me Wellness PLT) and loaded as the page body. **Dasar Editorial** page content still to be supplied. Address ✅ and public email ✅ applied.

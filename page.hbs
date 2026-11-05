@@ -1,11 +1,25 @@
 {{!< default}}
 {{#contentFor "mode"}}main{{/contentFor}}
+{{!-- Plain pages (Notis Privasi, Dasar Editorial…): main-site header and compact footer (which keeps
+      the Notis Privasi link), body styled like the prototype's blog article (Artikel board):
+      centred serif title, "Dalam halaman ini" contents rail built from the H2 headings, 680px reading column. --}}
 {{> "site/header-main"}}
-{{!-- STAGE 1 VERIFICATION SCAFFOLD --}}
-<main id="main" data-template="page">
+<main id="main" class="hm-doc" data-template="page">
     {{#post}}
-        {{#if @page.show_title_and_feature_image}}<h1>{{title}}</h1>{{/if}}
-        {{content}}
+    <header class="hm-doc__head">
+        <nav class="hm-doc__crumbs" aria-label="{{t "Laluan"}}"><a href="{{@site.url}}/">{{t "Utama"}}</a> <span class="hm-doc__slash" aria-hidden="true">/</span> <span aria-current="page">{{title}}</span></nav>
+        <h1 class="hm-doc__title{{#unless @page.show_title_and_feature_image}} hm-visually-hidden{{/unless}}">{{title}}</h1>
+        {{#if custom_excerpt}}<p class="hm-doc__dek">{{custom_excerpt}}</p>{{/if}}
+    </header>
+    <div class="hm-doc__layout">
+        <details class="hm-doc__toc" data-hm-toc hidden>
+            <summary>{{t "DALAM HALAMAN INI"}}<span aria-hidden="true">+</span></summary>
+            <ol class="hm-doc__toc-list"></ol>
+        </details>
+        <article class="hm-doc__body">
+            {{content}}
+        </article>
+    </div>
     {{/post}}
 </main>
 {{> "site/footer-compact"}}
