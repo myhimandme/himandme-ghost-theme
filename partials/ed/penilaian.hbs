@@ -8,14 +8,13 @@
             {{else}}<h2 class="hm-edh2" id="hm-pen-title">{{t "Rawatan yang betul bermula dengan soalan yang betul."}}</h2><p class="hm-edpen__intro hm-hide-mobile">{{t "Konsultasi pertama ialah perbualan sulit bersama doktor. Tiada pemeriksaan dilakukan tanpa penjelasan dan persetujuan anda."}}</p>{{/foreach}}
         {{/get}}
         <div class="hm-tiles">
-            <div class="hm-tile"><span class="hm-tile__label">{{t "TEMPOH"}}</span><strong class="hm-tile__value">{{@custom.consultation_duration}}</strong></div>
-            {{#if @custom.show_prices}}<div class="hm-tile"><span class="hm-tile__label">{{t "YURAN"}}</span><strong class="hm-tile__value">{{@custom.consultation_fee}}</strong></div>{{/if}}
+            {{#if @custom.consultation_duration}}<div class="hm-tile"><span class="hm-tile__label">{{t "TEMPOH"}}</span><strong class="hm-tile__value">{{@custom.consultation_duration}}</strong></div>{{/if}}
+            {{#if @custom.show_prices}}{{#if @custom.consultation_fee}}<div class="hm-tile"><span class="hm-tile__label">{{t "YURAN"}}</span><strong class="hm-tile__value">{{@custom.consultation_fee}}</strong></div>{{/if}}{{/if}}
         </div>
     </div>
     <ol class="hm-edsteps">
         <li class="hm-edstep"><span class="hm-edstep__no">01<span class="hm-label__slash">/</span></span><div><strong>{{t "Sejarah perubatan & simptom"}}</strong><span class="hm-hide-mobile">{{t "Bila ia bermula, kekerapan, ubat semasa, dan keadaan kesihatan lain."}}</span><span class="hm-show-mobile">{{t "Kekerapan, ubat semasa, keadaan lain."}}</span></div></li>
         <li class="hm-edstep"><span class="hm-edstep__no">02<span class="hm-label__slash">/</span></span><div><strong>{{t "Pemeriksaan fizikal"}}</strong><span class="hm-hide-mobile">{{t "Pemeriksaan asas seperti tekanan darah, jika perlu dan dengan persetujuan anda."}}</span><span class="hm-show-mobile">{{t "Jika perlu, dengan persetujuan anda."}}</span></div></li>
-        <li class="hm-edstep"><span class="hm-edstep__no">03<span class="hm-label__slash">/</span></span><div><strong><span class="hm-hide-mobile">{{t "Ujian tambahan, jika sesuai"}}</span><span class="hm-show-mobile">{{t "Ujian tambahan"}}</span></strong><span class="hm-hide-mobile">{{t "[Sahkan: cth. ujian darah untuk gula, kolesterol atau hormon]"}}</span><span class="hm-show-mobile">{{t "[Sahkan jenis ujian]"}}</span></div></li>
-        <li class="hm-edstep"><span class="hm-edstep__no">04<span class="hm-label__slash">/</span></span><div><strong><span class="hm-hide-mobile">{{t "Perbincangan pilihan rawatan"}}</span><span class="hm-show-mobile">{{t "Pilihan rawatan"}}</span></strong><span class="hm-hide-mobile">{{t "Doktor menerangkan pilihan yang sesuai, jangkaan yang realistik dan kos — keputusan tetap di tangan anda."}}</span><span class="hm-show-mobile">{{t "Jangkaan realistik & kos, keputusan di tangan anda."}}</span></div></li>
+        <li class="hm-edstep"><span class="hm-edstep__no">03<span class="hm-label__slash">/</span></span><div><strong><span class="hm-hide-mobile">{{t "Perbincangan pilihan rawatan"}}</span><span class="hm-show-mobile">{{t "Pilihan rawatan"}}</span></strong><span class="hm-hide-mobile">{{t "Doktor menerangkan pilihan yang sesuai, jangkaan yang realistik dan kos — keputusan tetap di tangan anda."}}</span><span class="hm-show-mobile">{{t "Jangkaan realistik & kos, keputusan di tangan anda."}}</span></div></li>
     </ol>
 </section>

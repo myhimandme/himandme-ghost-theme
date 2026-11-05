@@ -60,12 +60,12 @@
     "custom": {
       "city": {
         "type": "text",
-        "default": "",
+        "default": "Setiawangsa",
         "description": "City for the homepage hero label (e.g. Kuala Lumpur). Leave empty to show no city."
       },
       "whatsapp_number": {
         "type": "text",
-        "default": "60000000000",
+        "default": "601157912606",
         "description": "Digits only, international format, e.g. 60123456789. Used by all WhatsApp buttons."
       },
       "whatsapp_default_message": {
@@ -75,7 +75,7 @@
       },
       "phone_display": {
         "type": "text",
-        "default": "[No. telefon]",
+        "default": "011-5791 2606",
         "description": "Phone number exactly as it should be shown."
       },
       "contact_email": {
@@ -120,7 +120,7 @@
       },
       "shockwave_price": {
         "type": "text",
-        "default": "[RM — / pakej]",
+        "default": "RM450 / sesi",
         "description": "Shockwave therapy: price."
       },
       "kegel_ems_session_duration": {
@@ -135,7 +135,7 @@
       },
       "kegel_ems_price": {
         "type": "text",
-        "default": "[RM — / pakej]",
+        "default": "RM350 / sesi",
         "description": "Kegel EMS: price."
       },
       "show_prices": {
@@ -150,7 +150,7 @@
       },
       "doctor_credentials": {
         "type": "text",
-        "default": "",
+        "default": "Doktor yang sah",
         "group": "post",
         "description": "Verified credentials shown under 'Ditulis dan disemak oleh' on articles."
       }

@@ -70,12 +70,15 @@ const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
 const setCS = (vals) => admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key in vals ? vals[s.key] : s.value })) } });
 await setCS({ consultation_duration: '30 minit', consultation_fee: 'RM 99', shockwave_session_duration: '20 minit', shockwave_price: 'RM 999 / pakej', kegel_ems_session_count: '6 sesi', show_prices: true, city: 'Kuala Lumpur' });
 const withP = await page(); const homeCity = await page('/');
+await setCS({ consultation_fee: '', shockwave_session_count: '' });
+const emptyTiles = await page();
 await setCS({ show_prices: false, city: '' });
 const noP = await page(); const homeNoCity = await page('/');
 await admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.value })) } });
 const tile = (html, v) => html.includes(`hm-tile__value">${esc(v)}</strong>`);
 check('E6', 'Session/price tiles show the theme settings', ['30 minit', 'RM 99', '20 minit', 'RM 999 / pakej', '6 sesi'].every((v) => tile(withP, v)));
 check('E7', 'show_prices off hides the fee and price tiles (and only those)', !tile(noP, 'RM 99') && !noP.includes('>KOS<') && !noP.includes('>YURAN<') && noP.includes('>TEMPOH<'));
+check('E7b', 'An empty setting hides its own tile (e.g. consultation fee) even with prices shown', !emptyTiles.includes('>YURAN<') && emptyTiles.includes('>TEMPOH<') && (emptyTiles.match(/BILANGAN SESI/g) || []).length === 1 && emptyTiles.includes('>KOS<'));
 const label = (html) => (html.match(/<span class="hm-label"><span class="hm-label__slash">\/<\/span> KESIHATAN LELAKI([\s\S]*?)<\/span>\s*<h1/) || [])[1] ?? 'not found';
 check('E8', 'City setting: shown in the hero label when set; empty → label without any city or placeholder',
   /· Kuala Lumpur/.test(label(homeCity)) && label(homeNoCity).trim() === '' && !homeNoCity.includes('[BANDAR]'), `set: "${label(homeCity).replace(/<[^>]+>/g, '')}" · empty: "${label(homeNoCity)}"`);
