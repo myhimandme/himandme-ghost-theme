@@ -61,3 +61,7 @@
   .hm-doc__body h3 { font-size: 22px; }
   .hm-doc__body li { font-size: 17px; padding-left: 24px; }
 }
+
+/* Contact email shown as an image (anti-harvesting). Sized in em so it scales with the body text
+   (19px desktop, 18px phone); width/height keep the 231:28 ratio, so it never distorts. */
+.hm-doc__body .hm-email-img { display: inline-block; width: 12.16em; max-width: 100%; height: auto; vertical-align: -0.36em; }

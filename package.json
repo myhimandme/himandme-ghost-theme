@@ -78,11 +78,6 @@
         "default": "011-5791 2606",
         "description": "Phone number exactly as it should be shown."
       },
-      "contact_email": {
-        "type": "text",
-        "default": "myhimandme@gmail.com",
-        "description": "Public contact email address."
-      },
       "address_short": {
         "type": "text",
         "default": "Eight Setiawangsa, Kuala Lumpur",
@@ -103,40 +98,15 @@
         "default": "RM288",
         "description": "First Trial price — shown on Utama, ED page, booking form and WhatsApp. Empty hides the offer."
       },
-      "consultation_duration": {
-        "type": "text",
-        "default": "",
-        "description": "Consultation length on the Disfungsi Ereksi page, e.g. 30 minit. Leave empty to hide this tile."
-      },
       "consultation_fee": {
         "type": "text",
         "default": "RM150 (percuma dengan First Trial)",
         "description": "Consultation fee on the Disfungsi Ereksi page."
       },
-      "shockwave_session_duration": {
-        "type": "text",
-        "default": "",
-        "description": "Shockwave therapy: length of one session. Leave empty to hide this tile."
-      },
-      "shockwave_session_count": {
-        "type": "text",
-        "default": "",
-        "description": "Not used for the combined programme (see FAQ). Leave empty to hide this tile."
-      },
       "shockwave_price": {
         "type": "text",
         "default": "RM450 / sesi",
         "description": "Shockwave therapy: price."
-      },
-      "kegel_ems_session_duration": {
-        "type": "text",
-        "default": "",
-        "description": "Kegel EMS: length of one session. Leave empty to hide this tile."
-      },
-      "kegel_ems_session_count": {
-        "type": "text",
-        "default": "",
-        "description": "Not used for the combined programme (see FAQ). Leave empty to hide this tile."
       },
       "kegel_ems_price": {
         "type": "text",

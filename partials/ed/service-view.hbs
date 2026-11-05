@@ -8,13 +8,9 @@
             <div class="hm-edsvc__lead hm-only-first">{{#if fallback}}{{#match kind "shockwave"}}{{> "ed/fallback/shockwave"}}{{else}}{{> "ed/fallback/kegel-ems"}}{{/match}}{{else}}{{{html}}}{{/if}}</div>
             <div class="hm-tiles">
                 {{#match kind "shockwave"}}
-                    {{#if @custom.shockwave_session_duration}}<div class="hm-tile"><span class="hm-tile__label"><span class="hm-hide-mobile">{{t "TEMPOH SESI"}}</span><span class="hm-show-mobile">{{t "SESI"}}</span></span><strong class="hm-tile__value">{{@custom.shockwave_session_duration}}</strong></div>{{/if}}
-                    {{#if @custom.shockwave_session_count}}<div class="hm-tile"><span class="hm-tile__label"><span class="hm-hide-mobile">{{t "BILANGAN SESI"}}</span><span class="hm-show-mobile">{{t "BILANGAN"}}</span></span><strong class="hm-tile__value">{{@custom.shockwave_session_count}}</strong></div>{{/if}}
                     <div class="hm-tile"><span class="hm-tile__label">{{t "PEMBEDAHAN"}}</span><strong class="hm-tile__value">{{t "Tidak"}}</strong></div>
                     {{#if @custom.show_prices}}{{#if @custom.shockwave_price}}<div class="hm-tile"><span class="hm-tile__label">{{t "KOS"}}</span><strong class="hm-tile__value">{{@custom.shockwave_price}}</strong></div>{{/if}}{{/if}}
                 {{else}}
-                    {{#if @custom.kegel_ems_session_duration}}<div class="hm-tile"><span class="hm-tile__label"><span class="hm-hide-mobile">{{t "TEMPOH SESI"}}</span><span class="hm-show-mobile">{{t "SESI"}}</span></span><strong class="hm-tile__value">{{@custom.kegel_ems_session_duration}}</strong></div>{{/if}}
-                    {{#if @custom.kegel_ems_session_count}}<div class="hm-tile"><span class="hm-tile__label"><span class="hm-hide-mobile">{{t "BILANGAN SESI"}}</span><span class="hm-show-mobile">{{t "BILANGAN"}}</span></span><strong class="hm-tile__value">{{@custom.kegel_ems_session_count}}</strong></div>{{/if}}
                     <div class="hm-tile"><span class="hm-tile__label">{{t "BERPAKAIAN"}}</span><strong class="hm-tile__value">{{t "Ya"}}</strong></div>
                     {{#if @custom.show_prices}}{{#if @custom.kegel_ems_price}}<div class="hm-tile"><span class="hm-tile__label">{{t "KOS"}}</span><strong class="hm-tile__value">{{@custom.kegel_ems_price}}</strong></div>{{/if}}{{/if}}
                 {{/match}}

@@ -69,17 +69,17 @@ check('E5', 'FAQ questions are the toggle cards in the page body', faqCount === 
 const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
 const csCur = {}; // test values accumulate across steps (the real values are restored afterwards)
 const setCS = (vals) => { Object.assign(csCur, vals); return admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key in csCur ? csCur[s.key] : s.value })) } }); };
-await setCS({ consultation_duration: '30 minit', consultation_fee: 'RM 99', shockwave_session_duration: '20 minit', shockwave_price: 'RM 999 / pakej', kegel_ems_session_duration: '25 minit', show_prices: true, city: 'Kuala Lumpur' });
+await setCS({ consultation_fee: 'RM 99', shockwave_price: 'RM 999 / pakej', kegel_ems_price: 'RM 555 / sesi', show_prices: true, city: 'Kuala Lumpur' });
 const withP = await page(); const homeCity = await page('/');
-await setCS({ consultation_fee: '', shockwave_session_duration: '' });
+await setCS({ consultation_fee: '', kegel_ems_price: '' });
 const emptyTiles = await page();
 await setCS({ show_prices: false, city: '' });
 const noP = await page(); const homeNoCity = await page('/');
 await admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.value })) } });
 const tile = (html, v) => html.includes(`hm-tile__value">${esc(v)}</strong>`);
-check('E6', 'Session/price tiles show the theme settings', ['30 minit', 'RM 99', '20 minit', 'RM 999 / pakej', '25 minit'].every((v) => tile(withP, v)));
-check('E7', 'show_prices off hides the fee and price tiles (and only those)', !tile(noP, 'RM 99') && !noP.includes('>KOS<') && !noP.includes('>YURAN<') && noP.includes('>TEMPOH<'));
-check('E7b', 'An empty setting hides its own tile (e.g. consultation fee) even with prices shown', !emptyTiles.includes('>YURAN<') && emptyTiles.includes('>TEMPOH<') && (emptyTiles.match(/>TEMPOH SESI</g) || []).length === 1 && emptyTiles.includes('>KOS<'));
+check('E6', 'Fee/price tiles show the theme settings; no duration or session-count tiles', ['RM 99', 'RM 999 / pakej', 'RM 555 / sesi'].every((v) => tile(withP, v)) && !/>(TEMPOH|TEMPOH SESI|BILANGAN SESI)</.test(withP));
+check('E7', 'show_prices off hides the fee and price tiles (and only those)', !tile(noP, 'RM 99') && !noP.includes('>KOS<') && !noP.includes('>YURAN<') && noP.includes('>PEMBEDAHAN<') && noP.includes('>BERPAKAIAN<'));
+check('E7b', 'An empty setting hides its own tile (e.g. consultation fee) even with prices shown', !emptyTiles.includes('>YURAN<') && (emptyTiles.match(/>KOS</g) || []).length === 1 && tile(emptyTiles, 'RM 999 / pakej'));
 const label = (html) => (html.match(/<span class="hm-label"><span class="hm-label__slash">\/<\/span> KESIHATAN LELAKI([\s\S]*?)<\/span>\s*<h1/) || [])[1] ?? 'not found';
 check('E8', 'City setting: shown in the hero label when set; empty → label without any city or placeholder',
   /· Kuala Lumpur/.test(label(homeCity)) && label(homeNoCity).trim() === '' && !homeNoCity.includes('[BANDAR]'), `set: "${label(homeCity).replace(/<[^>]+>/g, '')}" · empty: "${label(homeNoCity)}"`);
@@ -149,7 +149,9 @@ const sevenTen = (x) => (x.match(/7–10/g) || []).length;
 check('F9', 'Combined programme: one estimate ("Anggaran 7–10 sesi rawatan … Shockwave Therapy dan Kegel EMS …"); no separate per-treatment estimates',
   h.includes('Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu.')
   && sevenTen(h) === 1 && sevenTen(home) === 0 && !h.includes('BILANGAN SESI'), `"7–10" on ED: ${sevenTen(h)}, on Utama: ${sevenTen(home)}`);
-check('F10', 'Theme settings: 20 registered (Ghost/GScan maximum), offer_price among them', (await admin('/custom_theme_settings/')).custom_theme_settings.length === 20 && cs.some((s) => s.key === 'offer_price'));
+const csNow = (await admin('/custom_theme_settings/')).custom_theme_settings;
+check('F10', 'Theme settings: 14 registered (6 removed: email + durations + session counts), offer_price among them', csNow.length === 14 && csNow.some((s) => s.key === 'offer_price')
+  && !csNow.some((s) => /contact_email|_duration|_session_count/.test(s.key)), `${csNow.length} settings`);
 
 // Browser checks
 
@@ -160,6 +162,23 @@ check('G1', 'Notis Privasi: article-style page with main-site header and footer 
   np.includes('class="hm-doc"') && (np.match(/<h1/g) || []).length === 1 && np.includes('hm-header') && /hm-footer[\s\S]*href="[^"]*\/notis-privasi\/"/.test(np)
   && npH2 === 14 && np.includes('Him &amp; Me Wellness PLT') && np.includes('href="#privacy-notice"') && np.includes('id="privacy-notice"') && !/\[(Kandungan|Alamat|E-mel)/.test(np),
   `${npH2} section headings (13 BM + "Privacy Notice")`);
+
+
+// H1 — email out of the HTML: no address text or mailto: link on any page; footer has no email at all
+const EMAIL_RX = /myhimandme(@|&#x40;|&#64;|%40)|mailto:/i;
+const emailPages = {};
+for (const u of ['/', '/disfungsi-ereksi/', '/notis-privasi/', '/blog/']) emailPages[u] = await page(u);
+const footers = Object.values(emailPages).map((x) => (x.match(/<footer[\s\S]*?<\/footer>/) || [''])[0]);
+check('H1', 'Email address not in any page HTML (no text, no mailto:); footers have no email line (desktop + mobile markup)',
+  Object.values(emailPages).every((x) => !EMAIL_RX.test(x)) && footers.every((f) => f && !/e-?mel|email|hm-email-img/i.test(f)),
+  Object.keys(emailPages).join(' '));
+// H2 — Notis Privasi shows the email as one local image asset, in both language versions, with alt text
+const imgs = [...np.matchAll(/<img class="hm-email-img"[^>]*>/g)].map((m) => m[0]);
+const srcs = new Set(imgs.map((t) => (t.match(/src="([^"]+)"/) || [])[1]));
+check('H2', 'Notis Privasi: email shown as an image (same local theme asset for BM + English) with alt text; address and phone stay text',
+  imgs.length === 2 && srcs.size === 1 && /^(https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?)?\/assets\/images\/email-himandme\.png/.test([...srcs][0])
+  && imgs.some((t) => t.includes('alt="E-mel Him &amp; Me untuk pertanyaan privasi"')) && imgs.some((t) => t.includes('alt="Email Him &amp; Me for privacy enquiries"'))
+  && np.includes('Alamat: 1-3, Eight Setiawangsa') && np.includes('Telefon / WhatsApp: 011-5791 2606'), [...srcs].join(', '));
 
 let chromium; try { ({ chromium } = createRequire(import.meta.url)('playwright')); } catch { console.log('SKIP  browser checks — Playwright not available'); }
 if (chromium) {
@@ -225,6 +244,16 @@ if (chromium) {
   }
   check('G2', 'Notis Privasi contents list: 14 working links; open rail at 1440px, collapsed at 390px; no overflow',
     g[1440].n === 14 && g[1440].ok && g[1440].open && !g[390].open && g[1440].sw === 1440 && g[390].sw === 390, JSON.stringify(g));
+  // H3 — email image loads from the theme, is readable and undistorted on desktop and phone
+  const h3 = {};
+  for (const w of [1440, 390]) {
+    const pg = await b.newPage({ viewport: { width: w, height: 900 } }); await pg.goto(BASE + '/notis-privasi/');
+    await pg.evaluate(async () => { for (const i of document.querySelectorAll('.hm-email-img')) { i.loading = 'eager'; if (!i.complete) await new Promise((r) => { i.onload = i.onerror = r; }); } });
+    h3[w] = await pg.$$eval('.hm-email-img', (els) => els.map((i) => { const r = i.getBoundingClientRect(); return { nw: i.naturalWidth, nh: i.naturalHeight, w: +r.width.toFixed(2), h: +r.height.toFixed(2) }; }));
+    await pg.close();
+  }
+  const okImg = (list) => list.length === 2 && list.every((i) => i.nw === 693 && i.nh === 84 && i.w >= 200 && Math.abs(i.w / i.h - 693 / 84) < 0.02);
+  check('H3', 'Email image loads, keeps its aspect ratio and is readable (≥200px wide) at 1440px and 390px', okImg(h3[1440]) && okImg(h3[390]), JSON.stringify({ 1440: h3[1440][0], 390: h3[390][0] }));
   await b.close();
 }
 

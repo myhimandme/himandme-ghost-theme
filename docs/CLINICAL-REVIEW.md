@@ -35,7 +35,7 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 |---|---|---|---|
 | A10 | "Konsultasi pertama ialah perbualan sulit bersama doktor. Tiada pemeriksaan dilakukan tanpa penjelasan dan persetujuan anda." | Block excerpt | ✅ Accepted |
 | A11 | Steps: sejarah perubatan · pemeriksaan fizikal (e.g. tekanan darah) · **ujian tambahan [Sahkan: cth. ujian darah…]** · perbincangan pilihan rawatan | Theme text (`partials/ed/penilaian.hbs`) | ✏️ Steps now: sejarah perubatan · pemeriksaan fizikal · perbincangan pilihan rawatan. "Ujian tambahan / ujian darah" removed |
-| A12 | Consultation duration and fee | Theme settings `consultation_duration`, `consultation_fee` | ✏️ Fee "RM150 (percuma dengan First Trial)". Duration not shown (tile hidden) |
+| A12 | Consultation fee | Theme setting `consultation_fee` | ✏️ Fee "RM150 (percuma dengan First Trial)". Duration not shown (setting removed) |
 
 ### 04 Shockwave therapy (block `blok-ed-shockwave` + settings)
 | # | Statement | Where | Status |
@@ -64,7 +64,7 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 |---|---|---|
 | A23 | "Adakah disfungsi ereksi perkara biasa?" — answer: "antara masalah kesihatan seksual yang paling kerap dialami lelaki…" | ✏️ "Ya. Ia biasa berlaku dalam kalangan lelaki, …" |
 | A24 | "Adakah shockwave therapy menyakitkan?" | ✏️ "Anda mungkin merasai sedikit ketidakselesaan, tetapi tiada kesakitan." |
-| A25 | "Berapa banyak sesi yang saya perlukan?" | ✏️ "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu." (combined programme; an estimate, not a guarantee. This is the only place a session count appears; the per-treatment "BILANGAN SESI" tiles are hidden) |
+| A25 | "Berapa banyak sesi yang saya perlukan?" | ✏️ "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu." (combined programme; an estimate, not a guarantee. This is the only place a session count appears; the per-treatment "BILANGAN SESI" tiles and settings were removed) |
 | A26 | "Bolehkah saya teruskan ubat yang sedang saya ambil?" | ✏️ "Boleh. Doktor akan menyemak semula ubat anda dan menasihati jika ada yang tidak sesuai." |
 | A27 | "Bolehkah pasangan saya hadir bersama?" | ✏️ "Amat dialukan, untuk perbincangan yang lebih menyeluruh bersama pasangan — bergantung kepada keselesaan anda." |
 | A28 | "Berapakah kos rawatan?" | ✏️ "Satu sesi Shockwave therapy berharga RM450 dan satu sesi Kegel EMS berharga RM350 (harga ala carte). Pakej yang lebih jimat akan dimaklumkan semasa konsultasi." |
@@ -112,7 +112,7 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 | `city` | Setiawangsa |
 | `phone_display` | 011-5791 2606 |
 | `whatsapp_number` | 601157912606 (✅ confirmed) |
-| `contact_email` | myhimandme@gmail.com (from the Notis Privasi) |
+| Email | myhimandme@gmail.com: shown **only as an image** on the Notis Privasi page; not in the footer |
 | `shockwave_price` | RM450 / sesi (normal price) |
 | `kegel_ems_price` | RM350 / sesi (normal price) |
 | `doctor_credentials` | Doktor yang sah |
@@ -126,9 +126,9 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 First Trial **RM288** (1 consultation + 1 Shockwave Therapy + 1 Kegel EMS): implemented, see section D. Set in theme setting `offer_price`.
 
 ## Open items
-1. **A12: consultation tiles.** ✏️ Fee set to "RM150 (percuma dengan First Trial)". ✅ No duration shown (TEMPOH tile hidden, as instructed).
+1. **A12: consultation tiles.** ✏️ Fee set to "RM150 (percuma dengan First Trial)". ✅ No duration shown (tile and setting removed, as instructed).
 2. **RM288 First Trial offer:** ✅ implemented (section D); D3–D4 wording accepted.
 3. **Session length:** ✅ not shown (tiles hidden, as instructed). **Number of sessions:** now the combined programme "Anggaran 7–10 sesi rawatan" (A25). The separate per-treatment estimates were removed.
 4. **Operating days and hours:** ✅ Isnin – Sabtu, 10:00 pagi – 6:00 petang (new-patient slots 11:00 pagi – 5:00 petang).
-5. **Notis Privasi:** ✅ supplied (BM + English, operator Him & Me Wellness PLT) and loaded as the page body. **Dasar Editorial** page content still to be supplied. Address ✅ and public email ✅ applied.
+5. **Notis Privasi:** ✅ supplied (BM + English, operator Him & Me Wellness PLT) and loaded as the page body. **Dasar Editorial** page content still to be supplied. Address ✅ applied. Email shown only as an image on the Notis Privasi page.
 6. **Advertising check:** keep the source for "12,000 kontraksi" and the published prices on file. (No "nilai biasa" comparison is shown with the offer.)

@@ -1,5 +1,5 @@
 {{!-- 03 Penilaian. Block "blok-ed-penilaian": title = H2, excerpt = text.
-      Duration/fee tiles: theme settings. The four steps are fixed theme text. --}}
+      Fee tile: theme setting. The consultation steps are fixed theme text. --}}
 <section class="hm-container hm-edpen hm-anchor" id="penilaian" aria-labelledby="hm-pen-title">
     <div class="hm-edpen__text">
         <span class="hm-label"><span class="hm-label__slash">03/</span> <span class="hm-hide-mobile">{{t "PENILAIAN & KONSULTASI"}}</span><span class="hm-show-mobile">{{t "PENILAIAN"}}</span></span>
@@ -8,7 +8,6 @@
             {{else}}<h2 class="hm-edh2" id="hm-pen-title">{{t "Rawatan yang betul bermula dengan soalan yang betul."}}</h2><p class="hm-edpen__intro hm-hide-mobile">{{t "Konsultasi pertama ialah perbualan sulit bersama doktor. Tiada pemeriksaan dilakukan tanpa penjelasan dan persetujuan anda."}}</p>{{/foreach}}
         {{/get}}
         <div class="hm-tiles">
-            {{#if @custom.consultation_duration}}<div class="hm-tile"><span class="hm-tile__label">{{t "TEMPOH"}}</span><strong class="hm-tile__value">{{@custom.consultation_duration}}</strong></div>{{/if}}
             {{#if @custom.show_prices}}{{#if @custom.consultation_fee}}<div class="hm-tile"><span class="hm-tile__label">{{t "YURAN"}}</span><strong class="hm-tile__value">{{@custom.consultation_fee}}</strong></div>{{/if}}{{/if}}
         </div>
     </div>

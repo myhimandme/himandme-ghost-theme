@@ -40,7 +40,7 @@ Paths were checked in the Ghost 6.75.0 Admin interface. Screenshots are in [`doc
 | 4 | Homepage SEO title/description | **Settings → General settings → Meta data** |
 | 5 | Turn off social web (required) | **Settings → Growth → Network** → switch **off**. Ghost 6 has it on by default; it would publish every post, including content blocks, to the fediverse. |
 | 6 | Doctor profile, and slug for routes | **Settings → General settings → Staff** → your name → **Profile** tab: name (with "Dr."), photo, bio, **Slug** |
-| 7 | Theme settings (WhatsApp, prices, credentials…) | **Settings → Site → Design & branding → Theme** tab → *Site wide* (19 fields) and *Post* (doctor credentials). The theme uses **20 of Ghost's 20** custom settings → **Save**. Ghost derives the field labels from the setting names (e.g. "Whatsapp number"). |
+| 7 | Theme settings (WhatsApp, prices, credentials…) | **Settings → Site → Design & branding → Theme** tab → *Site wide* (13 fields) and *Post* (doctor credentials). The theme uses **14 of Ghost's 20** custom settings → **Save**. Ghost derives the field labels from the setting names (e.g. "Whatsapp number"). |
 | 8 | Language and timezone | **Settings → General settings → Publication language** (`ms`) and **Timezone** (Asia/Kuala_Lumpur) |
 | 9 | Menus | **Settings → Site → Navigation**: *Primary* = main menu (Utama `/`, Disfungsi Ereksi `/disfungsi-ereksi/`, Blog `/blog/`). *Secondary* = blog category bar (e.g. Disfungsi Ereksi `/blog/topik/disfungsi-ereksi/`). "Semua" is added by the theme. |
 
@@ -105,10 +105,10 @@ The doctor card uses the staff profile named in theme setting **`doctor_author_s
 
 *Write the body in that order. The theme shows the paragraphs and the list in their designed places automatically, so no special formatting is needed.*
 
-**Theme settings used:** `offer_price` (First Trial), `consultation_duration`, `consultation_fee`, `shockwave_session_duration` / `_count` / `shockwave_price`, `kegel_ems_session_duration` / `_count` / `kegel_ems_price`, **`show_prices`** (hides the fee and price tiles when off), WhatsApp number and messages, address, hours and phone (booking panel).
+**Theme settings used:** `offer_price` (First Trial), `consultation_fee`, `shockwave_price`, `kegel_ems_price`, **`show_prices`** (hides the fee and price tiles when off), WhatsApp number and messages, address, hours and phone (booking panel). Durations and per-treatment session counts are not shown, so those settings were removed.
 **Fixed theme text** (`locales/ms.json`): section labels and tabs, the six cause cards, the four consultation steps, tile labels ("PEMBEDAHAN: Tidak", "BERPAKAIAN: [Sahkan]"), the comparison table rows, form labels and the WhatsApp message format.
 
-**Session counts:** the treatment programme is a *combined* programme: "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS…" (an estimate, not a guarantee). It appears once, in the FAQ answer on the page body. `shockwave_session_count` and `kegel_ems_session_count` are left **empty** so their "BILANGAN SESI" tiles stay hidden. Any setting tile with an empty value is hidden.
+**Session counts:** the treatment programme is a *combined* programme: "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS…" (an estimate, not a guarantee). It appears once, in the FAQ answer on the page body.
 
 **Booking form:** builds a WhatsApp message from the visitor's input (name, phone, service, date, time, message) and opens WhatsApp. **Nothing is sent to or stored on the website.** The treatment CTAs ("Buat Temu Janji" under Shockwave / Kegel EMS) preselect that service.
 
@@ -121,6 +121,12 @@ One block, one setting. **The price lives only in the theme setting `offer_price
 | `blok-tawaran` (tag `#blok`) | Package name (e.g. "First Trial"); also used in the WhatsApp message and the form option | Button label ("Tempah First Trial") | **First paragraph** = short description. **One bulleted list**: each item is **bold item name** followed by its description (the theme adds the icons, or the 01/02/03 numbers on the ED page). **Last paragraph** = slot note. **Never type the price in the block.** |
 
 If the block is unpublished, the approved copy is shown, still using `offer_price`.
+
+### Email address (anti-harvesting)
+
+The email address is **never in the site HTML as text**: there's no email in the footer (desktop or mobile), and no `mailto:` link. On the Notis Privasi page it appears as an image, `assets/images/email-himandme.png` (theme asset, transparent PNG, 3 KB). The image is used in both the BM and English contact sections, inside an **HTML card** with alt text ("E-mel Him & Me untuk pertanyaan privasi" / "Email Him & Me for privacy enquiries"). This deters simple harvesters; it is not proof against OCR.
+
+To change the address, edit `EMAIL` in `scripts/make-email-image.mjs` and run `node scripts/make-email-image.mjs`. Then compress the PNG to a palette image (the committed file was reduced from 12 KB to 3 KB with Pillow `quantize(48)`), rebuild and upload the theme. Don't type the address into a page, block or setting.
 
 ### Legal pages
 

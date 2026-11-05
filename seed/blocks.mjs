@@ -11,6 +11,9 @@ import { readFileSync } from 'node:fs';
 // Minimal text → HTML for legal pages (seed/pages/*.txt): "## " h2, "### " h3, "# " second-language
 // title (its sections drop one level), "* " bullets, "1. " numbered items, "---" divider,
 // **bold**, [text](url). Every other line is a paragraph. The wording is the owner's, verbatim.
+// "{email-image|alt text}" puts the contact email in as an IMAGE (anti-harvesting: the address is never
+// in the HTML as text). That paragraph becomes an HTML card so the image sits inline after its label.
+const EMAIL_IMG = (alt) => `<img class="hm-email-img" src="/assets/images/email-himandme.png" width="231" height="28" alt="${esc(alt)}" loading="lazy" decoding="async">`;
 const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const inline = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 function legalPage(file) {
@@ -25,6 +28,8 @@ function legalPage(file) {
     else if (l.startsWith('### ')) out.push(`<h${3 + shift}>${inline(l.slice(4))}</h${3 + shift}>`);
     else if (l.startsWith('## ')) out.push(`<h${2 + shift}>${inline(l.slice(3))}</h${2 + shift}>`);
     else if (l.startsWith('# ')) { shift = 1; out.push(`<h2>${inline(l.slice(2))}</h2>`); }
+    else if (/\{email-image\|[^}]+\}/.test(l)) out.push(`<!--kg-card-begin: html--><p>${inline(l.replace(/\{email-image\|[^}]+\}/, '\u0000'))
+      .replace('\u0000', EMAIL_IMG(l.match(/\{email-image\|([^}]+)\}/)[1]))}</p><!--kg-card-end: html-->`);
     else out.push(`<p>${inline(l)}</p>`);
   }
   close();

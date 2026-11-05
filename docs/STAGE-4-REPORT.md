@@ -7,8 +7,8 @@
 
 | Check | Result |
 |---|---|
-| `npm test`: build + content-block guard (81 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings. **20 / 20 theme settings** (Ghost's maximum), all used. |
-| `test/stage4/run.mjs`: ED page + offer + Notis Privasi | ✅ **34 passed, 0 failed** |
+| `npm test`: build + content-block guard (81 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings. **14 theme settings** (of Ghost's 20), all used. |
+| `test/stage4/run.mjs`: ED page + offer + Notis Privasi + email | ✅ **37 passed, 0 failed** |
 | `test/stage3/run.mjs`: homepage | ✅ **12 / 12** |
 | `test/stage2/run.mjs`: site chrome | ✅ **23 / 23** |
 | `test/stage1/run.mjs`: routing and `#blok` safeguards (now **23** blocks, incl. `blok-tawaran`) | ✅ **32 passed, 0 failed** (3 informational) |
@@ -81,7 +81,7 @@
 - **Copy changes as instructed:**
   - "Nilai biasa RM950" and every "Biasa RM…" comparison removed.
   - The combined programme "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, …" is used in the ED FAQ (A25), the only place session counts are discussed.
-  - The separate per-treatment 7–10 estimates were removed: both `*_session_count` settings now default to empty, so their tiles are hidden.
+  - The separate per-treatment 7–10 estimates were removed, along with their settings and tiles.
 
 ## Screenshots (`docs/stage-4/`)
 - **Approved proposal vs. Ghost theme:**
@@ -107,9 +107,9 @@
 
 | # | Item | Current behaviour | Options |
 |---|---|---|---|
-| 1 | **Unused settings.** Five settings are now empty and their tiles hidden: `shockwave_session_count`, `kegel_ems_session_count` (replaced by the combined programme), and `consultation_duration`, `shockwave_session_duration`, `kegel_ems_session_duration` (durations not shown, as instructed). **The theme is at Ghost's 20 / 20 setting limit.** | Nothing is visible. The fields still appear in Admin, so the tiles can be switched back on by typing a value. | **A (recommended):** remove all five settings and their tiles, freeing 5 slots for Stage 5–6 needs. This is an architecture change: the Admin fields disappear. **B:** remove only the two session counts. **C:** leave as is. |
-| 2 | **Combined programme in the comparison table.** Currently the combined wording appears only in FAQ A25. | No session row in the table. | **A:** add one full-width row "Bilangan sesi: Anggaran 7–10 sesi rawatan (gabungan)" (theme text). **B (current):** FAQ only. |
-| 3 | **Phone content parity** (carried over from Stage 4). | The phone page shows all content (it's longer than the board). | A (recommended): keep. B: hide those elements on phones. |
+| — | ~~Unused settings~~ | ✅ Removed (your decision): the 3 duration and 2 session-count settings and their tiles, plus `contact_email` (email removed from the footer). **14 / 20 settings.** | |
+| — | ~~Combined programme in the comparison table~~ | ✅ Your decision: FAQ only (unchanged). | |
+| — | ~~Phone content parity~~ | ✅ Your decision: keep all content on phones for now. | |
 | — | ~~Notis Privasi page design~~ | ✅ Done, see "Notis Privasi page" below. | |
 | — | ~~D3–D4 offer wording~~ | ✅ Accepted. | |
 
@@ -118,9 +118,9 @@
   - Footer: "Him & Me Mens Health Setiawangsa / 1-3, Eight Setiawangsa / Jalan Setiawangsa 13, Taman Setiawangsa / 54200 Kuala Lumpur".
   - Top bar: "Eight Setiawangsa, Kuala Lumpur".
 - **Operating days and hours:** Isnin – Sabtu, 10:00 pagi – 6:00 petang (footer, top bar, menu, booking panel). New-patient slots stay 11:00 pagi – 5:00 petang.
-- **WhatsApp number** 601157912606 confirmed. **Public email** myhimandme@gmail.com (footer).
+- **WhatsApp number** 601157912606 confirmed.
 - **Notis Privasi:** your BM and English text, verbatim, loaded as the page body. The BM version comes first, then a divider and the English "Privacy Notice", with an "English version ↓" link at the top. Source: `seed/pages/notis-privasi.txt`, converted by the seed. After launch, edit it in Ghost Admin → Pages → Notis Privasi.
-- **Durations:** not shown. The three TEMPOH tiles (consultation, Shockwave, Kegel EMS) are hidden; their settings are empty.
+- **Durations:** not shown. The three TEMPOH tiles (consultation, Shockwave, Kegel EMS) and their settings were removed.
 - **Name spelling:** "Him & Me Mens Health" everywhere, including the copyright line.
 - **Footer fix:** each address line is now rendered as its own element. A long line that wraps stays tight, and real line breaks keep the designed 10px gap.
 
@@ -135,6 +135,25 @@
 - **Derived, as the prototype has none:** the H3 size (A–D subsections) uses the article's 25px serif card-title size, and numbered lists use the article list layout with a red number in place of the slash.
 - **Tests:** G1 (template, header, footer link, BM + English content, no placeholders) and G2 (browser: 14 working contents links, open rail at 1440px, collapsed at 390px, no overflow).
 - **Screenshots:** `docs/stage-4/notis-privasi-desktop.jpg`, `-mobile.jpg`, `full-notis-privasi-desktop.jpg`, `full-notis-privasi-mobile.jpg`.
+
+## Email display (anti-harvesting)
+- **Footer (desktop + mobile):** email removed completely. No text, no link and no image. The phone, WhatsApp, address, hours and layout are unchanged. The `contact_email` setting was removed with it, because GScan rejects unused settings.
+- **Notis Privasi:** both contact sections (BM + English) show `myhimandme@gmail.com` as **one local image asset** (`assets/images/email-himandme.png`):
+  - The image is a 3 KB transparent PNG, typeset in Manrope in the article text colour.
+  - It is rendered at 3× and displayed at 231×28 px (219×27 on phones). It scales with the text (em-based width, `height: auto`), so it never distorts.
+  - Alt text: "E-mel Him & Me untuk pertanyaan privasi" / "Email Him & Me for privacy enquiries".
+  - The address and phone stay normal text.
+- **No JavaScript obfuscation**, contact form, CAPTCHA or backend.
+- **Accessibility note:** the alt text names the purpose, not the address, as you specified. So screen-reader users hear "Email Him & Me for privacy enquiries" but not the address itself; they can use the WhatsApp/telephone line. This is the trade-off of hiding the address from machines.
+- **Tests:**
+  - H1: no email text or `mailto:` on `/`, `/disfungsi-ereksi/`, `/notis-privasi/` or `/blog/`, and no email line in any footer.
+  - H2: one image asset for both languages, alt texts, address and phone as text.
+  - H3 (browser): the image loads (693×84), stays in proportion and is at least 200px wide at 1440px and 390px.
+- **Screenshots:**
+  - `docs/stage-4/email-footer-desktop.jpg`, `email-footer-mobile.jpg`
+  - `email-privasi-bm-desktop.jpg`, `email-privasi-bm-mobile.jpg`
+  - `email-privasi-en-desktop.jpg`, `email-privasi-en-mobile.jpg`
+- **Limitation:** an image deters simple harvesters but not OCR-based scraping.
 
 ## Safeguards preserved
 - `#blok` content is excluded from listings, archives, RSS, the sitemap and search. Stage 1 passes 32/0 with all 23 blocks present (incl. `blok-tawaran`).

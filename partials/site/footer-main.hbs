@@ -21,7 +21,6 @@
                 <strong class="hm-footer__heading">{{t "HUBUNGI"}}</strong>
                 {{#if @custom.phone_display}}<span>{{@custom.phone_display}}</span>{{/if}}
                 <a class="hm-footer__plain" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">WhatsApp</a>
-                {{#if @custom.contact_email}}<span>{{@custom.contact_email}}</span>{{/if}}
             </div>
             <div class="hm-footer__col hm-footer__col--laman">
                 <strong class="hm-footer__heading">{{t "LAMAN"}}</strong>
@@ -40,7 +39,7 @@
         <div class="hm-footer__m-info">
             <strong class="hm-footer__heading">{{t "LOKASI"}}</strong>
             {{#foreach info}}<span class="hm-footer__address">{{#if custom_excerpt}}{{> "site/address-lines" text=custom_excerpt}}{{else}}{{> "site/fallback-address"}}{{/if}}</span><div class="hm-footer__hours">{{content}}</div>{{else}}<span class="hm-footer__address">{{> "site/fallback-address"}}</span><span>{{@custom.opening_hours_short}}</span>{{/foreach}}
-            <span>{{@custom.phone_display}}{{#if @custom.contact_email}} · {{@custom.contact_email}}{{/if}}</span>
+            <span>{{@custom.phone_display}}</span>
         </div>
         <div class="hm-footer__m-links">
             {{#foreach @site.navigation}}<a href="{{url absolute="true"}}">{{label}}</a>{{/foreach}}

@@ -182,7 +182,7 @@ const swBlock = blocks.find((b) => b.slug === 'blok-ed-shockwave');
 check('C4', 'Lookup', 'ED page: block lookup + FAQ toggle cards render', ed.body.includes(`id="hm-shockwave-title">${esc(swBlock?.title)}</h2>`) && /id="soalan"[\s\S]*kg-toggle-card/.test(ed.body), swBlock?.title);
 check('C5', 'Lookup', 'Homepage FAQ toggle cards render from block "blok-utama-faq"', /data-hm-faq>[\s\S]*kg-toggle-card/.test(home.body), `${(home.body.match(/kg-toggle-card"/g) || []).length} questions`);
 const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
-check('C6', 'Settings', 'All 20 theme settings are registered in Ghost Admin (incl. city + offer_price; Ghost maximum)', cs.length === 20, `${cs.length} settings`);
+check('C6', 'Settings', 'All 14 theme settings are registered in Ghost Admin (incl. city + offer_price; Ghost maximum is 20)', cs.length === 14, `${cs.length} settings`);
 const testVal = `60${Date.now().toString().slice(-9)}`;
 await admin('/custom_theme_settings/', { method: 'PUT', body: JSON.stringify({ custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key === 'whatsapp_number' ? testVal : s.value })) }) });
 const home2 = await get('/');
