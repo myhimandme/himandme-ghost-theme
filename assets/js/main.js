@@ -127,3 +127,16 @@
     if (!w) window.location.href = url;
   });
 })();
+
+// First Trial section on the ED page: add a "Lihat butiran →" link under each included service,
+// pointing at that service's section (order: consultation, Shockwave, Kegel EMS).
+(function () {
+  document.querySelectorAll('[data-hm-offer-links]').forEach(function (list) {
+    var ids = list.getAttribute('data-hm-offer-links').split(',');
+    list.querySelectorAll('li').forEach(function (li, i) {
+      if (!ids[i] || !document.getElementById(ids[i])) return;
+      var a = document.createElement('a'); a.className = 'hm-offer__more'; a.href = '#' + ids[i]; a.textContent = 'Lihat butiran →';
+      li.appendChild(a);
+    });
+  });
+})();

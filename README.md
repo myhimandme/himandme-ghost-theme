@@ -2,7 +2,7 @@
 
 Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site (Utama, Disfungsi Ereksi) and a separate editorial blog (/blog/). The approved HTML prototype is the master visual reference.
 
-> **Status: Stage 4 (Disfungsi Ereksi page).** Site chrome, the homepage and the ED page match the approved prototype. Blog, topic/author pages and articles are still *verification scaffolding* until Stages 5–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md) · [`STAGE-2`](docs/STAGE-2-REPORT.md) · [`STAGE-3`](docs/STAGE-3-REPORT.md) · [`STAGE-4`](docs/STAGE-4-REPORT.md). **Clinical content checklist: [`docs/CLINICAL-REVIEW.md`](docs/CLINICAL-REVIEW.md).**
+> **Status: Stage 4 (Disfungsi Ereksi page + RM288 First Trial offer), awaiting approval.** Site chrome, the homepage and the ED page match the approved prototype. Blog, topic/author pages and articles are still *verification scaffolding* until Stages 5–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md) · [`STAGE-2`](docs/STAGE-2-REPORT.md) · [`STAGE-3`](docs/STAGE-3-REPORT.md) · [`STAGE-4`](docs/STAGE-4-REPORT.md). **Clinical content checklist: [`docs/CLINICAL-REVIEW.md`](docs/CLINICAL-REVIEW.md).**
 
 ## Requirements
 
@@ -40,7 +40,7 @@ Paths were checked in the Ghost 6.75.0 Admin interface. Screenshots are in [`doc
 | 4 | Homepage SEO title/description | **Settings → General settings → Meta data** |
 | 5 | Turn off social web (required) | **Settings → Growth → Network** → switch **off**. Ghost 6 has it on by default; it would publish every post, including content blocks, to the fediverse. |
 | 6 | Doctor profile, and slug for routes | **Settings → General settings → Staff** → your name → **Profile** tab: name (with "Dr."), photo, bio, **Slug** |
-| 7 | Theme settings (WhatsApp, prices, credentials…) | **Settings → Site → Design & branding → Theme** tab → *Site wide* (17 fields) and *Post* (doctor credentials) → **Save**. Ghost derives the field labels from the setting names (e.g. "Whatsapp number"). |
+| 7 | Theme settings (WhatsApp, prices, credentials…) | **Settings → Site → Design & branding → Theme** tab → *Site wide* (19 fields) and *Post* (doctor credentials). The theme uses **20 of Ghost's 20** custom settings → **Save**. Ghost derives the field labels from the setting names (e.g. "Whatsapp number"). |
 | 8 | Language and timezone | **Settings → General settings → Publication language** (`ms`) and **Timezone** (Asia/Kuala_Lumpur) |
 | 9 | Menus | **Settings → Site → Navigation**: *Primary* = main menu (Utama `/`, Disfungsi Ereksi `/disfungsi-ereksi/`, Blog `/blog/`). *Secondary* = blog category bar (e.g. Disfungsi Ereksi `/blog/topik/disfungsi-ereksi/`). "Semua" is added by the theme. |
 
@@ -105,15 +105,27 @@ The doctor card uses the staff profile named in theme setting **`doctor_author_s
 
 *Write the body in that order. The theme shows the paragraphs and the list in their designed places automatically, so no special formatting is needed.*
 
-**Theme settings used:** `consultation_duration`, `consultation_fee`, `shockwave_session_duration` / `_count` / `shockwave_price`, `kegel_ems_session_duration` / `_count` / `kegel_ems_price`, **`show_prices`** (hides the fee and price tiles when off), WhatsApp number and messages, address, hours and phone (booking panel).
+**Theme settings used:** `offer_price` (First Trial), `consultation_duration`, `consultation_fee`, `shockwave_session_duration` / `_count` / `shockwave_price`, `kegel_ems_session_duration` / `_count` / `kegel_ems_price`, **`show_prices`** (hides the fee and price tiles when off), WhatsApp number and messages, address, hours and phone (booking panel).
 **Fixed theme text** (`locales/ms.json`): section labels and tabs, the six cause cards, the four consultation steps, tile labels ("PEMBEDAHAN: Tidak", "BERPAKAIAN: [Sahkan]"), the comparison table rows, form labels and the WhatsApp message format.
 
+**Session counts:** the treatment programme is a *combined* programme: "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS…" (an estimate, not a guarantee). It appears once, in the FAQ answer on the page body. `shockwave_session_count` and `kegel_ems_session_count` are left **empty** so their "BILANGAN SESI" tiles stay hidden. Any setting tile with an empty value is hidden.
+
 **Booking form:** builds a WhatsApp message from the visitor's input (name, phone, service, date, time, message) and opens WhatsApp. **Nothing is sent to or stored on the website.** The treatment CTAs ("Buat Temu Janji" under Shockwave / Kegel EMS) preselect that service.
+
+### First Trial offer (Stage 4 follow-up)
+
+One block, one setting. **The price lives only in the theme setting `offer_price`** (Settings → Site → Design & branding → Theme → *Offer price*, e.g. `RM288`). Every place the offer shows reads it: the homepage card, the ED hero bar, the ED section "Apa yang termasuk dalam First Trial", the "First Trial" tab, the booking-form option, and every "Tempah First Trial" WhatsApp message ("Salam Him & Me, saya berminat untuk menempah First Trial RM288."). **Leave `offer_price` empty to hide the offer everywhere.**
+
+| Block slug | Title | Excerpt | Body |
+|---|---|---|---|
+| `blok-tawaran` (tag `#blok`) | Package name (e.g. "First Trial"); also used in the WhatsApp message and the form option | Button label ("Tempah First Trial") | **First paragraph** = short description. **One bulleted list**: each item is **bold item name** followed by its description (the theme adds the icons, or the 01/02/03 numbers on the ED page). **Last paragraph** = slot note. **Never type the price in the block.** |
+
+If the block is unpublished, the approved copy is shown, still using `offer_price`.
 
 ## Repository layout (Stage 0–1)
 
 ```
-package.json, routes.yaml       theme manifest (18 theme settings) and routing (source of truth)
+package.json, routes.yaml       theme manifest (20 theme settings, Ghost's maximum) and routing (source of truth)
 *.hbs, partials/                Stage 1 verification scaffolding (replaced from Stage 2)
 assets/css, assets/js           sources → assets/built/ (generated, not committed)
 scripts/build.mjs, zip.mjs      build and packaging

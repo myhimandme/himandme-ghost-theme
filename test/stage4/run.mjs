@@ -35,8 +35,8 @@ const edPage = (await admin('/pages/slug/disfungsi-ereksi/?formats=html')).pages
 let h = await page();
 
 // E1 — section order matches the prototype
-const order = ['apa', 'punca', 'penilaian', 'shockwave', 'ems', 'hm-cmp-title', 'soalan', 'temujanji'].map((id) => h.indexOf(`id="${id}"`));
-check('E1', 'Sections in the prototype order: 01 Apa → 02 Punca → 03 Penilaian → 04 Shockwave → 05 Kegel EMS → comparison → 06 FAQ → booking',
+const order = ['apa', 'punca', 'penilaian', 'shockwave', 'ems', 'hm-cmp-title', 'first-trial', 'soalan', 'temujanji'].map((id) => h.indexOf(`id="${id}"`));
+check('E1', 'Sections in the prototype order: 01 Apa → 02 Punca → 03 Penilaian → 04 Shockwave → 05 Kegel EMS → comparison → First Trial → 06 FAQ → booking',
   order.every((v, i) => v > 0 && (i === 0 || v > order[i - 1])), order.join(' < '));
 
 // E2 — hero from the Ghost page itself
@@ -68,17 +68,17 @@ check('E5', 'FAQ questions are the toggle cards in the page body', faqCount === 
 // E6 — settings drive the tiles; show_prices hides fee/price tiles; city label fallback
 const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
 const setCS = (vals) => admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key in vals ? vals[s.key] : s.value })) } });
-await setCS({ consultation_duration: '30 minit', consultation_fee: 'RM 99', shockwave_session_duration: '20 minit', shockwave_price: 'RM 999 / pakej', kegel_ems_session_count: '6 sesi', show_prices: true, city: 'Kuala Lumpur' });
+await setCS({ consultation_duration: '30 minit', consultation_fee: 'RM 99', shockwave_session_duration: '20 minit', shockwave_price: 'RM 999 / pakej', kegel_ems_session_duration: '25 minit', show_prices: true, city: 'Kuala Lumpur' });
 const withP = await page(); const homeCity = await page('/');
-await setCS({ consultation_fee: '', shockwave_session_count: '' });
+await setCS({ consultation_fee: '', shockwave_session_duration: '' });
 const emptyTiles = await page();
 await setCS({ show_prices: false, city: '' });
 const noP = await page(); const homeNoCity = await page('/');
 await admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.value })) } });
 const tile = (html, v) => html.includes(`hm-tile__value">${esc(v)}</strong>`);
-check('E6', 'Session/price tiles show the theme settings', ['30 minit', 'RM 99', '20 minit', 'RM 999 / pakej', '6 sesi'].every((v) => tile(withP, v)));
+check('E6', 'Session/price tiles show the theme settings', ['30 minit', 'RM 99', '20 minit', 'RM 999 / pakej', '25 minit'].every((v) => tile(withP, v)));
 check('E7', 'show_prices off hides the fee and price tiles (and only those)', !tile(noP, 'RM 99') && !noP.includes('>KOS<') && !noP.includes('>YURAN<') && noP.includes('>TEMPOH<'));
-check('E7b', 'An empty setting hides its own tile (e.g. consultation fee) even with prices shown', !emptyTiles.includes('>YURAN<') && emptyTiles.includes('>TEMPOH<') && (emptyTiles.match(/BILANGAN SESI/g) || []).length === 1 && emptyTiles.includes('>KOS<'));
+check('E7b', 'An empty setting hides its own tile (e.g. consultation fee) even with prices shown', !emptyTiles.includes('>YURAN<') && emptyTiles.includes('>TEMPOH<') && (emptyTiles.match(/>TEMPOH SESI</g) || []).length === 1 && emptyTiles.includes('>KOS<'));
 const label = (html) => (html.match(/<span class="hm-label"><span class="hm-label__slash">\/<\/span> KESIHATAN LELAKI([\s\S]*?)<\/span>\s*<h1/) || [])[1] ?? 'not found';
 check('E8', 'City setting: shown in the hero label when set; empty → label without any city or placeholder',
   /· Kuala Lumpur/.test(label(homeCity)) && label(homeNoCity).trim() === '' && !homeNoCity.includes('[BANDAR]'), `set: "${label(homeCity).replace(/<[^>]+>/g, '')}" · empty: "${label(homeNoCity)}"`);
@@ -99,6 +99,56 @@ const h1s = (h.match(/<h1[\s>]/g) || []).length;
 const inputs = [...(h.match(/<form class="hm-form"[\s\S]*?<\/form>/)?.[0] || '').matchAll(/<(input|select|textarea)\b/g)].length;
 const labelled = [...(h.match(/<form class="hm-form"[\s\S]*?<\/form>/)?.[0] || '').matchAll(/<label[^>]*>(?:(?!<\/label>)[\s\S])*?<(input|select|textarea)\b/g)].length;
 check('E14', 'One <h1>; every form control sits inside a <label>; table headers have scope', h1s === 1 && inputs === labelled && /<th scope="row">/.test(h) && /<th scope="col">/.test(h), `${h1s} h1, ${labelled}/${inputs} controls labelled`);
+
+
+// ---------- First Trial offer ----------
+const home = await page('/');
+const offerBlk = (await admin('/posts/slug/blok-tawaran/?formats=html')).posts[0];
+const priceNow = cs.find((s) => s.key === 'offer_price').value;
+const offerMsg = (name, price) => `Salam Him & Me, saya berminat untuk menempah ${name} ${price}.`;
+const offerCtas = (html) => [...html.matchAll(/<a [^>]*href="(https:\/\/wa\.me\/[^"]+)"[^>]*data-hm-offer-cta/g)].map((m) => decodeURIComponent(new URL(m[1].replace(/&amp;/g, '&')).searchParams.get('text')));
+const heroEnd = home.indexOf('</section>', home.indexOf('class="hm-container hm-hero"'));
+check('F1', 'Placement: homepage card directly after the hero (before the trust strip); ED bar in the hero, "Apa yang termasuk" after the comparison, form option',
+  home.indexOf('class="hm-container hm-offer"') > heroEnd && home.indexOf('class="hm-container hm-offer"') < home.indexOf('class="hm-trust"')
+  && h.indexOf('class="hm-offerbar"') > h.indexOf('class="hm-edhero"') && h.indexOf('class="hm-offerbar"') < h.indexOf('data-hm-tabs')
+  && /<option value="First Trial RM288" selected>First Trial RM288<\/option>/.test(h));
+check('F2', 'Every First Trial button opens WhatsApp with the simple enquiry built from the offer name + price',
+  [...offerCtas(home), ...offerCtas(h)].length === 4 && [...offerCtas(home), ...offerCtas(h)].every((m) => m === offerMsg(offerBlk.title, priceNow)), offerMsg(offerBlk.title, priceNow));
+check('F3', 'The price is not stored in the block (title, CTA text and body contain no price)', !/RM\s?\d/.test(`${offerBlk.title} ${offerBlk.custom_excerpt} ${offerBlk.html}`));
+check('F4', 'No comparative pricing ("Nilai biasa", "Biasa RM…") on the homepage or ED page', ![home, h].some((x) => /Nilai biasa|Biasa RM/i.test(x)));
+check('F5', 'Confirmed package contents shown: 1 × consultation, 1 × Shockwave Therapy, 1 × Kegel EMS', ['1 × Konsultasi doktor', '1 × Shockwave Therapy', '1 × Kegel EMS'].every((t) => home.includes(t) && h.includes(t)));
+
+// Price changed once in Ghost Admin → every location updates (incl. WhatsApp message and form option)
+await setCS({ offer_price: 'RM299' });
+const homeP = await page('/'); const edP = await page();
+const where = (html) => (html.match(/RM299/g) || []).length;
+const msgsP = [...offerCtas(homeP), ...offerCtas(edP)];
+check('F6', 'Changing offer_price once updates the homepage card, ED bar, ED section, booking option and every WhatsApp message',
+  homeP.includes('hm-offer__amount">RM299<') && edP.includes('hm-offerbar__amount">RM299<') && (edP.match(/hm-offer__amount">RM299</g) || []).length === 1
+  && edP.includes('<option value="First Trial RM299" selected>') && msgsP.length === 4 && msgsP.every((m) => m === offerMsg(offerBlk.title, 'RM299'))
+  && !homeP.includes('RM288') && !edP.includes('RM288'), `RM299 ×${where(homeP)} on Utama, ×${where(edP)} on ED; RM288 left: ${(homeP + edP).includes('RM288')}`);
+await setCS({ offer_price: '' });
+const homeOff = await page('/'); const edOff = await page();
+check('F7', 'Emptying offer_price switches the offer off everywhere (cards, bar, tab, form option)',
+  ![homeOff, edOff].some((x) => /class="hm-container hm-offer|class="hm-offerbar"|href="#first-trial"|First Trial RM/.test(x)));
+await admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.value })) } });
+
+// Offer copy comes from the block; fallback when unpublished
+await edit('posts', offerBlk.id, { title: 'First Trial (diedit)' });
+const homeE = await page('/'); const edE = await page();
+await edit('posts', offerBlk.id, { status: 'draft' });
+const homeF = await page('/');
+await edit('posts', offerBlk.id, { status: 'published', title: offerBlk.title });
+check('F8', 'Offer name/CTA/contents come from block "blok-tawaran" (edit → visible incl. WhatsApp message); unpublished → approved copy',
+  homeE.includes('id="hm-offer-title">First Trial (diedit)</h2>') && edE.includes('Apa yang termasuk dalam First Trial (diedit)') && offerCtas(edE).every((m) => m.includes('First Trial (diedit) '))
+  && homeF.includes('id="hm-offer-title">First Trial</h2>') && homeF.includes('1 × Shockwave Therapy'));
+
+// Combined treatment programme
+const sevenTen = (x) => (x.match(/7–10/g) || []).length;
+check('F9', 'Combined programme: one estimate ("Anggaran 7–10 sesi rawatan … Shockwave Therapy dan Kegel EMS …"); no separate per-treatment estimates',
+  h.includes('Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu.')
+  && sevenTen(h) === 1 && sevenTen(home) === 0 && !h.includes('BILANGAN SESI'), `"7–10" on ED: ${sevenTen(h)}, on Utama: ${sevenTen(home)}`);
+check('F10', 'Theme settings: 20 registered (Ghost/GScan maximum), offer_price among them', (await admin('/custom_theme_settings/')).custom_theme_settings.length === 20 && cs.some((s) => s.key === 'offer_price'));
 
 // Browser checks
 let chromium; try { ({ chromium } = createRequire(import.meta.url)('playwright')); } catch { console.log('SKIP  browser checks — Playwright not available'); }
@@ -139,6 +189,19 @@ if (chromium) {
   check('E19', 'Form opens WhatsApp with the visitor\'s details as the message; past dates blocked',
     opened.startsWith(`https://wa.me/${wa}?text=`) && ['Nama: Ahmad', 'No. telefon: 012-345 6789', 'Perkhidmatan: Kegel EMS', 'Tarikh pilihan: 15/01/2027', 'Masa pilihan: Petang', 'Mesej: Soalan ringkas.'].every((l) => msg.includes(l)) && /^\d{4}-\d{2}-\d{2}$/.test(minDate),
     msg.split('\n').filter(Boolean).join(' | '));
+  // F11 — form defaults to the First Trial option and carries it into the WhatsApp message
+  const p3 = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await p3.addInitScript(() => { window.__opened = []; window.open = (u) => { window.__opened.push(u); return {}; }; });
+  await p3.goto(BASE + PATH); await p3.waitForTimeout(400);
+  await p3.fill('input[name="hm_nama"]', 'Ali'); await p3.check('input[name="hm_consent"]'); await p3.click('#temujanji button[type="submit"]'); await p3.waitForTimeout(200);
+  const m3 = await p3.evaluate(() => decodeURIComponent(new URL(window.__opened[0]).searchParams.get('text')));
+  const sw = await p3.evaluate(() => [390, document.documentElement.scrollWidth]);
+  await p3.goto(BASE + '/'); const swHome = await p3.evaluate(() => document.documentElement.scrollWidth);
+  const offerTop = await p3.evaluate(() => Math.round(document.querySelector('.hm-offer').getBoundingClientRect().top + scrollY));
+  const offerH = await p3.evaluate(() => Math.round(document.querySelector('.hm-offer').getBoundingClientRect().height));
+  await p3.close();
+  check('F11', 'Booking form defaults to "First Trial RM288" and the WhatsApp message names it; phone layout has no overflow',
+    m3.includes(`Perkhidmatan: First Trial ${priceNow}`) && sw[1] === 390 && swHome === 390, `offer card on phone: ${offerH}px tall, starts at ${offerTop}px`);
   // E20 — FAQ first question open
   const faq = await p.$$eval('#soalan .kg-toggle-card', (els) => els.map((e) => e.dataset.kgToggleState));
   check('E20', 'FAQ: first question open, others closed', faq[0] === 'open' && faq.slice(1).every((s) => s === 'close'), faq.join(','));

@@ -21,6 +21,7 @@
         <label class="hm-field">{{t "No. telefon / WhatsApp"}}<input type="tel" name="hm_telefon" autocomplete="tel" inputmode="tel" placeholder="012-345 6789"></label>
         <label class="hm-field">{{t "Perkhidmatan"}}
             <select name="hm_perkhidmatan" required>
+                {{> "offer/lookup" view="option"}}
                 <option>{{t "Konsultasi & penilaian"}}</option>
                 <option>{{t "Shockwave therapy"}}</option>
                 <option>{{t "Kegel EMS"}}</option>

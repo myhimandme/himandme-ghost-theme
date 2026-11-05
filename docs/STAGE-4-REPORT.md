@@ -1,19 +1,18 @@
-# Stage 4 report: Disfungsi Ereksi page
+# Stage 4 completion report: Disfungsi Ereksi page + RM288 First Trial offer
 
 **Environment:** local Ghost **6.75.0** (development mode, SQLite) at `http://localhost:2368`. **The live himandme.my installation was not touched and nothing was published.**
 **Branch:** `stage-4` (based on `stage-3`; PRs #1, #2 and #3 open and unmerged).
 
-## Results
+## Results (final run, with the First Trial offer in place)
 
 | Check | Result |
 |---|---|
-| `npm test`: build + content-block guard + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings. The guard passes on every post query in every template. **All 19 theme settings are now used in place**, so the Stage 1 settings scaffold has been removed. |
-| Ghost Admin upload check | ✅ 0 errors, 0 warnings |
-| `test/stage4/run.mjs`: ED page | ✅ **20 / 20** |
-| `test/stage3/run.mjs`: homepage (incl. the new `city` setting) | ✅ **12 / 12** |
+| `npm test`: build + content-block guard (81 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings. **20 / 20 theme settings** (Ghost's maximum), all used. |
+| `test/stage4/run.mjs`: ED page + offer | ✅ **32 passed, 0 failed** |
+| `test/stage3/run.mjs`: homepage | ✅ **12 / 12** |
 | `test/stage2/run.mjs`: site chrome | ✅ **23 / 23** |
-| `test/stage1/run.mjs`: routing and `#blok` safeguards (now with all **22** blocks) | ✅ **32 passed, 0 failed** (3 informational) |
-| Visual comparison with the prototype (full page at 1440px and 390px) | ✅ Desktop matches section for section. Phone: layout and styling match; differences are listed below. Images: `docs/stage-4/`. |
+| `test/stage1/run.mjs`: routing and `#blok` safeguards (now **23** blocks, incl. `blok-tawaran`) | ✅ **32 passed, 0 failed** (3 informational) |
+| Visual comparison with the prototype and the approved First Trial proposal (1440px and 390px) | ✅ Matches. Images: `docs/stage-4/` (see Screenshots). |
 
 ### What the Stage 4 tests prove
 - **E1:** the sections appear in the prototype order: 01 Apa → 02 Punca → 03 Penilaian → 04 Shockwave → 05 Kegel EMS → comparison → 06 FAQ → booking.
@@ -39,6 +38,19 @@
   - Past dates are blocked.
 - **E20:** the first FAQ question is open on load.
 
+### What the First Trial tests prove (F1–F11)
+- **F1:** placement. Homepage card directly after the hero. ED: slim bar inside the hero, the "Apa yang termasuk dalam First Trial" section after the comparison table, a "First Trial" tab, and the First Trial option in the booking form.
+- **F2:** every "Tempah First Trial" button opens `wa.me/<number>` with exactly "Salam Him & Me, saya berminat untuk menempah First Trial RM288."
+- **F3:** the price is not typed in the block (`blok-tawaran`), only in `offer_price`.
+- **F4:** no "Nilai biasa", "Biasa RM…" or "RM950" anywhere on either page.
+- **F5:** the package is exactly 1 × Konsultasi doktor, 1 × Shockwave Therapy and 1 × Kegel EMS.
+- **F6:** **changing `offer_price` to RM299 updates every location**: the homepage card, ED bar, ED section, form option and all WhatsApp messages. No "RM288" remains anywhere.
+- **F7:** an empty `offer_price` hides the offer everywhere: cards, bar, tab and form option.
+- **F8:** editing the block changes the offer (name in the heading, button and WhatsApp message). Unpublishing it shows the approved copy, still with the setting's price.
+- **F9:** the combined programme "7–10" appears once (ED FAQ) and never on the homepage. The per-treatment session-count tiles are hidden.
+- **F10:** 20 theme settings (within Ghost's limit).
+- **F11 (real browser, 1440px and 390px):** the form opens with First Trial preselected, and the WhatsApp message names "First Trial RM288". There is no horizontal overflow at 390px, and the phone offer card is compact (485px).
+
 ## Implementation notes
 - **Template.** `custom-disfungsi-ereksi.hbs` (selected in the page's Template setting) composes 9 partials in `partials/ed/`. The header, compact footer and mobile bar are reused from Stage 2.
 - **Content model** (no change from the approved plan):
@@ -54,27 +66,65 @@
 - **City setting** (approved): `city` was added as the 19th theme setting. The hero label reads "/ KESIHATAN LELAKI · {city}" on desktop. When the setting is empty, the separator and city are omitted entirely.
 - **A bug found and fixed while testing:** a phone-only flex rule made the dark callout's text 1,333px wide. The new overflow check (E15) now guards against this.
 
+## First Trial offer: implementation
+- **One block + one setting (as approved).**
+  - `blok-tawaran` supplies the name (title), button label (excerpt), description, items and slot note (body).
+  - `offer_price` is the **single price source**. When it's empty, the offer is hidden everywhere.
+  - Partials are in `partials/offer/`, styles in `assets/css/pages/offer.css`. The WhatsApp message is built in one place (`partials/offer/wa-href.hbs`).
+- **Homepage:** a premium introductory card directly after the hero: a charcoal price panel and a white "Termasuk dalam sesi anda" list with icon tiles. It's a stacked compact card on phones. It's styled as a package, not a discount advert.
+- **ED page:**
+  - A slim offer bar at the foot of the hero (stacked on phones).
+  - The detailed section "Apa yang termasuk dalam First Trial" after the comparison table, with numbered items and "Lihat butiran →" links to sections 03–05.
+  - A "First Trial" tab.
+  - The booking form's service list starts with "First Trial RM288", selected by default.
+- **Mobile sticky bar unchanged:** WhatsApp + "Buat Temu Janji", as instructed.
+- **Copy changes as instructed:**
+  - "Nilai biasa RM950" and every "Biasa RM…" comparison removed.
+  - The combined programme "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, …" is used in the ED FAQ (A25), the only place session counts are discussed.
+  - The separate per-treatment 7–10 estimates were removed: both `*_session_count` settings now default to empty, so their tiles are hidden.
+
+## Screenshots (`docs/stage-4/`)
+- **Approved proposal vs. Ghost theme:**
+  - `offer-home-desktop.jpg`, `offer-home-mobile.jpg`
+  - `offer-ed-bar-desktop.jpg`, `offer-ed-bar-mobile.jpg`
+  - `offer-ed-section-desktop.jpg`, `offer-ed-section-mobile.jpg`
+
+  The only differences are the instructed ones: no RM950 or "Biasa RM…" lines, "1 ×" quantities, and Buat Temu Janji in the sticky bar.
+- **Full pages:**
+  - `full-home-desktop.jpg`, `full-home-mobile.jpg`
+  - `full-ed-desktop.jpg`, `full-ed-mobile.jpg`
+- **Earlier prototype comparisons:**
+  - `compare-desktop-0*.jpg`, `compare-mobile-0*.jpg`
+
 ## Clinical content requiring your review
-**`docs/CLINICAL-REVIEW.md`** lists **every clinical or service statement** on the ED page (30 items), the homepage (8) and site-wide (2), each with where to edit it. Highlights:
-- **Clinical statements to verify:** the H1 wording ("…boleh dirawat"); the cardiovascular association callout; the Shockwave mechanism ("bertujuan menyokong aliran darah"); the pelvic-floor physiology; Kegel EMS suitability; the comparison-table "Kesesuaian" row; the ED prevalence FAQ answer.
-- **Placeholders still to complete:**
-  - ED page: `[Sahkan]` for additional tests, Shockwave sensation and aftercare, whether clients stay clothed for Kegel EMS, and evening opening.
-  - ED FAQ: **5 answers** (3 marked "akan disahkan oleh doktor").
-  - Homepage: 3 FAQ answers and the third privacy bullet.
-  - Settings: all prices and session details.
-  - The Notis Privasi page content.
-- **No claims, success rates, guarantees, contraindications, evidence or credentials were added.** The only new text is non-clinical form and CTA wording, listed at the end of the checklist.
+**`docs/CLINICAL-REVIEW.md`** lists every clinical or service statement: ED page (A1–A30), homepage (B1–B8), First Trial offer (D1–D6) and site-wide (C1–C2), each with where to edit it. The doctor's review answers have been applied; ✅ / ✏️ mark verified or reworded items.
+- **Still open:**
+  - D3–D4, the offer item descriptions and intro line (reworded from accepted statements).
+  - Consultation and session durations.
+  - Notis Privasi page content.
+- **All earlier placeholders are resolved:** additional tests removed; Shockwave sensation and aftercare; Kegel EMS "Berpakaian: Ya"; "Malam" removed; all FAQ answers; the third privacy bullet.
+- **No claims, success rates, guarantees, contraindications, evidence or credentials were added.** "Anggaran 7–10 sesi rawatan" is the doctor's estimate, worded as an estimate and not a guarantee. New non-clinical text: the form, CTA and First Trial WhatsApp wording.
 
 ## Items for your decision (nothing below has been implemented)
 
 | # | Item | Current behaviour | Options |
 |---|---|---|---|
-| 1 | **Phone board omissions.** The ED phone board leaves out a few theme-controlled elements: the comparison table, the "Semasa sesi" / "Mungkin dipertimbangkan untuk" lists, two of the four Kegel EMS tiles, the time and message fields, the booking intro and the contact list. | Following your Stage 3 decision (one text everywhere), the phone page shows **all** content in the phone layout. The comparison table scrolls inside its own box, and the form keeps all fields. The phone page is therefore longer than the board (~8,900px vs ~6,400px). | **A (recommended):** keep content parity, so phone visitors see prices, the time choice and the message field. **B:** hide those elements on phones to match the board exactly. That's a CSS-only change, but it removes content from phone visitors. |
-| 2 | **"BERPAKAIAN: [Sahkan]" tile** (Kegel EMS). | Fixed theme text until you confirm. | Confirm the wording, or remove the tile. Both are theme-text changes, not structure changes. |
-| 3 | **"Malam [jika dibuka]"** time option. | Fixed theme text. | Confirm evening hours, or remove the option. |
+| 1 | **Obsolete per-treatment session-count settings.** The combined programme replaces separate counts, but `shockwave_session_count` and `kegel_ems_session_count` remain. **The theme is at Ghost's 20 / 20 setting limit**, so any future setting needs a free slot. | Both settings are empty and their "BILANGAN SESI" tiles are hidden. Nothing is visible. | **A (recommended):** remove both settings and their tiles, freeing 2 slots. This is an architecture change (the Admin fields disappear). **B:** merge them into one `programme_sessions` setting shown once (frees 1 slot). **C:** leave as is. |
+| 2 | **Combined programme in the comparison table.** Currently the combined wording appears only in FAQ A25. | No session row in the table. | **A:** add one full-width row "Bilangan sesi: Anggaran 7–10 sesi rawatan (gabungan)" (theme text). **B (current):** FAQ only. |
+| 3 | **Phone content parity** (carried over from Stage 4). | The phone page shows all content (it's longer than the board). | A (recommended): keep. B: hide those elements on phones. |
+| 4 | **D3–D4 offer wording** (`docs/CLINICAL-REVIEW.md`, section D). | Reworded from accepted statements. | Confirm or edit in the block. No developer needed. |
+
+**Still needed from you (content):**
+- Consultation and session durations (or leave the settings empty to hide those tiles).
+- Operating days.
+- Address.
+- Notis Privasi and Dasar Editorial page content.
+- Confirmation that 601157912606 is the WhatsApp number.
 
 ## Safeguards preserved
-- `#blok` content is excluded from listings, archives, RSS, the sitemap and search. Stage 1 passes 32/0 with all 22 blocks present.
+- `#blok` content is excluded from listings, archives, RSS, the sitemap and search. Stage 1 passes 32/0 with all 23 blocks present (incl. `blok-tawaran`).
 - The content-block guard is part of `npm test`.
 - Blocks hold public website copy only (`seed/blocks.mjs`).
-- Nothing touched production.
+- Nothing touched production. No PRs merged.
+
+**Stage 5 has not been started and will not start until you approve Stage 4.**

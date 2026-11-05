@@ -25,6 +25,17 @@ export const BLOCKS = [
     html: '<p>Maklumat di laman web ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan profesional. Kesesuaian sebarang rawatan ditentukan selepas penilaian oleh doktor.</p>',
   },
 
+  // ---- First Trial offer (approved Stage 4 follow-up) — tag #blok ----
+  // Title = offer name, excerpt = CTA text, body = description paragraph, the list of included
+  // services (bold name + short description), then a small-print paragraph.
+  // The PRICE is NOT stored here: it lives only in theme setting `offer_price`.
+  {
+    slug: 'blok-tawaran', tags: ['hash-blok'],
+    title: 'First Trial',
+    excerpt: 'Tempah First Trial',
+    html: '<p>Sesi percubaan pertama — untuk memahami keadaan anda dan merasai kedua-dua rawatan.</p><ul><li><strong>1 × Konsultasi doktor</strong> Sejarah perubatan, pemeriksaan fizikal dan perbincangan pilihan rawatan.</li><li><strong>1 × Shockwave Therapy</strong> Satu sesi terapi gelombang kejutan intensiti rendah, tanpa pembedahan dan tanpa ubat.</li><li><strong>1 × Kegel EMS</strong> Satu sesi rangsangan otot lantai pelvis, dalam keadaan berpakaian.</li></ul><p>Slot pesakit baharu 11:00 pagi – 5:00 petang · Dengan temu janji sahaja, tiada walk-in.</p>',
+  },
+
   // ---- Homepage (Stage 3) — 12 blocks ----
   {
     slug: 'blok-utama-hero', tags: ['hash-blok', 'hash-blok-utama'],
@@ -154,7 +165,7 @@ export const PAGES = [
     html: [
       toggle('Adakah disfungsi ereksi perkara biasa?', 'Ya. Ia biasa berlaku dalam kalangan lelaki, terutamanya apabila usia meningkat atau dengan keadaan seperti kencing manis dan darah tinggi. Ia boleh dibincangkan dan dinilai seperti masalah kesihatan lain.'),
       toggle('Adakah shockwave therapy menyakitkan?', 'Anda mungkin merasai sedikit ketidakselesaan, tetapi tiada kesakitan.'),
-      toggle('Berapa banyak sesi yang saya perlukan?', 'Ia bergantung kepada tahap disfungsi ereksi (mati pucuk) anda. Doktor akan menilai keadaan anda dan mencadangkan bilangan sesi mengikut kesesuaian setiap pesakit.'),
+      toggle('Berapa banyak sesi yang saya perlukan?', 'Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu.'),
       toggle('Bolehkah saya teruskan ubat yang sedang saya ambil?', 'Boleh. Doktor akan menyemak semula ubat anda dan menasihati jika ada yang tidak sesuai.'),
       toggle('Bolehkah pasangan saya hadir bersama?', 'Amat dialukan, untuk perbincangan yang lebih menyeluruh bersama pasangan — bergantung kepada keselesaan anda.'),
       toggle('Berapakah kos rawatan?', 'Satu sesi Shockwave therapy berharga RM450 dan satu sesi Kegel EMS berharga RM350 (harga ala carte). Pakej yang lebih jimat akan dimaklumkan semasa konsultasi.'),

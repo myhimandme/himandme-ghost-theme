@@ -64,7 +64,7 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 |---|---|---|
 | A23 | "Adakah disfungsi ereksi perkara biasa?" — answer: "antara masalah kesihatan seksual yang paling kerap dialami lelaki…" | ✏️ "Ya. Ia biasa berlaku dalam kalangan lelaki, …" |
 | A24 | "Adakah shockwave therapy menyakitkan?" | ✏️ "Anda mungkin merasai sedikit ketidakselesaan, tetapi tiada kesakitan." |
-| A25 | "Berapa banyak sesi yang saya perlukan?" | ✏️ "Ia bergantung kepada tahap disfungsi ereksi (mati pucuk) anda. Doktor akan menilai keadaan anda dan mencadangkan bilangan sesi mengikut kesesuaian setiap pesakit." |
+| A25 | "Berapa banyak sesi yang saya perlukan?" | ✏️ "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu." (combined programme; an estimate, not a guarantee. This is the only place a session count appears; the per-treatment "BILANGAN SESI" tiles are hidden) |
 | A26 | "Bolehkah saya teruskan ubat yang sedang saya ambil?" | ✏️ "Boleh. Doktor akan menyemak semula ubat anda dan menasihati jika ada yang tidak sesuai." |
 | A27 | "Bolehkah pasangan saya hadir bersama?" | ✏️ "Amat dialukan, untuk perbincangan yang lebih menyeluruh bersama pasangan — bergantung kepada keselesaan anda." |
 | A28 | "Berapakah kos rawatan?" | ✏️ "Satu sesi Shockwave therapy berharga RM450 dan satu sesi Kegel EMS berharga RM350 (harga ala carte). Pakej yang lebih jimat akan dimaklumkan semasa konsultasi." |
@@ -88,6 +88,16 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 | B7 | FAQ: "Ya. Perbincangan dan rekod perubatan anda hanya diakses oleh pasukan…" + 3 **[Jawapan — akan disahkan]** | Block `blok-utama-faq` | ✏️ Q1: "…hanya diakses oleh doktor dan pembantu perubatan berlesen yang terlibat dalam rawatan anda…". Q2–Q4 ✏️ answered (no referral needed; RM150, free with First Trial; WhatsApp for brief questions only, no online consultation) |
 | B8 | Doctor card credentials | Theme setting `doctor_credentials` | ✏️ Credentials line set to "Doktor yang sah" |
 
+## D. RM288 First Trial offer (homepage, ED page, booking form)
+| # | Statement | Where | Status |
+|---|---|---|---|
+| D1 | Package: "First Trial" / "Sesi percubaan pertama" = **1 × Konsultasi doktor, 1 × Shockwave Therapy, 1 × Kegel EMS** | Block `blok-tawaran` (title, body list) | ✅ As instructed |
+| D2 | Price **RM288** | Theme setting `offer_price` only | ✅ As instructed. No "nilai biasa" or "Biasa RM…" comparison is shown |
+| D3 | Item descriptions: consultation "Sejarah perubatan, pemeriksaan fizikal dan perbincangan pilihan rawatan"; Shockwave "terapi gelombang kejutan intensiti rendah, tanpa pembedahan dan tanpa ubat"; Kegel EMS "rangsangan otot lantai pelvis, dalam keadaan berpakaian" | Block `blok-tawaran` body | ☐ Reworded from statements already accepted (A11, A13–A14, A21). Please confirm |
+| D4 | "Sesi percubaan pertama — untuk memahami keadaan anda dan merasai kedua-dua rawatan." | Block `blok-tawaran`, first paragraph | ☐ Please confirm |
+| D5 | "Slot pesakit baharu 11:00 pagi – 5:00 petang · Dengan temu janji sahaja, tiada walk-in." | Block `blok-tawaran`, last paragraph | ✅ Verified hours |
+| D6 | WhatsApp message: "Salam Him & Me, saya berminat untuk menempah First Trial RM288." | Theme text + block title + `offer_price` | ✅ As instructed |
+
 ## C. Site-wide
 | # | Statement | Where | Status |
 |---|---|---|---|
@@ -105,13 +115,15 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 | `shockwave_price` | RM450 / sesi (normal price) |
 | `kegel_ems_price` | RM350 / sesi (normal price) |
 | `doctor_credentials` | Doktor yang sah |
+| `offer_price` | RM288 |
+| `consultation_fee` | RM150 (percuma dengan First Trial) |
 
-First trial session **RM288**, including consultation, Shockwave therapy and Kegel EMS. Where to show this is an open decision (below).
+First Trial **RM288** (1 consultation + 1 Shockwave Therapy + 1 Kegel EMS): implemented, see section D. Set in theme setting `offer_price`.
 
 ## Open items
 1. **A12: consultation tiles.** ✏️ Fee set to "RM150 (percuma dengan First Trial)". **TEMPOH** (consultation length) is still unknown: give it, or leave the setting empty to hide the tile.
-2. **RM288 First Trial offer.** Design proposal sent for approval (see the Stage 4 follow-up). Not implemented yet.
-3. **Session length** for Shockwave and Kegel EMS is still unknown: give it, or leave the settings empty to hide those tiles. The number of sessions is set to "Anggaran 7–10 (tahap rendah–sederhana)" for both treatments; confirm it applies to Kegel EMS as well.
+2. **RM288 First Trial offer:** ✅ implemented (section D). D3–D4 wording still to confirm.
+3. **Session length** for Shockwave and Kegel EMS is still unknown: give it, or leave the settings empty to hide those tiles. **Number of sessions:** now the combined programme "Anggaran 7–10 sesi rawatan" (A25). The separate per-treatment estimates were removed.
 4. **Operating days** for "10:00 pagi – 7:00 malam" (footer block `blok-maklumat-hubungan` shows "[Hari operasi]").
 5. **Notis Privasi** and **Dasar Editorial** page content; `address_short` and the full address (footer block excerpt).
-6. **Advertising check:** keep the source for "12,000 kontraksi" and the published prices on file. If a combined "nilai biasa" (normal value) is shown with the RM288 offer, it must reflect genuine normal prices.
+6. **Advertising check:** keep the source for "12,000 kontraksi" and the published prices on file. (No "nilai biasa" comparison is shown with the offer.)

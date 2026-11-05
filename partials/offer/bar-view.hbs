@@ -1,0 +1,16 @@
+{{!-- Slim First Trial bar at the bottom of the ED hero. --}}
+<div class="hm-container hm-offerbar-wrap">
+    <div class="hm-offerbar">
+        <div class="hm-offerbar__deco" aria-hidden="true"></div>
+        <div class="hm-offerbar__text">
+            <span class="hm-offerbar__label">{{t "/ SESI PERCUBAAN PERTAMA"}}</span>
+            <strong class="hm-offerbar__name">{{name}}</strong>
+            <div class="hm-offerbar__items hm-only-list">{{> "offer/body" fallback=fallback html=html}}</div>
+        </div>
+        <span class="hm-offerbar__amount">{{@custom.offer_price}}</span>
+        <div class="hm-offerbar__actions">
+            <a class="hm-btn hm-btn--primary hm-btn--md" href="{{> "offer/wa-href" name=name}}" target="_blank" rel="noopener" data-hm-offer-cta>{{cta}}</a>
+            <a class="hm-offerbar__more hm-hide-mobile" href="#first-trial">{{t "Apa yang termasuk ↓"}}</a>
+        </div>
+    </div>
+</div>

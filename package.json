@@ -98,6 +98,11 @@
         "default": "10 pagi – 7 malam · dengan temu janji sahaja",
         "description": "One-line opening hours for the top bar and contact panel."
       },
+      "offer_price": {
+        "type": "text",
+        "default": "RM288",
+        "description": "First Trial price — shown on Utama, ED page, booking form and WhatsApp. Empty hides the offer."
+      },
       "consultation_duration": {
         "type": "text",
         "default": "[± minit]",
@@ -115,8 +120,8 @@
       },
       "shockwave_session_count": {
         "type": "text",
-        "default": "Anggaran 7–10 (tahap rendah–sederhana)",
-        "description": "Shockwave therapy: number of sessions."
+        "default": "",
+        "description": "Not used for the combined programme (see FAQ). Leave empty to hide this tile."
       },
       "shockwave_price": {
         "type": "text",
@@ -130,8 +135,8 @@
       },
       "kegel_ems_session_count": {
         "type": "text",
-        "default": "Anggaran 7–10 (tahap rendah–sederhana)",
-        "description": "Kegel EMS: number of sessions."
+        "default": "",
+        "description": "Not used for the combined programme (see FAQ). Leave empty to hide this tile."
       },
       "kegel_ems_price": {
         "type": "text",
