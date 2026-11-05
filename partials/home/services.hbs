@@ -1,0 +1,25 @@
+{{!-- Services. Block "blok-utama-perkhidmatan": title = H2, excerpt = description (desktop).
+      Cards: blocks "blok-utama-servis-konsultasi" / "-shockwave" / "-kegel-ems" (title + excerpt). --}}
+<section class="hm-container hm-services" aria-labelledby="hm-services-title">
+    {{#get "posts" filter="slug:blok-utama-perkhidmatan" limit="1"}}
+        {{#foreach posts}}
+            {{> "home/section-head" id="hm-services-title" label=(t "PERKHIDMATAN") title=title text=custom_excerpt}}
+        {{else}}
+            {{> "home/section-head" id="hm-services-title" label=(t "PERKHIDMATAN") title=(t "Apa yang kami tawarkan") text=(t "Setiap pelan rawatan bermula dengan penilaian. Doktor akan menerangkan sama ada sesuatu rawatan sesuai untuk anda.")}}
+        {{/foreach}}
+    {{/get}}
+    <div class="hm-services__grid">
+        {{#get "posts" filter="slug:blok-utama-servis-konsultasi" limit="1"}}
+            {{#foreach posts}}{{> "home/service-card" icon="stethoscope" title=title text=custom_excerpt anchor="penilaian"}}
+            {{else}}{{> "home/service-card" icon="stethoscope" title=(t "Konsultasi & penilaian") text=(t "Perbincangan sulit tentang simptom, sejarah kesihatan dan faktor penyumbang — langkah pertama untuk setiap pesakit.") anchor="penilaian"}}{{/foreach}}
+        {{/get}}
+        {{#get "posts" filter="slug:blok-utama-servis-shockwave" limit="1"}}
+            {{#foreach posts}}{{> "home/service-card" icon="pulse" title=title text=custom_excerpt anchor="shockwave"}}
+            {{else}}{{> "home/service-card" icon="pulse" title=(t "Shockwave therapy") text=(t "Terapi gelombang kejutan intensiti rendah (Li-ESWT) — rawatan tanpa pembedahan dan tanpa ubat untuk pesakit yang sesuai.") anchor="shockwave"}}{{/foreach}}
+        {{/get}}
+        {{#get "posts" filter="slug:blok-utama-servis-kegel-ems" limit="1"}}
+            {{#foreach posts}}{{> "home/service-card" icon="target" title=title text=custom_excerpt anchor="ems"}}
+            {{else}}{{> "home/service-card" icon="target" title=(t "Kegel EMS") text=(t "Stimulasi otot lantai pelvis (pelvic floor) menggunakan teknologi EMS untuk membantu menguatkan otot yang menyokong fungsi seksual.") anchor="ems"}}{{/foreach}}
+        {{/get}}
+    </div>
+</section>

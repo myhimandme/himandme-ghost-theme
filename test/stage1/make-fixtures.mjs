@@ -2,6 +2,7 @@
 // (1) verify the Admin "Import content" path and (2) seed the routing / content-block tests.
 // Test data only. The real launch seed (21 blocks with approved copy) is produced in a later stage.
 import { writeFileSync, mkdirSync } from 'node:fs';
+import { BLOCKS } from '../../seed/blocks.mjs';
 
 let n = 0;
 const oid = () => (0x6a000000 + ++n).toString(16).padStart(8, '0') + '0000000000000000';
@@ -46,16 +47,10 @@ add({ type: 'page', slug: 'disfungsi-ereksi', title: 'Disfungsi ereksi boleh din
   html: '<div class="kg-card kg-toggle-card" data-kg-toggle-state="close"><div class="kg-toggle-heading"><h4 class="kg-toggle-heading-text">Adakah disfungsi ereksi perkara biasa?</h4></div><div class="kg-toggle-content"><p>Jawapan ujian FAQ ED.</p></div></div>',
   published_at: at(498) });
 
-// Content blocks (must never be publicly discoverable). Marker "ZZBLOK" appears in each excerpt.
-add({ slug: 'blok-utama-hero', title: 'Kesihatan lelaki, dibincang dengan tenang dan profesional.', custom_excerpt: 'Penilaian dan rawatan disfungsi ereksi dalam suasana yang sulit dan selesa. ZZBLOK-000', html: '<p>Hero ZZBLOK-000.</p>', published_at: at(402) }, ['hash-blok', 'hash-blok-utama']);
-add({ slug: 'blok-utama-faq', title: 'Soalan yang ramai segan tanya', custom_excerpt: 'Soalan lazim utama ZZBLOK-004.',
-  html: '<div class="kg-card kg-toggle-card" data-kg-toggle-state="close"><div class="kg-toggle-heading"><h4 class="kg-toggle-heading-text">Adakah konsultasi saya benar-benar sulit?</h4></div><div class="kg-toggle-content"><p>Ya. Jawapan ujian FAQ utama.</p></div></div>',
-  published_at: at(401) }, ['hash-blok', 'hash-blok-utama']);
-add({ slug: 'blok-maklumat-hubungan', title: 'Maklumat hubungan (footer)', custom_excerpt: 'No. 1, Jalan Contoh 1/2\n50000 Kuala Lumpur ZZBLOK-006', html: '<p>Isnin – Jumaat: 10:00 – 19:00</p><p>Sabtu: 10:00 – 14:00</p><p>Ahad &amp; cuti umum: Tutup</p>', published_at: at(405) }, ['hash-blok']);
-add({ slug: 'blok-penafian', title: 'Penafian (footer)', custom_excerpt: 'Kandungan blog ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Artikel disemak sebelum diterbitkan. ZZBLOK-007', html: '<p>Maklumat di laman web ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan profesional. Kesesuaian sebarang rawatan ditentukan selepas penilaian oleh doktor. ZZBLOK-007</p>', published_at: at(404) }, ['hash-blok']);
-add({ slug: 'blok-utama-perkhidmatan', title: 'Apa yang kami tawarkan', custom_excerpt: 'Ujian blok perkhidmatan ZZBLOK-001.', html: '<p>Kandungan blok ZZBLOK-001.</p>', published_at: at(400) }, ['hash-blok', 'hash-blok-utama']);
-add({ slug: 'blok-utama-proses', title: 'Empat langkah, tanpa tekanan', custom_excerpt: 'Ujian blok proses ZZBLOK-002.', html: '<ul><li>Hubungi kami ZZBLOK-002</li><li>Konsultasi</li></ul>', published_at: at(399) }, ['hash-blok', 'hash-blok-utama']);
-add({ slug: 'blok-ed-shockwave', title: 'Shockwave therapy (blok)', custom_excerpt: 'Ujian blok shockwave ZZBLOK-003.', html: '<p>Kandungan blok ZZBLOK-003.</p>', published_at: at(1) }, ['hash-blok', 'hash-blok-ed']);
+// Content blocks: the real block definitions with approved copy (seed/blocks.mjs).
+BLOCKS.forEach((b, i) => add({ slug: b.slug, title: b.title, custom_excerpt: b.excerpt || null, html: b.html || '', published_at: at(420 - i) }, b.tags));
+// ED-page test block (replaced by the real ED blocks in Stage 4).
+add({ slug: 'blok-ed-shockwave', title: 'Shockwave therapy (blok)', custom_excerpt: 'Ujian blok shockwave.', html: '<p>Kandungan blok ujian.</p>', published_at: at(1) }, ['hash-blok', 'hash-blok-ed']);
 
 // Test articles: 12 posts so /blog/ (9 per page) and the tag archive paginate.
 for (let i = 1; i <= 12; i++) {

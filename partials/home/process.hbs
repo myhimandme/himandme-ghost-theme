@@ -1,0 +1,20 @@
+{{!-- Process. Block "blok-utama-proses": title = H2. The four steps are fixed microcopy
+      (shorter descriptions on phones, as on the mobile board). --}}
+<section class="hm-process" aria-labelledby="hm-process-title">
+    <div class="hm-container hm-process__inner">
+        <div class="hm-shead">
+            <div class="hm-shead__main">
+                <span class="hm-label"><span class="hm-label__slash">/</span> {{t "PROSES"}}</span>
+                {{#get "posts" filter="slug:blok-utama-proses" limit="1"}}
+                    {{#foreach posts}}<h2 class="hm-h2" id="hm-process-title">{{title}}</h2>{{else}}<h2 class="hm-h2" id="hm-process-title">{{t "Empat langkah, tanpa tekanan"}}</h2>{{/foreach}}
+                {{/get}}
+            </div>
+        </div>
+        <ol class="hm-steps">
+            <li class="hm-step"><span class="hm-step__no">01<span class="hm-step__slash">/</span><span class="hm-step__of">04</span></span><strong class="hm-step__title">{{t "Hubungi kami"}}</strong><span class="hm-step__text hm-hide-mobile">{{t "Melalui WhatsApp, telefon atau borang. Tanya apa sahaja dahulu."}}</span><span class="hm-step__text hm-show-mobile">{{t "WhatsApp, telefon atau borang."}}</span></li>
+            <li class="hm-step"><span class="hm-step__no">02<span class="hm-step__slash">/</span><span class="hm-step__of">04</span></span><strong class="hm-step__title">{{t "Konsultasi & penilaian"}}</strong><span class="hm-step__text hm-hide-mobile">{{t "Doktor menilai simptom, sejarah kesihatan dan faktor risiko anda."}}</span><span class="hm-step__text hm-show-mobile">{{t "Doktor menilai simptom dan faktor risiko."}}</span></li>
+            <li class="hm-step"><span class="hm-step__no">03<span class="hm-step__slash">/</span><span class="hm-step__of">04</span></span><strong class="hm-step__title">{{t "Pelan rawatan"}}</strong><span class="hm-step__text hm-hide-mobile">{{t "Pilihan diterangkan dengan jelas, termasuk jangkaan dan kos."}}</span><span class="hm-step__text hm-show-mobile">{{t "Pilihan, jangkaan dan kos diterangkan."}}</span></li>
+            <li class="hm-step"><span class="hm-step__no">04<span class="hm-step__slash">/</span><span class="hm-step__of">04</span></span><strong class="hm-step__title">{{t "Susulan"}}</strong><span class="hm-step__text hm-hide-mobile">{{t "Pemantauan kemajuan dan pelarasan pelan bila perlu."}}</span><span class="hm-step__text hm-show-mobile">{{t "Pemantauan dan pelarasan pelan."}}</span></li>
+        </ol>
+    </div>
+</section>

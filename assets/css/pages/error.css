@@ -1,7 +1,5 @@
 /* Error pages — composed only of existing type, label and button styles. */
 .hm-error { padding-top: 120px; padding-bottom: 120px; display: flex; flex-direction: column; gap: 22px; align-items: flex-start; }
-.hm-label { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
-.hm-label__slash { color: var(--hm-red); }
 .hm-error__title { font-size: clamp(36px, 4.6vw, 56px); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; max-width: 760px; }
 .hm-error__text { font-size: 18px; line-height: 1.6; color: var(--hm-text-2); max-width: 560px; }
 .hm-error__actions { display: flex; gap: 12px; flex-wrap: wrap; }

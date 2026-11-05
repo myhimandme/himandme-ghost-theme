@@ -56,11 +56,12 @@ const content = async (path) => (await fetch(`${BASE}/ghost/api/content${path}${
 const blocks = (await admin('/posts/?limit=all&filter=tag:hash-blok&fields=id,uuid,slug,title,custom_excerpt,url,status')).posts;
 const author = (await admin('/users/me/')).users[0];
 const blockSlugs = blocks.map((b) => b.slug);
-const blockMarkers = blocks.map((b) => (b.custom_excerpt || '').match(/ZZBLOK-\d+/)?.[0]).filter(Boolean);
+// Leak markers: each block's slug and UUID (the UUID appears in RSS <guid> and post links, never in rendered copy).
+const blockMarkers = blocks.map((b) => b.uuid);
 // Blocks rendered site-wide by design (footer address/hours + disclaimer). Their copy legitimately appears
 // on every page, so their markers are excluded from text-leak checks; their slugs are still checked.
 const SHARED_BLOCKS = ['blok-maklumat-hubungan', 'blok-penafian'];
-const sharedMarkers = blocks.filter((b) => SHARED_BLOCKS.includes(b.slug)).map((b) => (b.custom_excerpt || '').match(/ZZBLOK-\d+/)?.[0]);
+const sharedMarkers = []; // UUID markers are never rendered, so no exclusions are needed
 const leaks = (text) => [...blockSlugs, ...blockMarkers.filter((m) => !sharedMarkers.includes(m)), 'hash-blok'].filter((s) => text.includes(s));
 // For HTML pages: a block "leaks" if it is listed or linked as an article, or its non-shared copy appears.
 const htmlLeaks = (html) => [...new Set([
@@ -105,7 +106,8 @@ check('R11', 'Routes', 'Article URL from the API is /blog/{slug}/', apiArticleUr
 const old = await Promise.all(['/tag/disfungsi-ereksi/', `/author/${author.slug}/`, '/artikel-ujian-01/', '/blog/topik/', '/blog/penulis/'].map(async (p) => [p, (await get(p)).status]));
 check('R12', 'Routes', 'Default Ghost routes are gone; bare taxonomy bases 404', old.every(([, s]) => s === 404), old.map(([p, s]) => `${p} ${s}`).join(', '));
 const hero = blocks.find((b) => b.slug === 'blok-utama-hero');
-check('R13', 'Routes', 'Homepage H1 comes from block "blok-utama-hero"', home.body.includes(`data-test="hero-title">${hero?.title}<`), hero?.title || 'hero block missing');
+const esc = (t) => (t || '').replace(/&/g, '&amp;');
+check('R13', 'Routes', 'Homepage H1 comes from block "blok-utama-hero"', home.body.includes(`id="hm-hero-title">${esc(hero?.title)}</h1>`), hero?.title || 'hero block missing');
 const authorUrl = (await content(`/authors/slug/${author.slug}/?fields=url`)).authors?.[0]?.url;
 check('R14', 'Routes', 'Author profile URL is /blog/penulis/{slug}/ (channel route owns it)', authorUrl === `${BASE}/blog/penulis/${author.slug}/`, authorUrl);
 
@@ -165,19 +167,26 @@ const featuredLeak = ((await content('/posts/?filter=featured:true&limit=all')).
 check('B10', 'Blocks', 'Theme queries must add "+tag:-hash-blok" (guard rule for Stage 2+)', null, `an unguarded {{#get "posts"}} can return blocks; ${featuredLeak.length} featured blocks today`);
 
 // ---------- 3. Block lookup and editable content ----------
-const has = (html, test, text) => new RegExp(`data-test="${test}"[^>]*>${text ? text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : ''}`).test(html);
-const bPerk = blocks.find((b) => b.slug === 'blok-utama-perkhidmatan');
-check('C1', 'Lookup', 'Method A: one query, block picked by slug', has(home.body, 'a-perkhidmatan', bPerk?.title), bPerk?.title);
-check('C2', 'Lookup', 'Method B: one query per section', has(home.body, 'b-proses', 'Empat langkah'));
-check('C3', 'Lookup', 'Missing block falls back to the approved copy', has(home.body, 'b-missing-fallback') && !has(home.body, 'b-missing-found'));
+const titleOfBlock = (slug) => esc(blocks.find((b) => b.slug === slug)?.title);
+check('C1', 'Lookup', 'Homepage section headings come from their blocks (services, process, FAQ, CTA)',
+  [['hm-services-title', 'blok-utama-perkhidmatan'], ['hm-process-title', 'blok-utama-proses'], ['hm-faq-title', 'blok-utama-faq'], ['hm-cta-title', 'blok-utama-cta']]
+    .every(([id, slug]) => home.body.includes(`id="${id}">${titleOfBlock(slug)}</h2>`)));
+const homeBlocks = blocks.filter((b) => b.slug.startsWith('blok-utama-'));
+check('C2', 'Lookup', 'All 12 homepage blocks exist and render', homeBlocks.length === 12, `${homeBlocks.length} homepage blocks`);
+const cta = blocks.find((b) => b.slug === 'blok-utama-cta');
+await admin(`/posts/${cta.id}/`, { method: 'PUT', body: JSON.stringify({ posts: [{ status: 'draft', updated_at: (await admin(`/posts/${cta.id}/`)).posts[0].updated_at }] }) });
+const homeNoCta = (await get('/')).body;
+await admin(`/posts/${cta.id}/`, { method: 'PUT', body: JSON.stringify({ posts: [{ status: 'published', updated_at: (await admin(`/posts/${cta.id}/`)).posts[0].updated_at }] }) });
+check('C3', 'Lookup', 'Unpublished block falls back to the approved copy (tested with the CTA block, then restored)', homeNoCta.includes('id="hm-cta-title">Sedia untuk berbincang?</h2>') && homeNoCta.includes('hm-cta__intro'));
+const has = (html, test) => html.includes(`data-test="${test}"`); // ED scaffold markers (until Stage 4)
 check('C4', 'Lookup', 'ED page: block lookup + FAQ toggle card renders', has(ed.body, 'ed-shockwave') && /kg-toggle-card/.test(ed.body), `${/kg-toggle-card/.test(ed.body) ? 'toggle card present' : 'no toggle card'}`);
-check('C5', 'Lookup', 'Homepage FAQ toggle card renders from block "blok-utama-faq"', /data-test="faq"[\s\S]*kg-toggle-card/.test(home.body));
+check('C5', 'Lookup', 'Homepage FAQ toggle cards render from block "blok-utama-faq"', /data-hm-faq>[\s\S]*kg-toggle-card/.test(home.body), `${(home.body.match(/kg-toggle-card"/g) || []).length} questions`);
 const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
 check('C6', 'Settings', 'All 18 theme settings are registered in Ghost Admin', cs.length === 18, `${cs.length} settings`);
 const testVal = `60${Date.now().toString().slice(-9)}`;
 await admin('/custom_theme_settings/', { method: 'PUT', body: JSON.stringify({ custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key === 'whatsapp_number' ? testVal : s.value })) }) });
 const home2 = await get('/');
-check('C7', 'Settings', 'A changed theme setting appears on the site immediately', home2.body.includes(`data-key="whatsapp_number">${testVal}<`), testVal);
+check('C7', 'Settings', 'A changed theme setting appears on the site immediately (WhatsApp number)', home2.body.includes(`https://wa.me/${testVal}?`), testVal);
 await admin('/custom_theme_settings/', { method: 'PUT', body: JSON.stringify({ custom_theme_settings: cs }) });
 
 const times = [];

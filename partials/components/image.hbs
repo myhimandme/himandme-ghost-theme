@@ -1,0 +1,9 @@
+{{!-- Responsive Ghost image, or the prototype's patterned placeholder when no image is set.
+      Params: src (image URL), alt, class, sizes, dark (placeholder colour), eager (above the fold). --}}
+{{#if src}}
+<img class="{{class}}" src="{{img_url src size="l"}}"
+     srcset="{{img_url src size="s"}} 320w, {{img_url src size="m"}} 600w, {{img_url src size="l"}} 1000w, {{img_url src size="xl"}} 1600w"
+     sizes="{{#if sizes}}{{sizes}}{{else}}100vw{{/if}}" alt="{{alt}}"{{#unless eager}} loading="lazy"{{/unless}} decoding="async">
+{{else}}
+<div class="{{class}} {{#if dark}}hm-ph-dark{{else}}hm-ph{{/if}}" role="presentation"></div>
+{{/if}}

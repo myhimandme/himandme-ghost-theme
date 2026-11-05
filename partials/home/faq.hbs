@@ -1,0 +1,17 @@
+{{!-- FAQ. Block "blok-utama-faq": title = H2, body = Ghost toggle cards (one per question). --}}
+<section class="hm-faq" aria-labelledby="hm-faq-title">
+    <div class="hm-container hm-faq__inner">
+        <div class="hm-faq__head">
+            <span class="hm-label"><span class="hm-label__slash">/</span> {{t "SOALAN LAZIM"}}</span>
+            {{#get "posts" filter="slug:blok-utama-faq" limit="1"}}
+                {{#foreach posts}}<h2 class="hm-h2" id="hm-faq-title">{{title}}</h2>{{else}}<h2 class="hm-h2" id="hm-faq-title">{{t "Soalan yang ramai segan tanya"}}</h2>{{/foreach}}
+            {{/get}}
+            <a class="hm-link-arrow hm-faq__all hm-hide-mobile" href="{{@site.url}}/disfungsi-ereksi/#soalan">{{t "Lihat semua soalan →"}}</a>
+        </div>
+        <div class="hm-faq__list" data-hm-faq>
+            {{#get "posts" filter="slug:blok-utama-faq" limit="1"}}
+                {{#foreach posts}}{{content}}{{/foreach}}
+            {{/get}}
+        </div>
+    </div>
+</section>
