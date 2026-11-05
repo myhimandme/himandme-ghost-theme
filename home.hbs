@@ -1,0 +1,36 @@
+{{!< default}}
+{{!-- STAGE 1 VERIFICATION SCAFFOLD — replaced by the approved homepage design in Stage 3. --}}
+<main data-template="home">
+    {{> "stage1-settings-probe"}}
+    {{!-- Hero H1 / intro / image from block "blok-utama-hero"; approved copy as fallback. --}}
+    {{#get "posts" filter="slug:blok-utama-hero" limit="1"}}
+        {{#foreach posts}}<h1 data-test="hero-title">{{title}}</h1><p data-test="hero-excerpt">{{custom_excerpt}}</p>
+        {{else}}<h1 data-test="hero-title-fallback">Kesihatan lelaki, dibincang dengan tenang dan profesional.</h1>{{/foreach}}
+    {{/get}}
+    {{!-- Homepage FAQ: toggle cards in the body of block "blok-utama-faq". --}}
+    {{#get "posts" filter="slug:blok-utama-faq" limit="1"}}
+        {{#foreach posts}}<h2 data-test="faq-title">{{title}}</h2><div data-test="faq">{{content}}</div>{{/foreach}}
+    {{/get}}
+
+    {{!-- Method A: one query for all homepage blocks, each section picks its block by slug. --}}
+    <section data-test="method-a">
+        {{#get "posts" filter="tag:hash-blok-utama" limit="50" as |bloks|}}
+            {{#foreach bloks}}
+                {{#has slug="blok-utama-perkhidmatan"}}<h2 data-test="a-perkhidmatan">{{title}}</h2><p data-test="a-perkhidmatan-excerpt">{{custom_excerpt}}</p>{{/has}}
+            {{/foreach}}
+        {{/get}}
+    </section>
+
+    {{!-- Method B: one query per section, with the approved prototype copy as fallback.
+          Note: {{else}} on {{#get}} does NOT fire for empty results in Ghost 6.75 — use {{#foreach}}…{{else}}. --}}
+    <section data-test="method-b">
+        {{#get "posts" filter="slug:blok-utama-proses" limit="1"}}
+            {{#foreach posts}}<h2 data-test="b-proses">{{title}}</h2><div data-test="b-proses-content">{{content}}</div>
+            {{else}}<h2 data-test="b-proses-fallback">Empat langkah, tanpa tekanan</h2>{{/foreach}}
+        {{/get}}
+        {{#get "posts" filter="slug:blok-utama-tidak-wujud" limit="1"}}
+            {{#foreach posts}}<h2 data-test="b-missing-found">{{title}}</h2>
+            {{else}}<h2 data-test="b-missing-fallback">Fallback copy shown</h2>{{/foreach}}
+        {{/get}}
+    </section>
+</main>
