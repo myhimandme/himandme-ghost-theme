@@ -2,7 +2,7 @@
 
 Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site (Utama, Disfungsi Ereksi) and a separate editorial blog (/blog/). The approved HTML prototype is the master visual reference.
 
-> **Status: Stage 3 (homepage).** Site chrome (Stage 2) and the homepage match the approved prototype. The ED page, blog, topic/author pages and articles are still *verification scaffolding* until Stages 4–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md), [`docs/STAGE-2-REPORT.md`](docs/STAGE-2-REPORT.md), [`docs/STAGE-3-REPORT.md`](docs/STAGE-3-REPORT.md).
+> **Status: Stage 4 (Disfungsi Ereksi page).** Site chrome, the homepage and the ED page match the approved prototype. Blog, topic/author pages and articles are still *verification scaffolding* until Stages 5–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md) · [`STAGE-2`](docs/STAGE-2-REPORT.md) · [`STAGE-3`](docs/STAGE-3-REPORT.md) · [`STAGE-4`](docs/STAGE-4-REPORT.md). **Clinical content checklist: [`docs/CLINICAL-REVIEW.md`](docs/CLINICAL-REVIEW.md).**
 
 ## Requirements
 
@@ -25,6 +25,7 @@ Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site
 | `npm run test:stage1` | Routing and content-block verification suite against a **local** Ghost (see [`test/stage1/README.md`](test/stage1/README.md)) |
 | `npm run test:stage2` | Site-chrome checks (headers, footers, menus, settings, block fallback) against a local Ghost |
 | `npm run test:stage3` | Homepage checks (every block + fallback, article teaser, images, doctor card, accessibility basics) against a local Ghost |
+| `npm run test:stage4` | Disfungsi Ereksi page checks (blocks + fallback, FAQ, settings, every CTA, WhatsApp form in a browser, overflow) against a local Ghost |
 | `npm run visual` | Side-by-side screenshots of the approved prototype vs the local theme (`PROTOTYPE_HTML=…`) |
 
 ## Ghost Admin setup checklist (paths verified on Ghost 6.75.0)
@@ -82,7 +83,32 @@ Homepage and ED-page section headings and descriptions are **content blocks**: p
 | `blok-utama-faq` | FAQ heading | — | **Toggle cards**, one per question (first opens automatically) | — |
 | `blok-utama-cta` | Closing band heading | Band text | — | — |
 
+The hero label shows the theme setting **`city`** after "KESIHATAN LELAKI" (desktop). If `city` is empty the label shows no city at all, never a blank or placeholder.
+
 The doctor card uses the staff profile named in theme setting **`doctor_author_slug`** (name, photo) and the **`doctor_credentials`** setting. The "Dari blog" cards are the three newest articles and never include blocks. Section labels ("/ PERKHIDMATAN"), the hero checklist, the trust strip and the four process steps are fixed theme text in `locales/ms.json`.
+
+### Disfungsi Ereksi page (Stage 4)
+
+**The page itself** (Pages → *Disfungsi Ereksi*, Template: *Disfungsi ereksi*): **title** = H1, **excerpt** = hero intro, **body** = the FAQ (one **toggle card** per question; the first opens automatically), **meta data** = SEO title and description.
+
+**Blocks** (tag `#blok` + `#blok-ed`):
+
+| Block slug | Title | Excerpt | Body | Feature image |
+|---|---|---|---|---|
+| `blok-ed-apa` | 01 heading | "Bila perlu berjumpa doktor?" text | Paragraphs (left column), then **one bulleted list** (the signs, shown in the right-hand card) | — |
+| `blok-ed-punca` | 02 heading | Description | Charcoal callout text | — |
+| `blok-ed-penilaian` | 03 heading | Intro text | — | — |
+| `blok-ed-shockwave` / `blok-ed-kegel-ems` | 04 / 05 heading | Subtitle | **First paragraph** (shown above the tiles), then a **heading + bulleted list**, then a **closing note paragraph** (shown below the tiles) | Section photo (set alt text) |
+| `blok-ed-perbandingan` | Comparison heading | — | — | — |
+| `blok-ed-faq` | FAQ heading | — | — | — |
+| `blok-ed-temujanji` | Booking heading | Booking intro | — | — |
+
+*Write the body in that order. The theme shows the paragraphs and the list in their designed places automatically, so no special formatting is needed.*
+
+**Theme settings used:** `consultation_duration`, `consultation_fee`, `shockwave_session_duration` / `_count` / `shockwave_price`, `kegel_ems_session_duration` / `_count` / `kegel_ems_price`, **`show_prices`** (hides the fee and price tiles when off), WhatsApp number and messages, address, hours and phone (booking panel).
+**Fixed theme text** (`locales/ms.json`): section labels and tabs, the six cause cards, the four consultation steps, tile labels ("PEMBEDAHAN: Tidak", "BERPAKAIAN: [Sahkan]"), the comparison table rows, form labels and the WhatsApp message format.
+
+**Booking form:** builds a WhatsApp message from the visitor's input (name, phone, service, date, time, message) and opens WhatsApp. **Nothing is sent to or stored on the website.** The treatment CTAs ("Buat Temu Janji" under Shockwave / Kegel EMS) preselect that service.
 
 ## Repository layout (Stage 0–1)
 

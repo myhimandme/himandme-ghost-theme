@@ -1,0 +1,38 @@
+<section class="hm-container hm-edsvc hm-edsvc--{{kind}} hm-anchor" id="{{kind}}" aria-labelledby="hm-{{kind}}-title">
+    <div class="hm-edsvc__box">
+        {{> "components/image" src=img alt=alt class="hm-edsvc__img hm-cut-ed" sizes="(max-width: 599px) 100vw, 45vw"}}
+        <div class="hm-edsvc__text">
+            <span class="hm-label"><span class="hm-label__slash">{{no}}/</span> {{t "RAWATAN"}}</span>
+            <h2 class="hm-edh2 hm-edsvc__title" id="hm-{{kind}}-title">{{title}}</h2>
+            {{#if sub}}<span class="hm-edsvc__sub">{{sub}}</span>{{/if}}
+            <div class="hm-edsvc__lead hm-only-first">{{#if fallback}}{{#match kind "shockwave"}}{{> "ed/fallback/shockwave"}}{{else}}{{> "ed/fallback/kegel-ems"}}{{/match}}{{else}}{{{html}}}{{/if}}</div>
+            <div class="hm-tiles">
+                {{#match kind "shockwave"}}
+                    <div class="hm-tile"><span class="hm-tile__label"><span class="hm-hide-mobile">{{t "TEMPOH SESI"}}</span><span class="hm-show-mobile">{{t "SESI"}}</span></span><strong class="hm-tile__value">{{@custom.shockwave_session_duration}}</strong></div>
+                    <div class="hm-tile"><span class="hm-tile__label"><span class="hm-hide-mobile">{{t "BILANGAN SESI"}}</span><span class="hm-show-mobile">{{t "BILANGAN"}}</span></span><strong class="hm-tile__value">{{@custom.shockwave_session_count}}</strong></div>
+                    <div class="hm-tile"><span class="hm-tile__label">{{t "PEMBEDAHAN"}}</span><strong class="hm-tile__value">{{t "Tidak"}}</strong></div>
+                    {{#if @custom.show_prices}}<div class="hm-tile"><span class="hm-tile__label">{{t "KOS"}}</span><strong class="hm-tile__value">{{@custom.shockwave_price}}</strong></div>{{/if}}
+                {{else}}
+                    <div class="hm-tile"><span class="hm-tile__label"><span class="hm-hide-mobile">{{t "TEMPOH SESI"}}</span><span class="hm-show-mobile">{{t "SESI"}}</span></span><strong class="hm-tile__value">{{@custom.kegel_ems_session_duration}}</strong></div>
+                    <div class="hm-tile"><span class="hm-tile__label"><span class="hm-hide-mobile">{{t "BILANGAN SESI"}}</span><span class="hm-show-mobile">{{t "BILANGAN"}}</span></span><strong class="hm-tile__value">{{@custom.kegel_ems_session_count}}</strong></div>
+                    <div class="hm-tile"><span class="hm-tile__label">{{t "BERPAKAIAN"}}</span><strong class="hm-tile__value">{{t "[Sahkan]"}}</strong></div>
+                    {{#if @custom.show_prices}}<div class="hm-tile"><span class="hm-tile__label">{{t "KOS"}}</span><strong class="hm-tile__value">{{@custom.kegel_ems_price}}</strong></div>{{/if}}
+                {{/match}}
+            </div>
+            <div class="hm-edsvc__rest hm-skip-first">{{#if fallback}}{{#match kind "shockwave"}}{{> "ed/fallback/shockwave"}}{{else}}{{> "ed/fallback/kegel-ems"}}{{/match}}{{else}}{{{html}}}{{/if}}</div>
+        </div>
+    </div>
+    {{!-- Approved subtle CTA after each treatment section (Stage 2 decision #3). --}}
+    <div class="hm-svc-cta">
+        <span class="hm-svc-cta__q">{{#match kind "shockwave"}}{{t "Ingin tahu sama ada Shockwave therapy sesuai untuk anda?"}}{{else}}{{t "Ingin tahu sama ada Kegel EMS sesuai untuk anda?"}}{{/match}}</span>
+        <span class="hm-svc-cta__actions">
+            {{#match kind "shockwave"}}
+                <a class="hm-btn hm-btn--whatsapp hm-btn--sm" href="{{> "components/wa-href" message=(t "Salam, saya ingin bertanya tentang Shockwave therapy.")}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="16"}}{{t "WhatsApp Kami"}}</a>
+                <a class="hm-svc-cta__link" href="#temujanji" data-hm-service="Shockwave therapy">{{t "Buat Temu Janji"}}</a>
+            {{else}}
+                <a class="hm-btn hm-btn--whatsapp hm-btn--sm" href="{{> "components/wa-href" message=(t "Salam, saya ingin bertanya tentang Kegel EMS.")}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="16"}}{{t "WhatsApp Kami"}}</a>
+                <a class="hm-svc-cta__link" href="#temujanji" data-hm-service="Kegel EMS">{{t "Buat Temu Janji"}}</a>
+            {{/match}}
+        </span>
+    </div>
+</section>

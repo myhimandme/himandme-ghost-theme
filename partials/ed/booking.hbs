@@ -1,0 +1,45 @@
+{{!-- Temu janji. Block "blok-ed-temujanji": title = H2, excerpt = intro. Contact details: theme settings.
+      The form builds a WhatsApp message in the browser and opens WhatsApp — nothing is sent to or
+      stored on this website (approved Stage 1 decision). --}}
+<section class="hm-container hm-booking hm-anchor" id="temujanji" aria-labelledby="hm-booking-title">
+    <div class="hm-booking__text">
+        <span class="hm-label"><span class="hm-label__slash">/</span> {{t "TEMU JANJI"}}</span>
+        {{#get "posts" filter="slug:blok-ed-temujanji" limit="1"}}
+            {{#foreach posts}}<h2 class="hm-booking__title" id="hm-booking-title">{{title}}</h2>{{#if custom_excerpt}}<p class="hm-booking__intro">{{custom_excerpt}}</p>{{/if}}
+            {{else}}<h2 class="hm-booking__title" id="hm-booking-title">{{t "Tempah konsultasi sulit anda"}}</h2><p class="hm-booking__intro">{{t "Isi borang dan pasukan kami akan menghubungi anda untuk mengesahkan masa. Lebih cepat? WhatsApp kami terus."}}</p>{{/foreach}}
+        {{/get}}
+        <a class="hm-btn hm-btn--whatsapp hm-btn--lg hm-booking__wa" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="20"}}<span class="hm-hide-mobile">{{t "WhatsApp Kami"}}</span><span class="hm-show-mobile">{{t "WhatsApp Kami terus"}}</span></a>
+        <ul class="hm-contact">
+            {{#if @custom.address_short}}<li>{{> "icons/pin"}}<span>{{@custom.address_short}}</span></li>{{/if}}
+            {{#if @custom.opening_hours_short}}<li>{{> "icons/clock"}}<span>{{@custom.opening_hours_short}}</span></li>{{/if}}
+            {{#if @custom.phone_display}}<li>{{> "icons/phone"}}<span>{{@custom.phone_display}}</span></li>{{/if}}
+        </ul>
+        <span class="hm-booking__or hm-show-mobile">{{t "atau isi borang"}}</span>
+    </div>
+    <form class="hm-form" method="get" action="https://wa.me/{{@custom.whatsapp_number}}" target="_blank" data-hm-enquiry data-wa="{{@custom.whatsapp_number}}" novalidate>
+        <label class="hm-field"><span>{{t "Nama"}} <span class="hm-req" aria-hidden="true">*</span></span><input type="text" name="hm_nama" autocomplete="name" required placeholder="{{t "Nama panggilan pun boleh"}}"></label>
+        <label class="hm-field">{{t "No. telefon / WhatsApp"}}<input type="tel" name="hm_telefon" autocomplete="tel" inputmode="tel" placeholder="012-345 6789"></label>
+        <label class="hm-field">{{t "Perkhidmatan"}}
+            <select name="hm_perkhidmatan" required>
+                <option>{{t "Konsultasi & penilaian"}}</option>
+                <option>{{t "Shockwave therapy"}}</option>
+                <option>{{t "Kegel EMS"}}</option>
+                <option>{{t "Belum pasti"}}</option>
+            </select>
+        </label>
+        <label class="hm-field">{{t "Tarikh pilihan"}}<input type="date" name="hm_tarikh"></label>
+        <fieldset class="hm-field hm-field--full hm-radios">
+            <legend>{{t "Masa pilihan"}}</legend>
+            <label class="hm-radio"><input type="radio" name="hm_masa" value="{{t "Pagi"}}" checked>{{t "Pagi"}}</label>
+            <label class="hm-radio"><input type="radio" name="hm_masa" value="{{t "Petang"}}">{{t "Petang"}}</label>
+            <label class="hm-radio"><input type="radio" name="hm_masa" value="{{t "Malam"}}">{{t "Malam [jika dibuka]"}}</label>
+        </fieldset>
+        <label class="hm-field hm-field--full">{{t "Mesej (pilihan)"}}<textarea name="text" rows="4" placeholder="{{t "Apa-apa yang anda ingin kami tahu sebelum konsultasi"}}"></textarea></label>
+        <label class="hm-consent hm-field--full"><input type="checkbox" name="hm_consent" required><span>{{t "Saya bersetuju maklumat ini digunakan untuk menghubungi saya berkenaan temu janji, selaras dengan"}} <a href="{{@site.url}}/notis-privasi/">{{t "Notis Privasi"}}</a> (PDPA 2010).</span></label>
+        <p class="hm-form__error hm-field--full" role="alert" hidden data-hm-form-error>{{t "Sila isi nama anda dan tandakan persetujuan sebelum menghantar."}}</p>
+        <div class="hm-form__submit hm-field--full">
+            <button class="hm-btn hm-btn--primary hm-btn--lg" type="submit">{{> "icons/whatsapp" size="20"}}{{t "Hantar melalui WhatsApp"}}</button>
+            <span class="hm-form__note" id="hm-form-note">{{t "Anda akan dibawa ke WhatsApp untuk menghantar mesej ini. Maklumat anda tidak disimpan di laman web ini."}}</span>
+        </div>
+    </form>
+</section>

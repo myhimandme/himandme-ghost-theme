@@ -1,0 +1,23 @@
+{{!-- ED hero: H1 = the Ghost page's TITLE, intro = its EXCERPT (Pages → Disfungsi Ereksi). --}}
+<section class="hm-edhero">
+    <div class="hm-container hm-edhero__inner">
+        <div class="hm-edhero__text">
+            <nav class="hm-crumbs" aria-label="{{t "Laluan"}}"><a href="{{@site.url}}/">{{t "Utama"}}</a> <span class="hm-label__slash">/</span> <span aria-current="page">{{t "Disfungsi Ereksi"}}</span></nav>
+            <h1 class="hm-edhero__title">{{title}}</h1>
+            {{#if custom_excerpt}}<p class="hm-edhero__intro">{{custom_excerpt}}</p>{{/if}}
+            <div class="hm-edhero__ctas hm-hide-mobile">
+                <a class="hm-btn hm-btn--primary hm-btn--lg" href="#temujanji">{{> "icons/calendar" size="20"}}{{t "Buat Temu Janji"}}</a>
+                <a class="hm-btn hm-btn--whatsapp hm-btn--lg" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="20"}}{{t "WhatsApp Kami"}}</a>
+            </div>
+        </div>
+        <nav class="hm-toc hm-hide-mobile" aria-label="{{t "Kandungan halaman"}}">
+            <strong class="hm-toc__label">{{t "DALAM HALAMAN INI"}}</strong>
+            <a class="hm-toc__link" href="#apa"><span><span class="hm-label__slash">01/</span> {{t "Apa itu disfungsi ereksi"}}</span><span aria-hidden="true">→</span></a>
+            <a class="hm-toc__link" href="#punca"><span><span class="hm-label__slash">02/</span> {{t "Punca & faktor penyumbang"}}</span><span aria-hidden="true">→</span></a>
+            <a class="hm-toc__link" href="#penilaian"><span><span class="hm-label__slash">03/</span> {{t "Penilaian & konsultasi"}}</span><span aria-hidden="true">→</span></a>
+            <a class="hm-toc__link" href="#shockwave"><span><span class="hm-label__slash">04/</span> {{t "Shockwave therapy"}}</span><span aria-hidden="true">→</span></a>
+            <a class="hm-toc__link" href="#ems"><span><span class="hm-label__slash">05/</span> {{t "Kegel EMS"}}</span><span aria-hidden="true">→</span></a>
+            <a class="hm-toc__link" href="#soalan"><span><span class="hm-label__slash">06/</span> {{t "Soalan lazim"}}</span><span aria-hidden="true">→</span></a>
+        </nav>
+    </div>
+</section>

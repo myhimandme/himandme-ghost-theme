@@ -1,0 +1,15 @@
+{{!-- 04 Shockwave / 05 Kegel EMS. Blocks "blok-ed-shockwave" / "blok-ed-kegel-ems":
+      title = H2, excerpt = subtitle, feature image = photo, body = description paragraph, then a
+      sub-heading + list, then a closing disclaimer paragraph. Session/price tiles: theme settings.
+      Params: kind ("shockwave" | "ems"). --}}
+{{#match kind "shockwave"}}
+    {{#get "posts" filter="slug:blok-ed-shockwave" limit="1"}}
+        {{#foreach posts}}{{> "ed/service-view" kind="shockwave" no="04" title=title sub=custom_excerpt html=html img=feature_image alt=feature_image_alt}}
+        {{else}}{{> "ed/service-view" kind="shockwave" no="04" title=(t "Shockwave therapy") sub=(t "Terapi gelombang kejutan intensiti rendah (Low-Intensity Extracorporeal Shockwave Therapy, Li-ESWT)") fallback=true}}{{/foreach}}
+    {{/get}}
+{{else}}
+    {{#get "posts" filter="slug:blok-ed-kegel-ems" limit="1"}}
+        {{#foreach posts}}{{> "ed/service-view" kind="ems" no="05" title=title sub=custom_excerpt html=html img=feature_image alt=feature_image_alt}}
+        {{else}}{{> "ed/service-view" kind="ems" no="05" title=(t "Kegel EMS") sub=(t "Stimulasi otot lantai pelvis (pelvic floor muscle stimulation)") fallback=true}}{{/foreach}}
+    {{/get}}
+{{/match}}

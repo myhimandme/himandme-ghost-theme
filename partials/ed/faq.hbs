@@ -1,0 +1,11 @@
+{{!-- 06 FAQ. Heading: block "blok-ed-faq". Questions: toggle cards in the BODY of the Ghost page
+      "Disfungsi Ereksi" (Pages → Disfungsi Ereksi). Rendered inside the page context. --}}
+<section class="hm-faq hm-faq--ed hm-anchor" id="soalan" aria-labelledby="hm-edfaq-title">
+    <div class="hm-edfaq__inner">
+        <span class="hm-label"><span class="hm-label__slash">06/</span> {{t "SOALAN LAZIM"}}</span>
+        {{#get "posts" filter="slug:blok-ed-faq" limit="1"}}
+            {{#foreach posts}}<h2 class="hm-edh2 hm-edfaq__title" id="hm-edfaq-title">{{title}}</h2>{{else}}<h2 class="hm-edh2 hm-edfaq__title" id="hm-edfaq-title">{{t "Soalan lazim"}}</h2>{{/foreach}}
+        {{/get}}
+        <div class="hm-faq__list" data-hm-faq>{{{html}}}</div>
+    </div>
+</section>

@@ -1,0 +1,17 @@
+{{!-- Comparison. Block "blok-ed-perbandingan": title = H2. Table rows are fixed theme text. --}}
+<section class="hm-container hm-edcmp" aria-labelledby="hm-cmp-title">
+    {{#get "posts" filter="slug:blok-ed-perbandingan" limit="1"}}
+        {{#foreach posts}}<h2 class="hm-edcmp__title" id="hm-cmp-title">{{title}}</h2>{{else}}<h2 class="hm-edcmp__title" id="hm-cmp-title">{{t "Perbandingan ringkas"}}</h2>{{/foreach}}
+    {{/get}}
+    <div class="hm-edcmp__wrap" role="region" aria-labelledby="hm-cmp-title" tabindex="0">
+        <table class="hm-edcmp__table">
+            <thead><tr><th scope="col"><span class="hm-visually-hidden">{{t "Perkara"}}</span></th><th scope="col">{{t "Shockwave therapy"}}</th><th scope="col">{{t "Kegel EMS"}}</th></tr></thead>
+            <tbody>
+                <tr><th scope="row">{{t "Fokus"}}</th><td>{{t "Tisu & aliran darah zakar"}}</td><td>{{t "Otot lantai pelvis"}}</td></tr>
+                <tr><th scope="row">{{t "Kaedah"}}</th><td>{{t "Gelombang akustik intensiti rendah"}}</td><td>{{t "Stimulasi otot berulang"}}</td></tr>
+                <tr><th scope="row">{{t "Pembedahan / ubat"}}</th><td>{{t "Tidak"}}</td><td>{{t "Tidak"}}</td></tr>
+                <tr><th scope="row">{{t "Kesesuaian"}}</th><td colspan="2">{{t "Ditentukan selepas penilaian — sesetengah pesakit mungkin dicadangkan gabungan, atau rujukan untuk pilihan lain."}}</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>

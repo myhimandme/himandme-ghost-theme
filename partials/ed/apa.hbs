@@ -1,0 +1,6 @@
+{{!-- 01 Apa itu ED. Block "blok-ed-apa": title = H2; body = paragraphs (left) + one bulleted list
+      (signs, shown in the right-hand card); excerpt = "Bila perlu berjumpa doktor?" text. --}}
+{{#get "posts" filter="slug:blok-ed-apa" limit="1"}}
+    {{#foreach posts}}{{> "ed/apa-view" title=title note=custom_excerpt html=html}}
+    {{else}}{{> "ed/apa-view" title=(t "Kesukaran berterusan untuk mencapai atau mengekalkan ereksi.") note=(t "Jika masalah berlaku berulang kali selama beberapa minggu, atau jika anda juga mempunyai kencing manis, darah tinggi atau sakit jantung.") fallback=true}}{{/foreach}}
+{{/get}}

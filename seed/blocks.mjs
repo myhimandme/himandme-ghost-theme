@@ -90,6 +90,52 @@ export const BLOCKS = [
     title: 'Sedia untuk berbincang?',
     excerpt: 'Tempah konsultasi, atau mesej kami dahulu jika anda ada soalan. Tiada komitmen untuk memulakan rawatan.',
   },
+  // ---- Disfungsi Ereksi page (Stage 4) — 8 blocks, tag #blok + #blok-ed ----
+  // CLINICAL REVIEW: every ED block below contains clinical or service statements copied from the
+  // approved prototype. They must be reviewed and verified by the doctor before launch
+  // (checklist: docs/CLINICAL-REVIEW.md).
+  {
+    slug: 'blok-ed-apa', tags: ['hash-blok', 'hash-blok-ed'], review: true,
+    title: 'Kesukaran berterusan untuk mencapai atau mengekalkan ereksi.',
+    excerpt: 'Jika masalah berlaku berulang kali selama beberapa minggu, atau jika anda juga mempunyai kencing manis, darah tinggi atau sakit jantung.',
+    html: '<p>Disfungsi ereksi (ED) ialah keadaan apabila seorang lelaki kerap mengalami kesukaran untuk mendapatkan atau mengekalkan ereksi yang mencukupi untuk hubungan seksual. Mengalaminya sekali-sekala adalah perkara biasa. Apabila ia berlaku secara berulang, ia wajar dinilai oleh doktor.</p><p>ED bukan sahaja isu bilik tidur. Ereksi bergantung kepada salur darah, saraf, hormon dan keadaan emosi yang sihat — jadi perubahan pada fungsi ereksi kadangkala memberi petunjuk tentang kesihatan keseluruhan anda.</p><ul><li>Sukar mendapatkan ereksi</li><li>Ereksi tidak bertahan cukup lama</li><li>Ereksi kurang keras berbanding sebelum ini</li><li>Kebimbangan tentang prestasi yang menjejaskan keyakinan</li></ul>',
+  },
+  {
+    slug: 'blok-ed-punca', tags: ['hash-blok', 'hash-blok-ed'], review: true,
+    title: 'Selalunya lebih daripada satu faktor',
+    excerpt: 'Faktor fizikal dan psikologi sering saling mempengaruhi. Penilaian membantu mengenal pasti yang mana berkaitan dengan anda.',
+    html: '<p>ED kadangkala muncul lebih awal daripada simptom masalah jantung atau salur darah. Itulah sebabnya kami menilai kesihatan anda secara menyeluruh — bukan simptom sahaja.</p>',
+  },
+  {
+    slug: 'blok-ed-penilaian', tags: ['hash-blok', 'hash-blok-ed'], review: true,
+    title: 'Rawatan yang betul bermula dengan soalan yang betul.',
+    excerpt: 'Konsultasi pertama ialah perbualan sulit bersama doktor. Tiada pemeriksaan dilakukan tanpa penjelasan dan persetujuan anda.',
+  },
+  {
+    slug: 'blok-ed-shockwave', tags: ['hash-blok', 'hash-blok-ed'], review: true,
+    title: 'Shockwave therapy',
+    excerpt: 'Terapi gelombang kejutan intensiti rendah (Low-Intensity Extracorporeal Shockwave Therapy, Li-ESWT)',
+    html: '<p>Rawatan tanpa pembedahan dan tanpa ubat yang menggunakan gelombang akustik bertenaga rendah pada tisu zakar. Ia bertujuan menyokong aliran darah dan disyorkan hanya selepas penilaian menunjukkan ia sesuai untuk anda.</p><h3>Semasa sesi</h3><ul><li>Anda berbaring dengan selesa; gel digunakan pada kawasan rawatan.</li><li>Peranti digerakkan perlahan pada beberapa titik. [Sahkan: sensasi yang dialami]</li><li>Anda boleh meneruskan aktiviti harian selepas sesi. [Sahkan]</li></ul><p>Keputusan berbeza mengikut individu. Rawatan ini tidak sesuai untuk semua pesakit; doktor akan menilai kesesuaian anda terlebih dahulu.</p>',
+  },
+  {
+    slug: 'blok-ed-kegel-ems', tags: ['hash-blok', 'hash-blok-ed'], review: true,
+    title: 'Kegel EMS',
+    excerpt: 'Stimulasi otot lantai pelvis (pelvic floor muscle stimulation)',
+    html: '<p>Otot lantai pelvis membantu mengawal aliran darah keluar dari zakar semasa ereksi. Kegel EMS merangsang otot-otot ini untuk mengecut secara berulang — seperti senaman Kegel, tetapi dengan bantuan peranti — untuk membantu menguatkannya.</p><h3>Mungkin dipertimbangkan untuk</h3><ul><li>Lelaki dengan otot lantai pelvis yang lemah, berdasarkan penilaian</li><li>Sebagai sebahagian daripada pelan rawatan bersama pilihan lain</li></ul><p>Keputusan berbeza mengikut individu. Kesesuaian ditentukan selepas penilaian oleh doktor.</p>',
+  },
+  {
+    slug: 'blok-ed-perbandingan', tags: ['hash-blok', 'hash-blok-ed'],
+    title: 'Perbandingan ringkas',
+  },
+  {
+    slug: 'blok-ed-faq', tags: ['hash-blok', 'hash-blok-ed'],
+    title: 'Soalan lazim',
+  },
+  {
+    slug: 'blok-ed-temujanji', tags: ['hash-blok', 'hash-blok-ed'],
+    title: 'Tempah konsultasi sulit anda',
+    excerpt: 'Isi borang dan pasukan kami akan menghubungi anda untuk mengesahkan masa. Lebih cepat? WhatsApp kami terus.',
+  },
 ];
 
 export const BLOCK_TAGS = {
@@ -97,3 +143,24 @@ export const BLOCK_TAGS = {
   'hash-blok-utama': '#blok-utama',
   'hash-blok-ed': '#blok-ed',
 };
+
+// Ghost pages created by the seed. The ED page's BODY holds its FAQ (toggle cards).
+export const PAGES = [
+  {
+    slug: 'disfungsi-ereksi', custom_template: 'custom-disfungsi-ereksi', review: true,
+    title: 'Disfungsi ereksi boleh dinilai. Dan boleh dirawat.',
+    excerpt: 'Panduan jelas tentang disfungsi ereksi (erectile dysfunction, ED) — puncanya, cara ia dinilai, dan pilihan rawatan yang tersedia di Him & Me.',
+    meta_title: 'Disfungsi Ereksi — Him & Me',
+    html: [
+      toggle('Adakah disfungsi ereksi perkara biasa?', 'Ya. Ia adalah antara masalah kesihatan seksual yang paling kerap dialami lelaki, terutamanya apabila usia meningkat atau dengan keadaan seperti kencing manis dan darah tinggi. Ia boleh dibincangkan dan dinilai seperti masalah kesihatan lain.'),
+      toggle('Adakah shockwave therapy menyakitkan?', '[Jawapan — akan disahkan oleh doktor]'),
+      toggle('Berapa banyak sesi yang saya perlukan?', '[Jawapan — akan disahkan oleh doktor]'),
+      toggle('Bolehkah saya teruskan ubat yang sedang saya ambil?', '[Jawapan — akan disahkan oleh doktor]'),
+      toggle('Bolehkah pasangan saya hadir bersama?', '[Jawapan — akan disahkan]'),
+      toggle('Berapakah kos rawatan?', '[Jawapan — akan disahkan]'),
+    ].join(''),
+  },
+  { slug: 'jurnal', title: 'Jurnal Kesihatan Lelaki', meta_title: 'Jurnal Kesihatan Lelaki — Him & Me', meta_description: 'Artikel pendidikan tentang kesihatan lelaki.', excerpt: 'Route data for /blog/ (SEO title, description and social image).', html: '<p>Halaman data untuk /blog/. Jangan nyahterbit.</p>' },
+  { slug: 'notis-privasi', title: 'Notis Privasi', html: '<p>[Kandungan Notis Privasi (PDPA 2010) — akan dibekalkan]</p>' },
+  { slug: 'dasar-editorial', title: 'Dasar Editorial', html: '<p>[Kandungan Dasar Editorial — akan dibekalkan]</p>' },
+];

@@ -26,7 +26,8 @@
     "guard": "node scripts/check-blok-guard.mjs",
     "test:stage2": "node test/stage2/run.mjs",
     "visual": "node test/visual/compare.mjs",
-    "test:stage3": "node test/stage3/run.mjs"
+    "test:stage3": "node test/stage3/run.mjs",
+    "test:stage4": "node test/stage4/run.mjs"
   },
   "devDependencies": {
     "bestzip": "4.0.3",
@@ -57,6 +58,11 @@
     },
     "card_assets": true,
     "custom": {
+      "city": {
+        "type": "text",
+        "default": "",
+        "description": "City for the homepage hero label (e.g. Kuala Lumpur). Leave empty to show no city."
+      },
       "whatsapp_number": {
         "type": "text",
         "default": "60000000000",

@@ -178,11 +178,11 @@ await admin(`/posts/${cta.id}/`, { method: 'PUT', body: JSON.stringify({ posts: 
 const homeNoCta = (await get('/')).body;
 await admin(`/posts/${cta.id}/`, { method: 'PUT', body: JSON.stringify({ posts: [{ status: 'published', updated_at: (await admin(`/posts/${cta.id}/`)).posts[0].updated_at }] }) });
 check('C3', 'Lookup', 'Unpublished block falls back to the approved copy (tested with the CTA block, then restored)', homeNoCta.includes('id="hm-cta-title">Sedia untuk berbincang?</h2>') && homeNoCta.includes('hm-cta__intro'));
-const has = (html, test) => html.includes(`data-test="${test}"`); // ED scaffold markers (until Stage 4)
-check('C4', 'Lookup', 'ED page: block lookup + FAQ toggle card renders', has(ed.body, 'ed-shockwave') && /kg-toggle-card/.test(ed.body), `${/kg-toggle-card/.test(ed.body) ? 'toggle card present' : 'no toggle card'}`);
+const swBlock = blocks.find((b) => b.slug === 'blok-ed-shockwave');
+check('C4', 'Lookup', 'ED page: block lookup + FAQ toggle cards render', ed.body.includes(`id="hm-shockwave-title">${esc(swBlock?.title)}</h2>`) && /id="soalan"[\s\S]*kg-toggle-card/.test(ed.body), swBlock?.title);
 check('C5', 'Lookup', 'Homepage FAQ toggle cards render from block "blok-utama-faq"', /data-hm-faq>[\s\S]*kg-toggle-card/.test(home.body), `${(home.body.match(/kg-toggle-card"/g) || []).length} questions`);
 const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
-check('C6', 'Settings', 'All 18 theme settings are registered in Ghost Admin', cs.length === 18, `${cs.length} settings`);
+check('C6', 'Settings', 'All 19 theme settings are registered in Ghost Admin (18 + city, approved Stage 3)', cs.length === 19, `${cs.length} settings`);
 const testVal = `60${Date.now().toString().slice(-9)}`;
 await admin('/custom_theme_settings/', { method: 'PUT', body: JSON.stringify({ custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key === 'whatsapp_number' ? testVal : s.value })) }) });
 const home2 = await get('/');
