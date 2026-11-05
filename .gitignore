@@ -6,3 +6,4 @@ test/stage1/.local/
 .DS_Store
 .env
 .env.*
+test/visual/.local/

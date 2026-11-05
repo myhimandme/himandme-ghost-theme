@@ -1,0 +1,12 @@
+{{!-- Sticky action bar on phones. variant="article": slim question + Temu Janji (article mobile board). --}}
+{{#match variant "article"}}
+<div class="hm-mbar hm-mbar--article">
+    <span class="hm-mbar__text">{{t "Ada soalan? Bincang dengan doktor."}}</span>
+    <a class="hm-btn hm-btn--primary hm-mbar__cta-sm" href="{{> "components/booking-href"}}">{{t "Temu Janji"}}</a>
+</div>
+{{else}}
+<div class="hm-mbar">
+    <a class="hm-btn hm-btn--whatsapp hm-mbar__wa" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="18"}}WhatsApp</a>
+    <a class="hm-btn hm-btn--primary hm-mbar__cta" href="{{> "components/booking-href"}}">{{t "Buat Temu Janji"}}</a>
+</div>
+{{/match}}

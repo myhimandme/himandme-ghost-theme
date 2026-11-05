@@ -1,0 +1,10 @@
+{{!-- Compact main-site footer: logo + disclaimer (Disfungsi Ereksi page, plain pages, errors). --}}
+<footer class="hm-footer hm-footer--compact">
+    <div class="hm-container hm-footer__compact">
+        {{> "components/logo"}}
+        <div class="hm-footer__compact-text">
+            {{> "components/disclaimer"}}
+            © {{date format="YYYY"}} {{t "Him & Me Men's Health"}} · <a href="{{@site.url}}/notis-privasi/">{{t "Notis Privasi"}}</a>
+        </div>
+    </div>
+</footer>

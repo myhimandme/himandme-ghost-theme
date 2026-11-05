@@ -1,0 +1,24 @@
+/* Mobile menu panel — reuses header, navigation and button styles (not separately drawn in the prototype). */
+.hm-menu {
+  position: fixed; inset: 0; z-index: 60; background: var(--hm-white);
+  display: flex; flex-direction: column; gap: 20px; padding: 14px 16px 32px; overflow-y: auto;
+}
+.hm-menu[hidden] { display: none; }
+.hm-menu__top { display: flex; align-items: center; justify-content: space-between; }
+.hm-menu__logo .hm-logo { height: 34px; width: auto; }
+.hm-menu__nav { display: flex; flex-direction: column; border-top: 1px solid var(--hm-grey-light); }
+.hm-menu__link {
+  display: block; padding: 16px 0; border-bottom: 1px solid var(--hm-grey-light);
+  font-size: 20px; font-weight: 700; letter-spacing: -0.01em; color: var(--hm-charcoal); text-decoration: none;
+}
+.hm-menu__link.nav-current { color: var(--hm-red-deep); }
+.hm-menu__label { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; color: var(--hm-text-2); text-transform: uppercase; margin-top: 4px; }
+.hm-menu__cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: -8px; }
+.hm-menu__cat {
+  display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 999px;
+  background: var(--hm-warm); color: var(--hm-charcoal); font-size: 13px; font-weight: 700; text-decoration: none;
+}
+.hm-menu__cat.nav-current { background: var(--hm-charcoal); color: var(--hm-white); }
+.hm-menu__actions { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.hm-menu__meta { font-size: 13px; line-height: 1.6; color: var(--hm-text-2); }
+html.hm-menu-open, html.hm-menu-open body { overflow: hidden; }

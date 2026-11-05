@@ -1,0 +1,19 @@
+{{!-- Blog footer. links=true (blog home, topic, author): logo + menu row.
+      Article pages: logo + disclaimer with the Dasar Editorial link. --}}
+<footer class="hm-bfooter{{#if links}} hm-bfooter--links{{/if}}">
+    <div class="hm-container-blog hm-bfooter__inner">
+        <div class="hm-bfooter__brand">
+            {{> "components/logo"}}
+            {{#if links}}
+                <span class="hm-bfooter__links">
+                    {{#foreach @site.navigation}}<a href="{{url absolute="true"}}">{{label}}</a>{{/foreach}}
+                    <a href="{{@site.url}}/dasar-editorial/">{{t "Dasar Editorial"}}</a>
+                </span>
+            {{/if}}
+        </div>
+        <div class="hm-bfooter__text">
+            {{> "components/disclaimer" variant="blog"}}
+            © {{date format="YYYY"}} {{t "Him & Me Men's Health"}}{{#unless links}} · <a href="{{@site.url}}/dasar-editorial/">{{t "Dasar Editorial"}}</a>{{/unless}}
+        </div>
+    </div>
+</footer>

@@ -53,5 +53,13 @@ await admin('/settings/', { method: 'PUT', json: { settings: [
   { key: 'meta_description', value: 'Penilaian dan rawatan disfungsi ereksi dalam suasana yang sulit.' },
   // Settings → Growth → Network. Greyed out on localhost in the UI, so set through the API here.
   { key: 'social_web', value: false },
+  { key: 'locale', value: 'ms' },
+  { key: 'title', value: 'Him & Me' },
+  // Settings → Site → Navigation (primary = main menu; secondary = blog categories)
+  { key: 'navigation', value: JSON.stringify([
+    { label: 'Utama', url: '/' }, { label: 'Disfungsi Ereksi', url: '/disfungsi-ereksi/' }, { label: 'Blog', url: '/blog/' }]) },
+  { key: 'secondary_navigation', value: JSON.stringify([
+    { label: 'Disfungsi Ereksi', url: '/blog/topik/disfungsi-ereksi/' }, { label: 'Gaya Hidup', url: '/blog/topik/gaya-hidup/' },
+    { label: 'Panduan', url: '/blog/topik/panduan/' }]) },
 ] } });
-console.log('✓ homepage meta data set; social web (Network) off');
+console.log('✓ meta data, locale ms, navigation set; social web (Network) off');

@@ -1,0 +1,68 @@
+/* Footers — main (full + phone), compact (ED / pages), blog and article (prototype boards). */
+.hm-footer { background: var(--hm-warm); border-top: 1px solid var(--hm-grey-light); }
+.hm-footer .hm-logo { height: 44px; width: auto; }
+
+.hm-footer__inner { display: flex; flex-direction: column; gap: 48px; padding-top: 72px; padding-bottom: 40px; }
+.hm-footer__cols { display: flex; flex-wrap: wrap; gap: 48px; justify-content: space-between; }
+.hm-footer__brand { flex: 1 1 280px; display: flex; flex-direction: column; gap: 16px; }
+.hm-footer__brand .hm-logo { align-self: flex-start; }
+.hm-footer__desc { font-size: 15px; line-height: 1.6; color: var(--hm-text-2); max-width: 300px; }
+.hm-footer__col { display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+.hm-footer__col--lokasi { flex: 0 1 220px; }
+.hm-footer__col--waktu { flex: 0 1 200px; }
+.hm-footer__col--hubungi { flex: 0 1 180px; }
+.hm-footer__col--laman { flex: 0 1 160px; }
+.hm-footer__heading { font-size: 13px; letter-spacing: 0.1em; color: var(--hm-text-2); font-weight: 700; }
+.hm-footer__address { white-space: pre-line; line-height: calc(1.366em + 10px); margin: -5px 0; } /* one line per address line, spaced like the prototype's 10px gap */
+.hm-footer__hours p { margin: 0 0 10px; }
+.hm-footer__hours p:last-child { margin-bottom: 0; }
+.hm-footer__maps { font-weight: 600; }
+.hm-footer__plain { color: var(--hm-charcoal); text-decoration: none; }
+.hm-footer__plain:hover { color: var(--hm-red-deep); }
+.hm-footer__bottom {
+  border-top: 1px solid var(--hm-rule-warm); padding-top: 24px;
+  display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;
+  font-size: 13px; line-height: 1.6; color: var(--hm-text-2);
+}
+.hm-footer__disclaimer { max-width: 760px; }
+.hm-disclaimer-body p { margin: 0; display: inline; }
+.hm-disclaimer-body p + p::before { content: " "; }
+.hm-disclaimer-body { display: inline; }
+
+/* Phone footer */
+.hm-footer__m { padding: 48px 16px 120px; display: flex; flex-direction: column; gap: 28px; }
+.hm-footer__m .hm-logo { height: 36px; align-self: flex-start; }
+.hm-footer__m-info { display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
+.hm-footer__m-info .hm-footer__heading { font-size: 12px; }
+.hm-footer__m-info .hm-footer__hours p { margin: 0 0 6px; }
+.hm-footer__m-info .hm-footer__address { line-height: calc(1.366em + 6px); margin: -3px 0; }
+.hm-footer__m-links { display: flex; gap: 20px; font-size: 15px; font-weight: 600; flex-wrap: wrap; }
+.hm-footer__m-links a { color: var(--hm-charcoal); text-decoration: none; }
+.hm-footer__m-disclaimer { font-size: 12px; line-height: 1.6; color: var(--hm-text-2); border-top: 1px solid var(--hm-rule-warm); padding-top: 20px; }
+
+/* Compact (ED desktop: logo 40, 56/40 padding; ED mobile: logo 34, 40/120 padding) */
+.hm-footer__compact { display: flex; flex-wrap: wrap; gap: 32px; justify-content: space-between; align-items: flex-start; padding-top: 56px; padding-bottom: 40px; }
+.hm-footer--compact .hm-logo { height: 40px; }
+.hm-footer__compact-text { flex: 1 1 520px; font-size: 13px; line-height: 1.6; color: var(--hm-text-2); }
+@media (max-width: 599px) {
+  .hm-footer__compact { flex-direction: column; gap: 20px; padding: 40px 16px 120px; }
+  .hm-footer--compact .hm-logo { height: 34px; }
+  .hm-footer__compact-text { flex: none; font-size: 12px; }
+}
+
+/* Blog + article footer */
+.hm-bfooter { border-top: 1px solid var(--hm-rule-warm); background: var(--hm-warm); }
+.hm-bfooter__inner { display: flex; flex-wrap: wrap; gap: 32px; justify-content: space-between; align-items: flex-start; padding-top: 48px; padding-bottom: 48px; }
+.hm-bfooter__brand { display: flex; flex-direction: column; gap: 14px; }
+.hm-bfooter__brand .hm-logo { height: 36px; width: auto; align-self: flex-start; }
+.hm-bfooter__links { display: flex; gap: 20px; font-size: 14px; font-weight: 600; flex-wrap: wrap; }
+.hm-bfooter__links a { color: var(--hm-charcoal); text-decoration: none; }
+.hm-bfooter__links a:hover { color: var(--hm-red-deep); }
+.hm-bfooter__text { flex: 0 1 560px; font-size: 13px; line-height: 1.6; color: var(--hm-text-2); }
+@media (max-width: 599px) {
+  .hm-bfooter__inner { flex-direction: column; gap: 16px; padding: 32px 16px 48px; }
+  .hm-bfooter__brand .hm-logo { height: 30px; }
+  .hm-bfooter__links { display: none; }
+  .hm-bfooter__text { flex: none; font-size: 12px; }
+  .is-post .hm-bfooter__inner { padding-bottom: 120px; } /* room for the sticky bar */
+}

@@ -1,0 +1,19 @@
+{{!-- Main-site header (Utama, Disfungsi Ereksi, pages). Menu items: Settings → Site → Navigation (primary). --}}
+<header class="hm-header">
+    <div class="hm-container hm-header__inner">
+        <a class="hm-header__logo" href="{{@site.url}}/">{{> "components/logo"}}</a>
+        <nav class="hm-nav" aria-label="{{t "Navigasi utama"}}">
+            {{#foreach @site.navigation}}
+                <a class="{{link_class for=url class="hm-nav__link"}}" href="{{url absolute="true"}}">{{label}}</a>
+            {{/foreach}}
+        </nav>
+        <div class="hm-header__actions">
+            <a class="hm-btn hm-btn--outline hm-btn--header" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="18"}}WhatsApp</a>
+            <a class="hm-btn hm-btn--primary hm-btn--header" href="{{> "components/booking-href"}}">{{t "Buat Temu Janji"}}</a>
+        </div>
+        <button class="hm-icon-btn hm-icon-btn--framed hm-header__menu" type="button" aria-controls="hm-menu" aria-expanded="false" data-hm-menu-open>
+            {{> "icons/menu"}}<span class="hm-visually-hidden">{{t "Buka menu"}}</span>
+        </button>
+    </div>
+</header>
+{{> "site/menu"}}
