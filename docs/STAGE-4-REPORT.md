@@ -138,17 +138,19 @@
 
 ## Email display (anti-harvesting)
 - **Footer (desktop + mobile):** email removed completely. No text, no link and no image. The phone, WhatsApp, address, hours and layout are unchanged. The `contact_email` setting was removed with it, because GScan rejects unused settings.
-- **Notis Privasi:** both contact sections (BM + English) show `myhimandme@gmail.com` as **one local image asset** (`assets/images/email-himandme.png`):
+- **Notis Privasi:** both contact sections (BM + English) show `myhimandme@gmail.com` as **one local image asset** (`assets/images/hubungi-himandme.png`), with no "E-mel:" / "Email:" label in front:
   - The image is a 3 KB transparent PNG, typeset in Manrope in the article text colour.
   - It is rendered at 3× and displayed at 231×28 px (219×27 on phones). It scales with the text (em-based width, `height: auto`), so it never distorts.
-  - Alt text: "E-mel Him & Me untuk pertanyaan privasi" / "Email Him & Me for privacy enquiries".
+  - Alt text: "Hubungi Him & Me untuk pertanyaan privasi" / "Contact Him & Me for privacy enquiries".
+- **No "e-mel" / "email" words served:** the labels were removed, and the image file, CSS class and alt text don't use the words. Test H4 scans the pages, RSS, sitemaps, CSS and JS. **Two exceptions, pending your decision:** the notice's own data-category lines, "Alamat e-mel, jika diberikan." (2A) and "Email address, if provided." (2A, English).
   - The address and phone stay normal text.
 - **No JavaScript obfuscation**, contact form, CAPTCHA or backend.
-- **Accessibility note:** the alt text names the purpose, not the address, as you specified. So screen-reader users hear "Email Him & Me for privacy enquiries" but not the address itself; they can use the WhatsApp/telephone line. This is the trade-off of hiding the address from machines.
+- **Accessibility note:** the alt text names the purpose, not the address, as you specified. So screen-reader users hear "Contact Him & Me for privacy enquiries" but not the address itself; they can use the WhatsApp/telephone line. This is the trade-off of hiding the address from machines.
 - **Tests:**
   - H1: no email text or `mailto:` on `/`, `/disfungsi-ereksi/`, `/notis-privasi/` or `/blog/`, and no email line in any footer.
   - H2: one image asset for both languages, alt texts, address and phone as text.
   - H3 (browser): the image loads (693×84), stays in proportion and is at least 200px wide at 1440px and 390px.
+  - H4: no "e-mel" / "email" in any served file, apart from the two notice lines.
 - **Screenshots:**
   - `docs/stage-4/email-footer-desktop.jpg`, `email-footer-mobile.jpg`
   - `email-privasi-bm-desktop.jpg`, `email-privasi-bm-mobile.jpg`

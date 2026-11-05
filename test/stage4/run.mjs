@@ -170,14 +170,21 @@ const emailPages = {};
 for (const u of ['/', '/disfungsi-ereksi/', '/notis-privasi/', '/blog/']) emailPages[u] = await page(u);
 const footers = Object.values(emailPages).map((x) => (x.match(/<footer[\s\S]*?<\/footer>/) || [''])[0]);
 check('H1', 'Email address not in any page HTML (no text, no mailto:); footers have no email line (desktop + mobile markup)',
-  Object.values(emailPages).every((x) => !EMAIL_RX.test(x)) && footers.every((f) => f && !/e-?mel|email|hm-email-img/i.test(f)),
+  Object.values(emailPages).every((x) => !EMAIL_RX.test(x)) && footers.every((f) => f && !/e-?mel|email|hm-contact-img/i.test(f)),
   Object.keys(emailPages).join(' '));
+// H4 — the words "e-mel" / "email" are not served anywhere (pages, RSS, sitemaps, theme CSS/JS), except the
+// two data-category lines of the owner's notice text ("Alamat e-mel, jika diberikan." / "Email address, if provided.").
+const NOTICE_LINES = ['Alamat e-mel, jika diberikan.', 'Email address, if provided.'];
+const served = { ...emailPages, '/blog/rss/': await page('/blog/rss/'), '/sitemap-pages.xml': await page('/sitemap-pages.xml'), '/sitemap-posts.xml': await page('/sitemap-posts.xml') };
+for (const a of ['built/screen.css', 'built/main.js']) served[a] = await page('/assets/' + a);
+const wordHits = Object.entries(served).flatMap(([u, x]) => { let t = x; NOTICE_LINES.forEach((l) => { t = t.split(l).join(''); }); return (t.match(/e-?mel|e-?mail/gi) || []).map((w) => `${u}: ${w}`); });
+check('H4', 'No "e-mel"/"email" anywhere in the served HTML, RSS, sitemaps, CSS or JS (owner\'s two notice data-category lines aside)', wordHits.length === 0, wordHits.slice(0, 6).join('; ') || `${Object.keys(served).length} files scanned`);
 // H2 — Notis Privasi shows the email as one local image asset, in both language versions, with alt text
-const imgs = [...np.matchAll(/<img class="hm-email-img"[^>]*>/g)].map((m) => m[0]);
+const imgs = [...np.matchAll(/<img class="hm-contact-img"[^>]*>/g)].map((m) => m[0]);
 const srcs = new Set(imgs.map((t) => (t.match(/src="([^"]+)"/) || [])[1]));
-check('H2', 'Notis Privasi: email shown as an image (same local theme asset for BM + English) with alt text; address and phone stay text',
-  imgs.length === 2 && srcs.size === 1 && /^(https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?)?\/assets\/images\/email-himandme\.png/.test([...srcs][0])
-  && imgs.some((t) => t.includes('alt="E-mel Him &amp; Me untuk pertanyaan privasi"')) && imgs.some((t) => t.includes('alt="Email Him &amp; Me for privacy enquiries"'))
+check('H2', 'Notis Privasi: contact address shown as an image (same local theme asset for BM + English) with alt text; address and phone stay text',
+  imgs.length === 2 && srcs.size === 1 && /^(https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?)?\/assets\/images\/hubungi-himandme\.png/.test([...srcs][0])
+  && imgs.some((t) => t.includes('alt="Hubungi Him &amp; Me untuk pertanyaan privasi"')) && imgs.some((t) => t.includes('alt="Contact Him &amp; Me for privacy enquiries"'))
   && np.includes('Alamat: 1-3, Eight Setiawangsa') && np.includes('Telefon / WhatsApp: 011-5791 2606'), [...srcs].join(', '));
 
 let chromium; try { ({ chromium } = createRequire(import.meta.url)('playwright')); } catch { console.log('SKIP  browser checks — Playwright not available'); }
@@ -248,12 +255,12 @@ if (chromium) {
   const h3 = {};
   for (const w of [1440, 390]) {
     const pg = await b.newPage({ viewport: { width: w, height: 900 } }); await pg.goto(BASE + '/notis-privasi/');
-    await pg.evaluate(async () => { for (const i of document.querySelectorAll('.hm-email-img')) { i.loading = 'eager'; if (!i.complete) await new Promise((r) => { i.onload = i.onerror = r; }); } });
-    h3[w] = await pg.$$eval('.hm-email-img', (els) => els.map((i) => { const r = i.getBoundingClientRect(); return { nw: i.naturalWidth, nh: i.naturalHeight, w: +r.width.toFixed(2), h: +r.height.toFixed(2) }; }));
+    await pg.evaluate(async () => { for (const i of document.querySelectorAll('.hm-contact-img')) { i.loading = 'eager'; if (!i.complete) await new Promise((r) => { i.onload = i.onerror = r; }); } });
+    h3[w] = await pg.$$eval('.hm-contact-img', (els) => els.map((i) => { const r = i.getBoundingClientRect(); return { nw: i.naturalWidth, nh: i.naturalHeight, w: +r.width.toFixed(2), h: +r.height.toFixed(2) }; }));
     await pg.close();
   }
   const okImg = (list) => list.length === 2 && list.every((i) => i.nw === 693 && i.nh === 84 && i.w >= 200 && Math.abs(i.w / i.h - 693 / 84) < 0.02);
-  check('H3', 'Email image loads, keeps its aspect ratio and is readable (≥200px wide) at 1440px and 390px', okImg(h3[1440]) && okImg(h3[390]), JSON.stringify({ 1440: h3[1440][0], 390: h3[390][0] }));
+  check('H3', 'Contact image loads, keeps its aspect ratio and is readable (≥200px wide) at 1440px and 390px', okImg(h3[1440]) && okImg(h3[390]), JSON.stringify({ 1440: h3[1440][0], 390: h3[390][0] }));
   await b.close();
 }
 

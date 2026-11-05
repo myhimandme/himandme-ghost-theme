@@ -102,7 +102,7 @@ Sebarang perubahan akan diterbitkan di halaman ini bersama tarikh kemas kini ter
 Jika anda mempunyai pertanyaan, permintaan akses, permintaan pembetulan atau aduan berkaitan maklumat peribadi anda, sila hubungi:
 **Him & Me Wellness PLT**
 Alamat: 1-3, Eight Setiawangsa, Jalan Setiawangsa 13, Taman Setiawangsa, 54200 Kuala Lumpur.
-E-mel: {email-image|E-mel Him & Me untuk pertanyaan privasi}
+{contact-image|Hubungi Him & Me untuk pertanyaan privasi}
 Telefon / WhatsApp: 011-5791 2606
 ---
 # Privacy Notice
@@ -210,5 +210,5 @@ Any changes will be published on this page together with the latest update date.
 If you have any questions, access requests, correction requests or complaints regarding your personal data, please contact:
 **Him & Me Wellness PLT**
 Address: 1-3, Eight Setiawangsa, Jalan Setiawangsa 13, Taman Setiawangsa, 54200 Kuala Lumpur.
-Email: {email-image|Email Him & Me for privacy enquiries}
+{contact-image|Contact Him & Me for privacy enquiries}
 Telephone / WhatsApp: 011-5791 2606
