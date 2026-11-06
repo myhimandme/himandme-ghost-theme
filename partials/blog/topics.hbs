@@ -1,0 +1,16 @@
+{{!-- "Teroka mengikut topik": 4 fixed category tags (slugs are fixed once at launch; edit names and
+      descriptions in Ghost Admin → Tags). To change which topics appear, edit the four slugs below. --}}
+<section class="hm-topics" aria-labelledby="hm-topics-title">
+    <div class="hm-container-blog hm-topics__inner">
+        <div class="hm-topics__head">
+            <h2 class="hm-bh2 hm-serif" id="hm-topics-title">{{t "Teroka mengikut topik"}}</h2>
+            <span class="hm-topics__note hm-hide-mobile">{{t "Halaman topik menghimpunkan panduan asas dan semua artikel berkaitan."}}</span>
+        </div>
+        <div class="hm-topics__grid">
+            {{> "blog/topic-tile" slug="disfungsi-ereksi"}}
+            {{> "blog/topic-tile" slug="hormon-testosteron"}}
+            {{> "blog/topic-tile" slug="kesihatan-pelvis"}}
+            {{> "blog/topic-tile" slug="gaya-hidup"}}
+        </div>
+    </div>
+</section>

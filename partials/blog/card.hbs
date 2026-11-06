@@ -1,0 +1,13 @@
+{{!-- One article card, in the current post context. Params:
+      variant: "grid" (Terkini / archives; on phones the 3rd card onwards becomes a compact row),
+               "second" (secondary feature), "row" (compact row with thumbnail, phones),
+      feed: true on the main article list only (data-slug marks the paginated list for the tests). --}}
+<a class="hm-card hm-card--{{variant}}" href="{{url}}"{{#if feed}} data-slug="{{slug}}"{{/if}}>
+    {{> "components/image" src=feature_image alt=feature_image_alt class="hm-card__img" sizes="(max-width: 599px) 100vw, (max-width: 1100px) 50vw, 400px"}}
+    <span class="hm-card__body">
+        {{#primary_tag}}<span class="hm-kicker">{{name}}</span>{{/primary_tag}}
+        <span class="hm-card__title hm-serif">{{title}}</span>
+        {{#match variant "grid"}}<span class="hm-card__excerpt">{{#if custom_excerpt}}{{custom_excerpt}}{{else}}{{excerpt words="22"}}{{/if}}</span>{{/match}}
+        <span class="hm-card__meta">{{#match variant "grid"}}<span class="hm-hide-mobile">{{#primary_author}}{{name}} · {{/primary_author}}{{reading_time minute=(t "1 min") minutes=(t "% min")}}</span><span class="hm-show-mobile">{{reading_time minute=(t "1 min bacaan") minutes=(t "% min bacaan")}}</span>{{else}}{{reading_time minute=(t "1 min bacaan") minutes=(t "% min bacaan")}}{{/match}}</span>
+    </span>
+</a>

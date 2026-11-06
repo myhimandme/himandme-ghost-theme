@@ -1,5 +1,5 @@
 {{!-- Editorial blog masthead + category bar (blog home, topic and author pages).
-      Categories: Settings → Site → Navigation → Secondary navigation. Search behaviour: Stage 5. --}}
+      Categories: Settings → Site → Navigation → Secondary navigation. --}}
 <header class="hm-bheader">
     <div class="hm-container-blog">
         <div class="hm-bheader__row">
@@ -9,14 +9,23 @@
             <a class="hm-bheader__logo" href="{{@site.url}}/">{{> "components/logo"}}</a>
             <a class="hm-bheader__title hm-serif" href="{{@site.url}}/blog/">{{t "Jurnal"}} <em>{{t "Kesihatan Lelaki"}}</em></a>
             <div class="hm-bheader__tools">
-                <form class="hm-bsearch" role="search" action="{{@site.url}}/blog/" data-hm-search>
-                    <label class="hm-bsearch__field">
-                        {{> "icons/search" size="18" stroke="1.8"}}
-                        <span class="hm-visually-hidden">{{t "Cari artikel"}}</span>
-                        <input class="hm-bsearch__input" type="search" name="q" placeholder="{{t "Cari artikel"}}" autocomplete="off">
-                    </label>
-                </form>
-                <button class="hm-icon-btn hm-bheader__search-btn" type="button" data-hm-search-open>
+                {{!-- Theme search (Stage 5): searches published articles only. Ghost's native search is not used,
+                      because its index also lists #blok content blocks; entries without a public URL are dropped. --}}
+                <div class="hm-search" id="hm-search" data-hm-search data-key="{{content_api_key}}" data-api="{{@site.url}}">
+                    <form class="hm-bsearch" role="search" action="{{@site.url}}/blog/">
+                        <label class="hm-bsearch__field">
+                            {{> "icons/search" size="18" stroke="1.8"}}
+                            <span class="hm-visually-hidden">{{t "Cari artikel"}}</span>
+                            <input class="hm-bsearch__input" type="search" name="q" placeholder="{{t "Cari artikel"}}" autocomplete="off" aria-controls="hm-search-results" data-hm-search-input>
+                        </label>
+                        <button class="hm-icon-btn hm-search__close" type="button" data-hm-search-close>{{> "icons/close"}}<span class="hm-visually-hidden">{{t "Tutup carian"}}</span></button>
+                    </form>
+                    <div class="hm-search__results" id="hm-search-results" hidden>
+                        <p class="hm-search__status" role="status" aria-live="polite" data-hm-search-status></p>
+                        <ol class="hm-search__list" data-hm-search-list></ol>
+                    </div>
+                </div>
+                <button class="hm-icon-btn hm-bheader__search-btn" type="button" aria-controls="hm-search" aria-expanded="false" data-hm-search-open>
                     {{> "icons/search"}}<span class="hm-visually-hidden">{{t "Cari"}}</span>
                 </button>
             </div>

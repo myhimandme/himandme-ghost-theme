@@ -1,0 +1,15 @@
+{{!-- "Paling dibaca": hand-picked with the internal tag #popular (Ghost has no view counts);
+      the latest articles when none are tagged. 4 on desktop, 3 on phones. --}}
+<div class="hm-popular{{#if class}} {{class}}{{/if}}">
+    <strong class="hm-popular__head">{{t "PALING DIBACA"}}</strong>
+    <ol class="hm-popular__list">
+        {{#get "posts" filter="tag:hash-popular+tag:-hash-blok" limit="4"}}
+            {{#foreach posts}}<li><a href="{{url}}"><span class="hm-popular__no hm-serif">{{@number}}</span><span class="hm-popular__title hm-serif">{{title}}</span></a></li>
+            {{else}}
+                {{#get "posts" filter="tag:-hash-blok" limit="4" as |latest|}}
+                    {{#foreach latest}}<li><a href="{{url}}"><span class="hm-popular__no hm-serif">{{@number}}</span><span class="hm-popular__title hm-serif">{{title}}</span></a></li>{{/foreach}}
+                {{/get}}
+            {{/foreach}}
+        {{/get}}
+    </ol>
+</div>

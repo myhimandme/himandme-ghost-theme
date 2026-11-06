@@ -59,7 +59,9 @@ await admin('/settings/', { method: 'PUT', json: { settings: [
   { key: 'navigation', value: JSON.stringify([
     { label: 'Utama', url: '/' }, { label: 'Disfungsi Ereksi', url: '/disfungsi-ereksi/' }, { label: 'Blog', url: '/blog/' }]) },
   { key: 'secondary_navigation', value: JSON.stringify([
-    { label: 'Disfungsi Ereksi', url: '/blog/topik/disfungsi-ereksi/' }, { label: 'Gaya Hidup', url: '/blog/topik/gaya-hidup/' },
+    { label: 'Disfungsi Ereksi', url: '/blog/topik/disfungsi-ereksi/' }, { label: 'Hormon & Testosteron', url: '/blog/topik/hormon-testosteron/' },
+    { label: 'Kesihatan Pelvis', url: '/blog/topik/kesihatan-pelvis/' }, { label: 'Seks & Hubungan', url: '/blog/topik/seks-hubungan/' },
+    { label: 'Gaya Hidup', url: '/blog/topik/gaya-hidup/' }, { label: 'Kesihatan Mental', url: '/blog/topik/kesihatan-mental/' },
     { label: 'Panduan', url: '/blog/topik/panduan/' }]) },
 ] } });
 console.log('✓ meta data, locale ms, navigation set; social web (Network) off');

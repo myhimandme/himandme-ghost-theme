@@ -171,3 +171,86 @@
     heads.forEach((h) => io.observe(h));
   }
 })();
+
+// Blog: "Muatkan lagi artikel" appends the next archive page in place (the link still works without JS).
+(function () {
+  const feed = document.querySelector('[data-hm-feed]');
+  if (!feed) return;
+  document.addEventListener('click', async (e) => {
+    const more = e.target.closest('[data-hm-more]');
+    if (!more || !window.fetch || !window.DOMParser) return;
+    e.preventDefault();
+    if (more.getAttribute('aria-busy') === 'true') return;
+    more.setAttribute('aria-busy', 'true');
+    try {
+      const res = await fetch(more.href, { credentials: 'same-origin' });
+      if (!res.ok) throw new Error(res.status);
+      const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+      const items = [...doc.querySelectorAll('[data-hm-feed] > *')];
+      const first = items[0];
+      items.forEach((el) => feed.appendChild(document.importNode(el, true)));
+      if (first) { const added = feed.querySelector(`[href="${first.getAttribute('href')}"]`); if (added) added.focus({ preventScroll: true }); }
+      const next = doc.querySelector('[data-hm-more]');
+      if (next) { more.href = next.href; more.removeAttribute('aria-busy'); } else more.remove();
+    } catch (err) {
+      window.location.href = more.href; // fall back to the normal page
+    }
+  });
+})();
+
+// Blog search: articles only. Reads Ghost's public search index once, drops every entry without a public
+// URL (content blocks resolve to /404/) and anything outside /blog/, then matches all words of the query
+// against the title and excerpt (accents and case ignored). No other data is loaded or stored.
+(function () {
+  const box = document.querySelector('[data-hm-search]');
+  if (!box) return;
+  const input = box.querySelector('[data-hm-search-input]');
+  const results = box.querySelector('#hm-search-results');
+  const list = box.querySelector('[data-hm-search-list]');
+  const status = box.querySelector('[data-hm-search-status]');
+  const openBtn = document.querySelector('[data-hm-search-open]');
+  const header = box.closest('header');
+  const site = (box.dataset.api || '').replace(/\/$/, '');
+  const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  let index = null; let loading = null;
+  const load = () => loading || (loading = fetch(`${site}/ghost/api/content/search-index/posts/?key=${encodeURIComponent(box.dataset.key)}`)
+    .then((r) => (r.ok ? r.json() : { posts: [] }))
+    .then((d) => { index = (d.posts || []).filter((p) => p.url && !/\/404\/?$/.test(p.url) && p.url.indexOf(`${site}/blog/`) === 0)
+      .map((p) => ({ ...p, t: norm(p.title), x: norm(p.excerpt) })); })
+    .catch(() => { index = []; }));
+  const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const render = () => {
+    const q = input.value.trim();
+    if (q.length < 2) { results.hidden = true; list.innerHTML = ''; status.textContent = ''; return; }
+    if (!index) { results.hidden = false; status.textContent = 'Mencari…'; load().then(render); return; }
+    const words = norm(q).split(/\s+/).filter(Boolean);
+    const hits = index.filter((p) => words.every((w) => p.t.includes(w) || p.x.includes(w)))
+      .sort((a, b) => words.filter((w) => b.t.includes(w)).length - words.filter((w) => a.t.includes(w)).length).slice(0, 8);
+    results.hidden = false;
+    status.textContent = hits.length ? `${hits.length} artikel ditemui` : `Tiada artikel ditemui untuk “${q}”.`;
+    status.classList.toggle('is-empty', !hits.length);
+    list.innerHTML = hits.map((p) => `<li><a href="${esc(p.url)}"><span class="hm-search__title hm-serif">${esc(p.title)}</span>${p.excerpt ? `<span class="hm-search__excerpt">${esc(p.excerpt.length > 120 ? p.excerpt.slice(0, 117) + '…' : p.excerpt)}</span>` : ''}</a></li>`).join('');
+  };
+  let timer;
+  input.addEventListener('focus', load, { once: true });
+  input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(render, 120); });
+  box.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const first = list.querySelector('a');
+    if (first) window.location.href = first.href; else render();
+  });
+  const close = () => {
+    results.hidden = true;
+    if (header) header.classList.remove('is-searching');
+    if (openBtn) { openBtn.setAttribute('aria-expanded', 'false'); if (box.contains(document.activeElement)) openBtn.focus(); }
+  };
+  if (openBtn) openBtn.addEventListener('click', () => {
+    const on = !header.classList.contains('is-searching');
+    header.classList.toggle('is-searching', on);
+    openBtn.setAttribute('aria-expanded', String(on));
+    if (on) { load(); input.focus(); } else close();
+  });
+  box.querySelector('[data-hm-search-close]').addEventListener('click', () => { input.value = ''; render(); close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && (box.contains(document.activeElement) || header.classList.contains('is-searching'))) close(); });
+  document.addEventListener('click', (e) => { if (!box.contains(e.target) && !(openBtn && openBtn.contains(e.target))) { results.hidden = true; } });
+})();

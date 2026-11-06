@@ -27,7 +27,8 @@
     "test:stage2": "node test/stage2/run.mjs",
     "visual": "node test/visual/compare.mjs",
     "test:stage3": "node test/stage3/run.mjs",
-    "test:stage4": "node test/stage4/run.mjs"
+    "test:stage4": "node test/stage4/run.mjs",
+    "test:stage5": "node test/stage5/run.mjs"
   },
   "devDependencies": {
     "bestzip": "4.0.3",

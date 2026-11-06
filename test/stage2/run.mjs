@@ -47,7 +47,7 @@ for (const [path, e] of Object.entries(expect)) {
 
 const home = (await page('/')).html; const ed = (await page('/disfungsi-ereksi/')).html; const blog = (await page('/blog/')).html; const topic = (await page('/blog/topik/gaya-hidup/')).html;
 check('S2', 'Primary navigation comes from Settings → Navigation', nav.every((n) => home.includes(`>${n.label}</a>`)), nav.map((n) => n.label).join(', '));
-check('S3', 'Blog category bar comes from secondary navigation (+ Semua)', cats.every((c) => blog.includes(`>${c.label}</a>`)) && blog.includes('hm-cats__link'), cats.map((c) => c.label).join(', '));
+check('S3', 'Blog category bar comes from secondary navigation (+ Semua)', cats.every((c) => blog.includes(`>${c.label.replace(/&/g, '&amp;')}</a>`)) && blog.includes('hm-cats__link'), cats.map((c) => c.label).join(', '));
 check('S4', 'Active page is marked (Disfungsi Ereksi on the ED page)', /hm-nav__link nav-current"[^>]*>Disfungsi Ereksi</.test(ed));
 check('S5', 'Active category is marked on a topic page', /hm-cats__link nav-current"[^>]*>Gaya Hidup</.test(topic));
 const wa = `https://wa.me/${custom.whatsapp_number}?text=${encodeURIComponent(custom.whatsapp_default_message)}`;

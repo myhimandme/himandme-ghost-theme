@@ -1,0 +1,14 @@
+{{!-- Consultation prompt. The newsletter box beside it in the prototype was removed (approved plan), so the
+      box spans the full row. Phones: stacked, Buat Temu Janji only (blog mobile board). --}}
+<section class="hm-bcta-wrap hm-container-blog" aria-labelledby="hm-bcta-title">
+    <div class="hm-bcta">
+        <div class="hm-bcta__text">
+            <img class="hm-bcta__mark hm-hide-mobile" src="{{asset "images/logo-mark.png"}}" alt="" width="52" height="52" loading="lazy">
+            <div><h2 class="hm-bcta__title hm-serif" id="hm-bcta-title">{{t "Ada soalan yang lebih peribadi?"}}</h2><p class="hm-bcta__sub">{{t "Bincang secara sulit dengan doktor kami."}}</p></div>
+        </div>
+        <div class="hm-bcta__actions">
+            <a class="hm-btn hm-btn--primary hm-btn--md" href="{{> "components/booking-href"}}">{{t "Buat Temu Janji"}}</a>
+            <a class="hm-btn hm-btn--whatsapp hm-btn--md hm-hide-mobile" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{t "WhatsApp"}}</a>
+        </div>
+    </div>
+</section>
