@@ -22,7 +22,7 @@ tag('hormon-testosteron', 'Hormon & Testosteron', 'public', 'Tenaga, keinginan d
 tag('kesihatan-pelvis', 'Kesihatan Pelvis', 'public', 'Otot lantai pelvis, kawalan dan senaman.');
 tag('seks-hubungan', 'Seks & Hubungan', 'public', 'Komunikasi dan keintiman bersama pasangan.');
 tag('kesihatan-mental', 'Kesihatan Mental', 'public', 'Tekanan, kebimbangan dan kesejahteraan emosi.');
-tag('gaya-hidup', 'Gaya Hidup', 'public', 'Tidur, tekanan, senaman dan pemakanan.');
+tag('gaya-hidup', 'Gaya Hidup & Minda', 'public', 'Tidur, tekanan, senaman dan pemakanan.');
 tag('panduan', 'Panduan', 'public', 'Panduan panjang, disusun mengikut bab.');
 
 const posts = [];

@@ -145,6 +145,23 @@ const leadImg = sec(withImg, 'hm-bhero__lead');
 check('T11', 'Feature image: the lead shows the uploaded image with srcset + alt (eager); without one, the patterned placeholder',
   /<img class="hm-lead__img" src="[^"]*ujian-gambar[^"]*"\s+srcset="[^"]+320w[^"]+600w/.test(leadImg) && leadImg.includes('alt="Gambar ujian"') && !leadImg.includes('loading="lazy"') && sec(blog, 'hm-bhero__lead').includes('hm-lead__img hm-ph'));
 
+
+// T12 — topic renamed to "Gaya Hidup & Minda" (display name only; slug gaya-hidup kept); Kesihatan Mental unchanged
+const tagsNow = (await admin('/tags/?limit=all')).tags;
+const gh = tagsNow.find((t) => t.slug === 'gaya-hidup'); const km = tagsNow.find((t) => t.slug === 'kesihatan-mental');
+const ghTopic = await page('/blog/topik/gaya-hidup/');
+const ghPost = latest.find((p) => p.primary_tag && p.primary_tag.slug === 'gaya-hidup');
+const ghCard = [...blog.matchAll(/<a class="hm-card[^"]*" href="([^"]+)"[^>]*>[\s\S]*?<span class="hm-kicker">([^<]+)<\/span>/g)].find((m) => m[1].endsWith(`/${ghPost.slug}/`));
+check('T12', '"Gaya Hidup & Minda": tag name changed, slug gaya-hidup kept; topic tile, category bar, topic page and card labels follow; Kesihatan Mental unchanged',
+  gh && gh.name === 'Gaya Hidup & Minda' && tiles[3].name === 'Gaya Hidup &amp; Minda' && tiles[3].href.endsWith('/blog/topik/gaya-hidup/')
+  && blog.includes('<span class="hm-cats__full">Gaya Hidup &amp; Minda</span>') && ghTopic.includes('hm-archive-head__title hm-serif">Gaya Hidup &amp; Minda</h1>')
+  && ghCard && ghCard[2] === 'Gaya Hidup &amp; Minda' && km && km.name === 'Kesihatan Mental' && blog.includes('<span class="hm-cats__full">Kesihatan Mental</span>'),
+  `card label "${ghCard && ghCard[2]}"`);
+
+// T13 — "SEMUA ARTIKEL →" beside Terkini goes to /blog/page/2/ (blog home only)
+check('T13', '"SEMUA ARTIKEL →" beside Terkini links to /blog/page/2/ (blog home only, not on topic/author pages)',
+  /<a class="hm-feed__all hm-hide-mobile" href="[^"]*\/blog\/page\/2\/">SEMUA ARTIKEL →<\/a>/.test(blog) && !topicH.includes('hm-feed__all') && !authorH.includes('hm-feed__all'));
+
 // Browser checks
 let chromium; try { ({ chromium } = createRequire(import.meta.url)('playwright')); } catch { console.log('SKIP  browser checks — Playwright not available'); }
 if (chromium) {
@@ -198,6 +215,47 @@ if (chromium) {
   const popVisible = await m.$$eval('.hm-popular--mobile li', (els) => els.filter((e) => getComputedStyle(e).display !== 'none').length);
   check('B4', 'Phones: the search icon opens a full-width search panel (focus in the field), results fit the screen, Escape closes it; Paling dibaca shows 3',
     hiddenBefore && focused && mHits > 0 && mSw === 390 && closed && popVisible === 3, `${mHits} result(s) for "pelvis"`);
+  // B5 — category labels: full names on desktop, the approved short labels on phones; full names kept for screen readers
+  const SHORT = { 'Disfungsi Ereksi': 'DISFUNGSI', 'Hormon & Testosteron': 'HORMON', 'Kesihatan Pelvis': 'PELVIS', 'Seks & Hubungan': 'SEKS', 'Gaya Hidup & Minda': 'GAYA HIDUP', 'Kesihatan Mental': 'MINDA', Panduan: 'PANDUAN' };
+  // What is actually SHOWN in each link: text of the label parts that are rendered at a visible size.
+  const catText = async (pg) => pg.$$eval('.hm-cats a', (as) => as.map((a) => {
+    const parts = a.querySelectorAll('.hm-cats__full, .hm-cats__short');
+    if (!parts.length) return a.innerText.trim();
+    return [...parts].filter((el) => { const r = el.getBoundingClientRect(); return getComputedStyle(el).display !== 'none' && r.width > 2 && r.height > 2; }).map((el) => el.innerText.trim()).join(' ');
+  }));
+  const dsk = await b.newPage({ viewport: { width: 1440, height: 900 } }); await dsk.goto(BASE + '/blog/'); const dTexts = await catText(dsk);
+  const mob = await b.newPage({ viewport: { width: 390, height: 844 } }); await mob.goto(BASE + '/blog/'); const mTexts = await catText(mob);
+  const names = Object.keys(SHORT);
+  const a11yOk = (await Promise.all(names.map(async (n) => (await mob.getByRole('link', { name: n, exact: true }).count()) >= 1))).every(Boolean);
+  check('B5', 'Category bar: desktop shows the full names; phones show DISFUNGSI · HORMON · PELVIS · SEKS · GAYA HIDUP · MINDA (Panduan unchanged); each link keeps its full name for screen readers',
+    JSON.stringify(dTexts) === JSON.stringify(['SEMUA', ...names.map((n) => n.toUpperCase())]) && JSON.stringify(mTexts) === JSON.stringify(['SEMUA', ...names.map((n) => SHORT[n])]) && a11yOk,
+    `phone: ${mTexts.join(' · ')}`);
+  await dsk.close(); await mob.close();
+
+  // B6 — keyboard: ↓ into results, ↑ back to the field, Escape closes and keeps focus in the field; index error → message
+  const k = await b.newPage({ viewport: { width: 1440, height: 900 } }); await k.goto(BASE + '/blog/');
+  await k.fill('[data-hm-search-input]', 'pelvis'); await k.waitForSelector('[data-hm-search-list] a');
+  await k.keyboard.press('ArrowDown'); const onFirst = await k.evaluate(() => document.activeElement === document.querySelector('[data-hm-search-list] a'));
+  await k.keyboard.press('ArrowDown'); const onSecond = await k.evaluate(() => document.activeElement === document.querySelectorAll('[data-hm-search-list] a')[1]);
+  await k.keyboard.press('ArrowUp'); await k.keyboard.press('ArrowUp'); const backToField = await k.evaluate(() => document.activeElement.matches('[data-hm-search-input]'));
+  await k.keyboard.press('ArrowDown'); await k.keyboard.press('Escape');
+  const escOk = await k.evaluate(() => document.querySelector('#hm-search-results').hidden && document.activeElement.matches('[data-hm-search-input]'));
+  const e = await b.newPage({ viewport: { width: 1440, height: 900 } }); await e.route('**/search-index/**', (r) => r.abort());
+  await e.goto(BASE + '/blog/'); await e.fill('[data-hm-search-input]', 'pelvis'); await e.waitForFunction(() => /tidak tersedia/.test(document.querySelector('[data-hm-search-status]').textContent));
+  check('B6', 'Search keyboard: ↓ moves into the results, ↑ returns to the field, Escape closes and keeps focus in the field; if the index cannot load, a clear message is shown',
+    onFirst && onSecond && backToField && escOk, 'index unavailable → "Carian tidak tersedia buat masa ini."');
+  await k.close(); await e.close();
+
+  // B7 — JavaScript disabled: no dead search box (field and phone icon hidden, explanatory note shown); pages still work
+  const nj = await b.newContext({ javaScriptEnabled: false, viewport: { width: 1440, height: 900 } });
+  const nd = await nj.newPage(); await nd.goto(BASE + '/blog/');
+  const njDesk = { field: await nd.isVisible('.hm-bsearch__field'), note: await nd.isVisible('.hm-search__nojs'), text: (await nd.textContent('.hm-search__nojs')).trim(), cards: await nd.locator('[data-hm-feed] > *').count(), more: await nd.getAttribute('[data-hm-more]', 'href') };
+  const njm = await b.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  const nm = await njm.newPage(); await nm.goto(BASE + '/blog/');
+  const njMob = { icon: await nm.isVisible('[data-hm-search-open]'), sw: await nm.evaluate(() => document.documentElement.scrollWidth) };
+  await nj.close(); await njm.close();
+  check('B7', 'JavaScript off: the search field and phone search icon are hidden and a short note explains search needs JavaScript (with a link to the topics); articles and "Muatkan lagi" (plain link) still work',
+    !njDesk.field && njDesk.note && /Carian memerlukan JavaScript/.test(njDesk.text) && njDesk.cards === 9 && /\/blog\/page\/2\/$/.test(njDesk.more) && !njMob.icon && njMob.sw === 390, `note: "${njDesk.text}"`);
   await b.close();
 }
 

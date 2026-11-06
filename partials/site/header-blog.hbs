@@ -20,6 +20,8 @@
                         </label>
                         <button class="hm-icon-btn hm-search__close" type="button" data-hm-search-close>{{> "icons/close"}}<span class="hm-visually-hidden">{{t "Tutup carian"}}</span></button>
                     </form>
+                    {{!-- Without JavaScript the field is hidden and this note takes its place (no silent, dead search box). --}}
+                    <p class="hm-search__nojs">{{t "Carian memerlukan JavaScript."}} <a href="{{@site.url}}/blog/#hm-topics-title">{{t "Lihat topik"}}</a></p>
                     <div class="hm-search__results" id="hm-search-results" hidden>
                         <p class="hm-search__status" role="status" aria-live="polite" data-hm-search-status></p>
                         <ol class="hm-search__list" data-hm-search-list></ol>
@@ -34,7 +36,7 @@
         <nav class="hm-cats" aria-label="{{t "Kategori"}}">
             <a class="{{link_class for="/blog/" class="hm-cats__link"}}" href="{{@site.url}}/blog/">{{t "Semua"}}</a>
             {{#foreach @site.secondary_navigation}}
-                <a class="{{link_class for=url class="hm-cats__link"}}" href="{{url absolute="true"}}">{{label}}</a>
+                <a class="{{link_class for=url class="hm-cats__link"}}" href="{{url absolute="true"}}">{{> "site/cat-label"}}</a>
             {{/foreach}}
         </nav>
     </div>

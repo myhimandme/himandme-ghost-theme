@@ -145,7 +145,7 @@ Everything on the blog pages comes from Ghost Admin and updates when you publish
 |---|---|---|
 | Lead + 2 secondary features (blog home) | The 3 newest posts with **Feature this post** on; the latest posts fill any empty slot | Post settings → *Feature this post* |
 | Paling dibaca (4; 3 on phones) | Posts with the internal tag **`#popular`**; the latest posts if none | Add/remove the `#popular` tag. Ghost has no view counts, so this list is hand-picked |
-| Teroka mengikut topik (4 tiles) | The tags `disfungsi-ereksi`, `hormon-testosteron`, `kesihatan-pelvis`, `gaya-hidup`: name and description | Tags → edit the name/description. The 4 slugs are fixed in `partials/blog/topics.hbs` |
+| Teroka mengikut topik (4 tiles) | The tags `disfungsi-ereksi`, `hormon-testosteron`, `kesihatan-pelvis`, `gaya-hidup` (named "Gaya Hidup & Minda"): name and description | Tags → edit the name/description. The 4 slugs are fixed in `partials/blog/topics.hbs` |
 | Terkini (9 per page) + "Muatkan lagi artikel" | The `/blog/` collection, newest first; the button loads the next page in place (a normal link without JavaScript) | Publish posts. Page 2+ shows the list only |
 | Panduan lengkap (3) | The 3 newest posts tagged **`panduan`**, with their reading time; the band is hidden when there are none | Add/remove the `panduan` tag |
 | Consultation prompt | Fixed theme text; buttons go to the ED booking form and WhatsApp | — |
@@ -155,7 +155,15 @@ Everything on the blog pages comes from Ghost Admin and updates when you publish
 | Topic page `/blog/topik/{slug}/` | The tag's name and description, its featured posts first, then all its posts | Tags; *Feature this post* |
 | Author page `/blog/penulis/{slug}/` | Staff profile (name, photo, bio) + theme setting `doctor_credentials` | Settings → Staff; Design → Theme |
 
-**Search** (blog masthead; the search icon on phones): searches published **articles** by title and excerpt. It reads Ghost's public search index once, in the visitor's browser. It drops every entry without a public URL (content blocks resolve to `/404/`) and anything outside `/blog/`. Ghost's own search pop-up stays disabled, because its index lists content blocks. Nothing is stored. Without JavaScript the field does nothing.
+**Category bar labels:** desktop shows each Secondary navigation label in full. On phones the theme shows the approved short labels instead, matched by the topic URL: DISFUNGSI, HORMON, PELVIS, SEKS, GAYA HIDUP (for `gaya-hidup`, "Gaya Hidup & Minda") and MINDA (for `kesihatan-mental`). The full name stays in the link for screen readers. Tag names and slugs are not affected. Change the mapping in `partials/site/cat-label.hbs`.
+
+**Search** (blog masthead; the search icon on phones): searches published **articles** by title and excerpt. It reads Ghost's public search index once, in the visitor's browser. It drops every entry without a public URL (content blocks resolve to `/404/`) and anything outside `/blog/`. Ghost's own search pop-up stays disabled, because its index lists content blocks. Nothing is stored. **Without JavaScript** the field and the phone search icon are hidden, and a short note ("Carian memerlukan JavaScript. Lihat topik") takes their place. If the index can't be loaded, the panel says search is temporarily unavailable. Keyboard: ↓/↑ move between the field and the results, Enter opens the first result, Escape closes.
+
+### Before launch: blog data (production Admin, not the theme)
+
+1. **Tags (Ghost Admin → Tags):** create the 7 categories with these slugs: `disfungsi-ereksi`, `hormon-testosteron`, `kesihatan-pelvis`, `seks-hubungan`, `gaya-hidup`, `kesihatan-mental`, `panduan`. Give `gaya-hidup` the **name "Gaya Hidup & Minda"** (approved Stage 5). Keep the slug `gaya-hidup`; the theme's topic tiles and short labels use the slug. Add descriptions; they appear on the topic tiles and topic pages.
+2. **Secondary navigation (Settings → Site → Navigation):** one item per category, in the order above, with the full name as the label (e.g. "Gaya Hidup & Minda" → `/blog/topik/gaya-hidup/`).
+3. **Doctor profile (Settings → Staff → your profile):** your real name (with "Dr."), photo, biography and slug. Then the theme setting **`doctor_credentials`** (verified credentials) and the slug in `routes.yaml` (3 places). Open `/blog/penulis/{slug}/` and check that no test data appears. The local test profile ("Dr. Ujian Tempatan") exists only on the development install and is never imported.
 
 ## Repository layout (Stage 0–1)
 

@@ -118,6 +118,12 @@
 /* Search (blog header). Desktop: results drop down under the field. */
 .hm-search { position: relative; }
 .hm-search__close { display: none; }
+/* No JavaScript: no dead search box. The field and the phone search icon are hidden; a short note says why. */
+.hm-search__nojs { display: none; font-size: 13px; line-height: 1.4; color: var(--hm-text-2); max-width: 340px; text-align: right; }
+.hm-search__nojs a { white-space: nowrap; }
+.hm-search__nojs a { color: var(--hm-charcoal); font-weight: 700; text-decoration: underline; }
+.no-js .hm-bsearch, .no-js .hm-bheader__search-btn { display: none !important; }
+.no-js .hm-search__nojs { display: block; }
 .hm-search__results { position: absolute; right: 0; top: calc(100% + 8px); width: 420px; max-width: calc(100vw - 32px); max-height: 70vh; overflow-y: auto;
   background: var(--hm-white); border: 1px solid var(--hm-charcoal); box-shadow: var(--hm-shadow); z-index: 30; }
 .hm-search__status { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hm-text-2); padding: 14px 18px 12px; }
@@ -140,7 +146,7 @@
   .hm-bhero__second .hm-card + .hm-card .hm-card__img { display: block; }
   /* Search: the icon opens a full-width panel over the masthead */
   .hm-bheader { position: relative; }
-  .hm-search { display: none; }
+  .hm-search { display: none; } /* phones/tablets: opened by the search icon (hidden, with its note, when there is no JavaScript) */
   .hm-bheader.is-searching .hm-search { display: block; position: absolute; left: 0; right: 0; top: 0; z-index: 40; background: var(--hm-warm); padding: 10px 16px 14px; box-shadow: 0 8px 24px rgba(36, 36, 36, .12); }
   .hm-bheader.is-searching .hm-bsearch { display: flex; align-items: center; gap: 8px; }
   .hm-bheader.is-searching .hm-bsearch__field { width: auto; flex: 1; height: 46px; }

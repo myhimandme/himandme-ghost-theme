@@ -1,15 +1,15 @@
 # Stage 5 report: blog home, topic pages, author page, blog search
 
 **Environment:** local Ghost **6.75.0** (development mode, SQLite) at `http://localhost:2368`. **The live himandme.my installation was not touched and nothing was published.**
-**Branch:** `stage-5` (based on `stage-4`; no pull request opened, nothing merged).
+**Branch:** `stage-5` (based on `stage-4`). Pull request `stage-5` → `stage-4` is open and **not merged**.
 
 ## Results
 
 | Check | Result |
 |---|---|
-| `npm test`: build + content-block guard (92 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings |
+| `npm test`: build + content-block guard (94 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings |
 | Ghost Admin upload check | ✅ 0 errors, 0 warnings |
-| `test/stage5/run.mjs`: blog | ✅ **15 / 15** |
+| `test/stage5/run.mjs`: blog, incl. the approved refinements | ✅ **20 / 20** |
 | `test/stage4/run.mjs`: ED page, offer, Notis Privasi, email | ✅ **39 / 39** |
 | `test/stage3/run.mjs`: homepage | ✅ **12 / 12** |
 | `test/stage2/run.mjs`: site chrome | ✅ **23 / 23** |
@@ -33,6 +33,11 @@ Every test that edits data restores it afterwards.
 - **B2:** no horizontal overflow on the blog home, page 2, a topic page or the author page, at 390, 768, 1024 and 1440px.
 - **B3:** search matches articles by title and excerpt and links only to `/blog/` articles. Enter opens the first result. A query that matches a content block in Ghost's raw search index (proven by the test) shows **0** results on the site.
 - **B4:** on phones, the search icon opens a full-width panel with focus in the field. Results fit the screen and Escape closes it. "Paling dibaca" shows 3 on phones.
+- **T12:** the tag is renamed to "Gaya Hidup & Minda" with its slug `gaya-hidup` kept. The topic tile, category bar, topic page and article labels all follow; Kesihatan Mental is unchanged.
+- **T13:** "SEMUA ARTIKEL →" beside Terkini links to `/blog/page/2/`, on the blog home only.
+- **B5:** the category bar shows full names on desktop. Phones show DISFUNGSI · HORMON · PELVIS · SEKS · GAYA HIDUP · MINDA, with Panduan unchanged. Each link keeps its full name for screen readers (found by its accessible name).
+- **B6:** search keyboard: ↓ moves into the results, ↑ returns to the field, and Escape closes the panel with focus kept in the field. If the search index can't load, a clear message is shown.
+- **B7:** with JavaScript off, the search field and the phone search icon are hidden and a note explains why. The articles and "Muatkan lagi" (a plain link) still work, and nothing overflows.
 
 ## What was built
 
@@ -58,16 +63,20 @@ Where each area's data comes from is documented in the README ("Blog (Stage 5)")
 - **Stage 2 S3:** escapes the `&` in "Hormon & Testosteron".
 - **Test data:** the local data has 13 demo articles using the board's titles and summaries. Their body text is neutral placeholder text. All seven categories are in the category bar. This is test data only; the launch seed has no articles.
 
-## Items for your decision (nothing below has been implemented)
+## Your Stage 5 decisions: implemented
 
-| # | Item | Current behaviour | Options |
-|---|---|---|---|
-| 1 | **Featured articles also appear in "Terkini".** Terkini is the paginated list of all articles, so the newest (often featured) articles show in both places. | Duplicates are possible on page 1, as in most magazine layouts. Pagination is exact. | **A (recommended):** keep. **B:** leave the 3 featured articles out of Terkini on page 1. That needs a separate query, and page 2 would then start with articles already skipped. |
-| 2 | **Topic tile 04 name.** The board shows "Gaya Hidup & Minda", but the tag is called "Gaya Hidup" (and "Kesihatan Mental" is a separate category). | The tile shows the tag's name, "Gaya Hidup". | Rename the tag in Admin (this also changes the category bar and labels), or keep. No theme change either way. |
-| 3 | **Topic and author pages have no board.** | Built only from the blog-home components (header type, cards, Terkini list, consultation box). | Please review `docs/stage-5/full-topic-*.jpg` and `full-author-*.jpg`. |
-| 4 | **Search results panel has no board.** | Built from existing styles: white panel, charcoal border, serif titles, the Paling dibaca rule colour. Without JavaScript the field does nothing. | Please review `docs/stage-5/search-*.jpg`. |
-| 5 | **"SEMUA ARTIKEL →" (blog home, beside Terkini).** There is no separate archive page. | Links to `/blog/page/2/`. It's hidden on phones, as on the board, and on topic and author pages. | Keep, or remove. |
-| 6 | **Short category labels on phones.** The phone board shows "HORMON" and "PELVIS"; Ghost's secondary navigation has one label per item. | Phones show the full labels; the bar scrolls sideways. | Keep, or use shorter labels in Admin for all screen sizes. |
+| # | Decision | What was done |
+|---|---|---|
+| 1 | Keep featured articles in Terkini | Unchanged. Terkini is the full chronological list; pagination is exact (T6, B1: 9 → 18 → 25, no article skipped or repeated) |
+| 2 | Rename "Gaya Hidup" → "Gaya Hidup & Minda", keep the slug | Tag name changed in the local data and the category navigation label; slug `gaya-hidup` kept. Tile 04, category bar, topic page and card labels verified; Kesihatan Mental untouched (T12). **On production this is an Admin step:** see README "Before launch: blog data" |
+| 3 | Topic and author pages approved; real profile before launch | Layout unchanged. The author page shows only the Ghost staff profile (name, photo, bio) and the `doctor_credentials` setting. The test profile ("Dr. Ujian Tempatan") exists only on the local install and is never imported. A pre-launch check is in the README |
+| 4 | Search: no-JavaScript fallback, keyboard, Escape | Without JavaScript the field and phone icon are hidden; the note "Carian memerlukan JavaScript. Lihat topik" takes their place (B7). Arrow keys move through the results, Escape closes and returns focus (B6). An index failure shows "Carian tidak tersedia buat masa ini." Blocks are still never shown (B3) |
+| 5 | Keep "SEMUA ARTIKEL →" → `/blog/page/2/` | Unchanged; tested (T13) |
+| 6 | Short category labels on phones only | Theme-side mapping by topic URL (`partials/site/cat-label.hbs`). Full names on desktop and for screen readers; tag names and slugs unchanged (B5) |
+
+**Small fixes made while testing:**
+- **Stage 2 S13:** now tests the `lang` attribute itself, because `<html>` also carries the new `no-js` class.
+- **Stage 2 S3/S5:** read the full category name inside its new label element.
 
 ## Screenshots (`docs/stage-5/`)
 - **Prototype vs Ghost theme, section by section:**
@@ -76,7 +85,8 @@ Where each area's data comes from is documented in the README ("Blog (Stage 5)")
 - **Full pages:**
   - `full-blog-home-desktop`, `-mobile`, `-768`, `-1024`
   - `full-blog-page-2-*`, `full-topic-*`, `full-author-*`
-- **Search:** `search-desktop`, `search-desktop-none`, `search-mobile`
+- **Search:** `search-desktop`, `search-desktop-none`, `search-mobile`, `search-nojs-desktop` (JavaScript off)
+- **Refinements:** `cats-mobile`, `cats-mobile-scrolled` (short phone labels), `topic-gaya-hidup-desktop`, `topic-gaya-hidup-mobile`
 
 ## Safeguards preserved
 - Every new post query excludes `#blok`; the guard is part of `npm test`.

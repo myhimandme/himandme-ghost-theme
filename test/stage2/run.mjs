@@ -47,9 +47,9 @@ for (const [path, e] of Object.entries(expect)) {
 
 const home = (await page('/')).html; const ed = (await page('/disfungsi-ereksi/')).html; const blog = (await page('/blog/')).html; const topic = (await page('/blog/topik/gaya-hidup/')).html;
 check('S2', 'Primary navigation comes from Settings → Navigation', nav.every((n) => home.includes(`>${n.label}</a>`)), nav.map((n) => n.label).join(', '));
-check('S3', 'Blog category bar comes from secondary navigation (+ Semua)', cats.every((c) => blog.includes(`>${c.label.replace(/&/g, '&amp;')}</a>`)) && blog.includes('hm-cats__link'), cats.map((c) => c.label).join(', '));
+check('S3', 'Blog category bar comes from secondary navigation (+ Semua)', cats.every((c) => blog.includes(`>${c.label.replace(/&/g, '&amp;')}</a>`) || blog.includes(`<span class="hm-cats__full">${c.label.replace(/&/g, '&amp;')}</span>`)) && blog.includes('hm-cats__link'), cats.map((c) => c.label).join(', '));
 check('S4', 'Active page is marked (Disfungsi Ereksi on the ED page)', /hm-nav__link nav-current"[^>]*>Disfungsi Ereksi</.test(ed));
-check('S5', 'Active category is marked on a topic page', /hm-cats__link nav-current"[^>]*>Gaya Hidup</.test(topic));
+check('S5', 'Active category is marked on a topic page', /hm-cats__link nav-current"[^>]*><span class="hm-cats__full">Gaya Hidup &amp; Minda<\/span>/.test(topic));
 const wa = `https://wa.me/${custom.whatsapp_number}?text=${encodeURIComponent(custom.whatsapp_default_message)}`;
 check('S6', 'WhatsApp links use the theme settings (number + default message)', home.includes(wa.replace(/&/g, '&amp;')) || home.includes(wa), `${count(home, 'https://wa.me/')} WhatsApp links on /`);
 check('S7', 'Booking buttons point to /disfungsi-ereksi/#temujanji', home.includes(`${BASE}/disfungsi-ereksi/#temujanji`));
@@ -67,7 +67,7 @@ await admin(`/posts/${pen.id}/`, { method: 'PUT', json: { posts: [{ status: 'pub
 check('S11', 'Missing disclaimer block falls back to the approved copy (main + blog)', homeFb.includes('Kesesuaian sebarang rawatan ditentukan selepas penilaian oleh doktor.') && blogFb.includes('Artikel disemak sebelum diterbitkan.') && !homeFb.includes('ZZBLOK-007'));
 
 check('S12', 'Mobile menu markup: dialog, hidden by default, labelled open/close buttons', /id="hm-menu" role="dialog" aria-modal="true"[^>]*hidden/.test(home) && home.includes('aria-controls="hm-menu"') && home.includes('data-hm-menu-close'));
-check('S13', 'Skip link and <html lang> from the publication language', home.includes('class="hm-skip-link" href="#main"') && home.includes(`<html lang="${settings.locale}">`) && home.includes('id="main"'), `lang=${settings.locale}`);
+check('S13', 'Skip link and <html lang> from the publication language', home.includes('class="hm-skip-link" href="#main"') && new RegExp(`<html lang="${settings.locale}"[ >]`).test(home) && home.includes('id="main"'), `lang=${settings.locale}`);
 check('S14', 'Native search script is not loaded; brand font is preloaded', !home.includes('sodo-search') && /rel="preload" href="[^"]*manrope-latin-wght-normal\.woff2/.test(home));
 check('S15', 'Newsletter "Langgan" control removed from blog headers', !blog.includes('Langgan') && !(await page('/blog/artikel-ujian-01/')).html.includes('Langgan'));
 const fontRes = await fetch(BASE + (home.match(/href="([^"]*manrope-latin-wght-normal\.woff2[^"]*)"/) || [])[1]?.replace(BASE, ''));
