@@ -94,6 +94,8 @@
 
 /* Consultation prompt */
 .hm-bcta-wrap { padding-top: 72px; padding-bottom: 72px; }
+/* Directly after the article list (same background): one section gap, not two, so short topics don't leave a blank band */
+.hm-feed-wrap + .hm-bcta-wrap { padding-top: 0; }
 .hm-bcta { background: var(--hm-white); border: 1px solid var(--hm-rule-warm); padding: 40px; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; }
 .hm-bcta__text { display: flex; gap: 20px; align-items: center; flex: 1 1 320px; }
 .hm-bcta__mark { width: 52px; height: 52px; flex-shrink: 0; }

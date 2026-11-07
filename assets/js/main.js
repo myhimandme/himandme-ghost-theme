@@ -191,7 +191,7 @@
       items.forEach((el) => feed.appendChild(document.importNode(el, true)));
       if (first) { const added = feed.querySelector(`[href="${first.getAttribute('href')}"]`); if (added) added.focus({ preventScroll: true }); }
       const next = doc.querySelector('[data-hm-more]');
-      if (next) { more.href = next.href; more.removeAttribute('aria-busy'); } else more.remove();
+      if (next) { more.href = next.href; more.removeAttribute('aria-busy'); } else { const nav = more.parentElement; more.remove(); if (nav && !nav.children.length) nav.remove(); }
     } catch (err) {
       window.location.href = more.href; // fall back to the normal page
     }

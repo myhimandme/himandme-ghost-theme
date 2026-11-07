@@ -9,7 +9,7 @@
 |---|---|
 | `npm test`: build + content-block guard (94 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings |
 | Ghost Admin upload check | ✅ 0 errors, 0 warnings |
-| `test/stage5/run.mjs`: blog, incl. the approved refinements | ✅ **20 / 20** |
+| `test/stage5/run.mjs`: blog, incl. the approved refinements | ✅ **21 / 21** |
 | `test/stage4/run.mjs`: ED page, offer, Notis Privasi, email | ✅ **39 / 39** |
 | `test/stage3/run.mjs`: homepage | ✅ **12 / 12** |
 | `test/stage2/run.mjs`: site chrome | ✅ **23 / 23** |
@@ -63,6 +63,22 @@ Where each area's data comes from is documented in the README ("Blog (Stage 5)")
 - **Stage 2 S3:** escapes the `&` in "Hormon & Testosteron".
 - **Test data:** the local data has 13 demo articles using the board's titles and summaries. Their body text is neutral placeholder text. All seven categories are in the category bar. This is test data only; the launch seed has no articles.
 
+## Review follow-up (7 Nov 2026)
+
+**Topic pages with few articles (spacing only, no redesign).** On Hormon & Testosteron (2 articles) there was 184px of empty space between the last card and the consultation box. Two causes:
+- An empty page-navigation row was still drawn when there was no other page.
+- The article list and the consultation box each added their own 72px section padding, on the same background.
+
+Now:
+- The navigation row appears only when there is another page. The script also removes it once "Muatkan lagi" has loaded the last page.
+- When the consultation box directly follows the list, it sits one section gap below it: 72px desktop, 48px phone.
+
+The blog home is unchanged: the Panduan band sits between the list and the box. Test **B8** checks this. Screenshots: `full-topic-hormon-desktop.jpg`, `full-topic-hormon-mobile.jpg`.
+
+**Article pages (Stage 6, not started).** `/blog/{slug}/` still renders the Stage 1 verification template: title, "Ditulis dan disemak oleh …" and the raw article body, unstyled.
+- The repeated "Teks contoh untuk ujian susun atur tema, perenggan N…" paragraphs are the **test data's placeholder bodies**, not theme text.
+- Every Stage 5 link (cards, lead, Paling dibaca, guides, search results) points to the article's permanent URL. Stage 6 changes only the template behind that URL; the URLs stay the same.
+
 ## Your Stage 5 decisions: implemented
 
 | # | Decision | What was done |
@@ -86,6 +102,7 @@ Where each area's data comes from is documented in the README ("Blog (Stage 5)")
   - `full-blog-home-desktop`, `-mobile`, `-768`, `-1024`
   - `full-blog-page-2-*`, `full-topic-*`, `full-author-*`
 - **Search:** `search-desktop`, `search-desktop-none`, `search-mobile`, `search-nojs-desktop` (JavaScript off)
+- **Spacing follow-up:** `full-topic-hormon-desktop`, `full-topic-hormon-mobile`
 - **Refinements:** `cats-mobile`, `cats-mobile-scrolled` (short phone labels), `topic-gaya-hidup-desktop`, `topic-gaya-hidup-mobile`
 
 ## Safeguards preserved

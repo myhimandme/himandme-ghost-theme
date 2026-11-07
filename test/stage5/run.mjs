@@ -215,6 +215,17 @@ if (chromium) {
   const popVisible = await m.$$eval('.hm-popular--mobile li', (els) => els.filter((e) => getComputedStyle(e).display !== 'none').length);
   check('B4', 'Phones: the search icon opens a full-width search panel (focus in the field), results fit the screen, Escape closes it; Paling dibaca shows 3',
     hiddenBefore && focused && mHits > 0 && mSw === 390 && closed && popVisible === 3, `${mHits} result(s) for "pelvis"`);
+  // B8 — short topics: no empty page-navigation row, and the consultation box follows the list at one section gap
+  const gaps = {};
+  for (const w of [1440, 390]) {
+    const g = await b.newPage({ viewport: { width: w, height: 900 } }); await g.goto(BASE + '/blog/topik/hormon-testosteron/');
+    gaps[w] = await g.evaluate(() => { const cards = [...document.querySelectorAll('[data-hm-feed] > *')]; const last = Math.max(...cards.map((c) => c.getBoundingClientRect().bottom));
+      return { cards: cards.length, nav: !!document.querySelector('.hm-feed__nav'), gap: Math.round(document.querySelector('.hm-bcta').getBoundingClientRect().top - last) }; });
+    await g.close();
+  }
+  check('B8', 'Topic with few articles: no empty page-navigation row; consultation box follows the list at one section gap (72px desktop, 48px phone)',
+    gaps[1440].cards < 9 && !gaps[1440].nav && gaps[1440].gap === 72 && !gaps[390].nav && gaps[390].gap === 48, JSON.stringify(gaps));
+
   // B5 — category labels: full names on desktop, the approved short labels on phones; full names kept for screen readers
   const SHORT = { 'Disfungsi Ereksi': 'DISFUNGSI', 'Hormon & Testosteron': 'HORMON', 'Kesihatan Pelvis': 'PELVIS', 'Seks & Hubungan': 'SEKS', 'Gaya Hidup & Minda': 'GAYA HIDUP', 'Kesihatan Mental': 'MINDA', Panduan: 'PANDUAN' };
   // What is actually SHOWN in each link: text of the label parts that are rendered at a visible size.
