@@ -2,7 +2,7 @@
 
 Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site (Utama, Disfungsi Ereksi) and a separate editorial blog (/blog/). The approved HTML prototype is the master visual reference.
 
-> **Status: Stage 4 (Disfungsi Ereksi page + RM288 First Trial offer), awaiting approval.** Site chrome, the homepage and the ED page match the approved prototype. Blog, topic/author pages and articles are still *verification scaffolding* until Stages 5–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md) · [`STAGE-2`](docs/STAGE-2-REPORT.md) · [`STAGE-3`](docs/STAGE-3-REPORT.md) · [`STAGE-4`](docs/STAGE-4-REPORT.md). **Clinical content checklist: [`docs/CLINICAL-REVIEW.md`](docs/CLINICAL-REVIEW.md).**
+> **Status: Stage 5 (blog home, topic pages, author page, blog search), awaiting approval.** Site chrome, the homepage, the ED page and the blog listing pages match the approved prototype. Articles (`post.hbs`) are still *verification scaffolding* until Stage 6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md) · [`STAGE-2`](docs/STAGE-2-REPORT.md) · [`STAGE-3`](docs/STAGE-3-REPORT.md) · [`STAGE-4`](docs/STAGE-4-REPORT.md) · [`STAGE-5`](docs/STAGE-5-REPORT.md). **Clinical content checklist: [`docs/CLINICAL-REVIEW.md`](docs/CLINICAL-REVIEW.md).**
 
 ## Requirements
 
@@ -26,6 +26,7 @@ Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site
 | `npm run test:stage2` | Site-chrome checks (headers, footers, menus, settings, block fallback) against a local Ghost |
 | `npm run test:stage3` | Homepage checks (every block + fallback, article teaser, images, doctor card, accessibility basics) against a local Ghost |
 | `npm run test:stage4` | Disfungsi Ereksi page checks (blocks + fallback, FAQ, settings, every CTA, WhatsApp form in a browser, overflow) against a local Ghost |
+| `npm run test:stage5` | Blog checks (features, Paling dibaca, topic tiles, Terkini + "Muatkan lagi", Panduan band, topic/author pages, feature images, search, overflow) against a local Ghost. It edits and restores test data |
 | `npm run visual` | Side-by-side screenshots of the approved prototype vs the local theme (`PROTOTYPE_HTML=…`) |
 
 ## Ghost Admin setup checklist (paths verified on Ghost 6.75.0)
@@ -135,6 +136,34 @@ To change the address, edit `ADDRESS` in `scripts/make-contact-image.mjs` and ru
 `seed/pages/notis-privasi.txt` holds the owner's Notis Privasi text (BM, then English). `seed/blocks.mjs` converts it to the page body: `## ` heading, `### ` subheading, `* ` / `1. ` lists, `---` divider, `# ` second-language title. Once imported, edit it in Ghost Admin → Pages → Notis Privasi.
 
 Plain pages use `page.hbs`, styled like a blog article. Each **H2 heading** becomes an entry in the "Dalam halaman ini" contents list (shown when there are at least 3). Use H3 for subsections. The page keeps the main-site header and the compact footer with the Notis Privasi link.
+
+### Blog (Stage 5): what drives each area
+
+Everything on the blog pages comes from Ghost Admin and updates when you publish, schedule, update or unpublish. Content blocks (`#blok`) never appear.
+
+| Area | Comes from | To change it |
+|---|---|---|
+| Lead + 2 secondary features (blog home) | The 3 newest posts with **Feature this post** on; the latest posts fill any empty slot | Post settings → *Feature this post* |
+| Paling dibaca (4; 3 on phones) | Posts with the internal tag **`#popular`**; the latest posts if none | Add/remove the `#popular` tag. Ghost has no view counts, so this list is hand-picked |
+| Teroka mengikut topik (4 tiles) | The tags `disfungsi-ereksi`, `hormon-testosteron`, `kesihatan-pelvis`, `gaya-hidup` (named "Gaya Hidup & Minda"): name and description | Tags → edit the name/description. The 4 slugs are fixed in `partials/blog/topics.hbs` |
+| Terkini (9 per page) + "Muatkan lagi artikel" | The `/blog/` collection, newest first; the button loads the next page in place (a normal link without JavaScript) | Publish posts. Page 2+ shows the list only |
+| Panduan lengkap (3) | The 3 newest posts tagged **`panduan`**, with their reading time; the band is hidden when there are none | Add/remove the `panduan` tag |
+| Consultation prompt | Fixed theme text; buttons go to the ED booking form and WhatsApp | — |
+| Category label on cards | The post's **first public tag** | Post settings → Tags (put the category first) |
+| Byline | "Ditulis dan disemak oleh {author}" from the post's author (the doctor's staff profile) | Settings → Staff |
+| Card / lead / guide images | The post's **feature image** and its alt text; a patterned placeholder when there is none | Post settings → Feature image |
+| Topic page `/blog/topik/{slug}/` | The tag's name and description, its featured posts first, then all its posts | Tags; *Feature this post* |
+| Author page `/blog/penulis/{slug}/` | Staff profile (name, photo, bio) + theme setting `doctor_credentials` | Settings → Staff; Design → Theme |
+
+**Category bar labels:** desktop shows each Secondary navigation label in full. On phones the theme shows the approved short labels instead, matched by the topic URL: DISFUNGSI, HORMON, PELVIS, SEKS, GAYA HIDUP (for `gaya-hidup`, "Gaya Hidup & Minda") and MINDA (for `kesihatan-mental`). The full name stays in the link for screen readers. Tag names and slugs are not affected. Change the mapping in `partials/site/cat-label.hbs`.
+
+**Search** (blog masthead; the search icon on phones): searches published **articles** by title and excerpt. It reads Ghost's public search index once, in the visitor's browser. It drops every entry without a public URL (content blocks resolve to `/404/`) and anything outside `/blog/`. Ghost's own search pop-up stays disabled, because its index lists content blocks. Nothing is stored. **Without JavaScript** the field and the phone search icon are hidden, and a short note ("Carian memerlukan JavaScript. Lihat topik") takes their place. If the index can't be loaded, the panel says search is temporarily unavailable. Keyboard: ↓/↑ move between the field and the results, Enter opens the first result, Escape closes.
+
+### Before launch: blog data (production Admin, not the theme)
+
+1. **Tags (Ghost Admin → Tags):** create the 7 categories with these slugs: `disfungsi-ereksi`, `hormon-testosteron`, `kesihatan-pelvis`, `seks-hubungan`, `gaya-hidup`, `kesihatan-mental`, `panduan`. Give `gaya-hidup` the **name "Gaya Hidup & Minda"** (approved Stage 5). Keep the slug `gaya-hidup`; the theme's topic tiles and short labels use the slug. Add descriptions; they appear on the topic tiles and topic pages.
+2. **Secondary navigation (Settings → Site → Navigation):** one item per category, in the order above, with the full name as the label (e.g. "Gaya Hidup & Minda" → `/blog/topik/gaya-hidup/`).
+3. **Doctor profile (Settings → Staff → your profile):** your real name (with "Dr."), photo, biography and slug. Then the theme setting **`doctor_credentials`** (verified credentials) and the slug in `routes.yaml` (3 places). Open `/blog/penulis/{slug}/` and check that no test data appears. The local test profile ("Dr. Ujian Tempatan") exists only on the development install and is never imported.
 
 ## Repository layout (Stage 0–1)
 

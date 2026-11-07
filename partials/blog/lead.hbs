@@ -1,0 +1,8 @@
+{{!-- Lead feature (current post context). The byline is the single attribution ("Ditulis dan disemak oleh"). --}}
+<a class="hm-lead" href="{{url}}">
+    {{> "components/image" src=feature_image alt=feature_image_alt class="hm-lead__img" sizes="(max-width: 599px) 100vw, (max-width: 1100px) 100vw, 680px" eager=true}}
+    <span class="hm-kicker">{{#primary_tag}}{{name}} · {{/primary_tag}}<span class="hm-hide-mobile">{{t "ARTIKEL UTAMA"}}</span><span class="hm-show-mobile">{{t "UTAMA"}}</span></span>
+    <span class="hm-lead__title hm-serif">{{title}}</span>
+    {{#if custom_excerpt}}<span class="hm-lead__dek hm-serif">{{custom_excerpt}}</span>{{/if}}
+    <span class="hm-lead__meta">{{#primary_author}}{{t "Ditulis dan disemak oleh"}} {{name}} · {{/primary_author}}{{reading_time minute=(t "1 min bacaan") minutes=(t "% min bacaan")}}</span>
+</a>

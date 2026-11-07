@@ -17,8 +17,13 @@ const files = [];
 const problems = [];
 for (const f of files) {
   const src = readFileSync(f, 'utf8');
-  for (const m of src.matchAll(/\{\{#get\s+"posts"([^}]*)\}\}/g)) {
-    const args = m[1];
+  // Read each {{#get "posts" …}} up to its own closing braces; filters may contain {{…}} (e.g. {{tag.slug}}).
+  for (const m of src.matchAll(/\{\{#get\s+"posts"/g)) {
+    let i = m.index + m[0].length; let depth = 1;
+    while (i < src.length && depth > 0) {
+      if (src.startsWith('{{', i)) { depth++; i += 2; } else if (src.startsWith('}}', i)) { depth--; i += 2; } else i++;
+    }
+    const args = src.slice(m.index + m[0].length, i - 2);
     const filter = (args.match(/filter="([^"]*)"/) || [])[1] || '';
     const ok = filter.includes('tag:-hash-blok') || /^slug:blok-[a-z0-9-]+$/.test(filter) || /^tag:hash-blok[a-z0-9-]*$/.test(filter);
     if (!ok) problems.push(`${f}: {{#get "posts"${args}}} — add "+tag:-hash-blok" or use a specific block lookup`);

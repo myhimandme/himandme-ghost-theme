@@ -39,6 +39,12 @@
   .hm-bheader__logo .hm-logo { height: 30px; }
   .hm-bheader__title-sm { display: block; text-align: center; font-size: 22px; padding-bottom: 12px; color: var(--hm-charcoal); text-decoration: none; }
 }
+.hm-cats__short { display: none; }
+@media (max-width: 599px) {
+  /* Phones: approved short labels; the full name stays available to screen readers */
+  .hm-cats__short { display: inline; }
+  .hm-cats__full { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+}
 @media (max-width: 599px) {
   .hm-cats { gap: 22px; font-size: 11px; margin: 0 -16px; padding: 0 16px; }
   .hm-cats__link { padding: 14px 0; }
