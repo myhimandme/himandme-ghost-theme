@@ -1,0 +1,4 @@
+{{!-- One topic tile: the tag's name and description from Ghost Admin (Tags). Hidden if the tag doesn't exist. --}}
+{{#get "tags" filter="slug:{{slug}}+visibility:public" limit="1" as |tile|}}
+    {{#foreach tile}}<a class="hm-topic-tile" href="{{url}}"><span class="hm-topic-tile__no" aria-hidden="true">/</span><span class="hm-topic-tile__name hm-serif">{{name}}</span>{{#if description}}<span class="hm-topic-tile__desc">{{description}}</span>{{/if}}<span class="hm-topic-tile__go"><span class="hm-hide-mobile">{{t "Lihat topik →"}}</span><span class="hm-show-mobile">{{t "Lihat →"}}</span></span></a>{{/foreach}}
+{{/get}}

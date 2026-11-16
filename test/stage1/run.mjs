@@ -82,9 +82,13 @@ const ed = await get('/disfungsi-ereksi/');
 check('R3', 'Routes', '/disfungsi-ereksi/ renders custom-disfungsi-ereksi.hbs', ed.status === 200 && template(ed.body) === 'custom-disfungsi-ereksi', `HTTP ${ed.status}, template ${template(ed.body)}`);
 const blog = await get('/blog/');
 check('R4', 'Routes', '/blog/ renders index.hbs with 9 posts', blog.status === 200 && template(blog.body) === 'index' && listed(blog.body).length === 9, `HTTP ${blog.status}, ${listed(blog.body).length} posts`);
-const blog2 = await get('/blog/page/2/'); const blog3 = await get('/blog/page/3/');
+const blog2 = await get('/blog/page/2/');
 const totalArticles = (await content('/posts/?limit=all&fields=slug&filter=tag:-hash-blok')).posts.length;
-check('R5', 'Routes', 'Blog pagination /blog/page/2/ (and page 3 → 404)', blog2.status === 200 && listed(blog2.body).length === totalArticles - 9 && blog3.status === 404, `page 2: ${listed(blog2.body).length} posts; page 3: HTTP ${blog3.status}`);
+const lastPage = Math.ceil(totalArticles / 9);
+const blogLast = await get(`/blog/page/${lastPage}/`); const blogAfter = await get(`/blog/page/${lastPage + 1}/`);
+check('R5', 'Routes', 'Blog pagination: /blog/page/2/ … last page list every article once; the page after the last → 404',
+  blog2.status === 200 && listed(blog2.body).length === Math.min(9, totalArticles - 9) && blogLast.status === 200 && listed(blogLast.body).length === totalArticles - 9 * (lastPage - 1) && blogAfter.status === 404,
+  `${totalArticles} articles, ${lastPage} pages; page 2: ${listed(blog2.body).length} posts; page ${lastPage + 1}: HTTP ${blogAfter.status}`);
 const jurnal = (await admin('/pages/slug/jurnal/')).pages[0];
 const r6 = await get('/jurnal/');
 check('R6', 'Routes', '/blog/ <title> comes from page "jurnal"; /jurnal/ 301-redirects to /blog/', titleOf(blog.body) === jurnal.meta_title && r6.status === 301 && new URL(r6.location, BASE).pathname === '/blog/', `<title> "${titleOf(blog.body)}"; /jurnal/ HTTP ${r6.status} → ${r6.location}`);

@@ -171,3 +171,98 @@
     heads.forEach((h) => io.observe(h));
   }
 })();
+
+// Blog: "Muatkan lagi artikel" appends the next archive page in place (the link still works without JS).
+(function () {
+  const feed = document.querySelector('[data-hm-feed]');
+  if (!feed) return;
+  document.addEventListener('click', async (e) => {
+    const more = e.target.closest('[data-hm-more]');
+    if (!more || !window.fetch || !window.DOMParser) return;
+    e.preventDefault();
+    if (more.getAttribute('aria-busy') === 'true') return;
+    more.setAttribute('aria-busy', 'true');
+    try {
+      const res = await fetch(more.href, { credentials: 'same-origin' });
+      if (!res.ok) throw new Error(res.status);
+      const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+      const items = [...doc.querySelectorAll('[data-hm-feed] > *')];
+      const first = items[0];
+      items.forEach((el) => feed.appendChild(document.importNode(el, true)));
+      if (first) { const added = feed.querySelector(`[href="${first.getAttribute('href')}"]`); if (added) added.focus({ preventScroll: true }); }
+      const next = doc.querySelector('[data-hm-more]');
+      if (next) { more.href = next.href; more.removeAttribute('aria-busy'); } else { const nav = more.parentElement; more.remove(); if (nav && !nav.children.length) nav.remove(); }
+    } catch (err) {
+      window.location.href = more.href; // fall back to the normal page
+    }
+  });
+})();
+
+// Blog search: articles only. Reads Ghost's public search index once, drops every entry without a public
+// URL (content blocks resolve to /404/) and anything outside /blog/, then matches all words of the query
+// against the title and excerpt (accents and case ignored). No other data is loaded or stored.
+(function () {
+  const box = document.querySelector('[data-hm-search]');
+  if (!box) return;
+  const input = box.querySelector('[data-hm-search-input]');
+  const results = box.querySelector('#hm-search-results');
+  const list = box.querySelector('[data-hm-search-list]');
+  const status = box.querySelector('[data-hm-search-status]');
+  const openBtn = document.querySelector('[data-hm-search-open]');
+  const header = box.closest('header');
+  const site = (box.dataset.api || '').replace(/\/$/, '');
+  const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  let index = null; let loading = null; let failed = false;
+  const load = () => loading || (loading = fetch(`${site}/ghost/api/content/search-index/posts/?key=${encodeURIComponent(box.dataset.key)}`)
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((d) => { index = (d.posts || []).filter((p) => p.url && !/\/404\/?$/.test(p.url) && p.url.indexOf(`${site}/blog/`) === 0)
+      .map((p) => ({ ...p, t: norm(p.title), x: norm(p.excerpt) })); })
+    .catch(() => { index = []; failed = true; }));
+  const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const render = () => {
+    const q = input.value.trim();
+    if (q.length < 2) { results.hidden = true; list.innerHTML = ''; status.textContent = ''; return; }
+    if (!index) { results.hidden = false; status.textContent = 'Mencari…'; load().then(render); return; }
+    if (failed) { results.hidden = false; list.innerHTML = ''; status.textContent = 'Carian tidak tersedia buat masa ini. Sila cuba sebentar lagi.'; status.classList.add('is-empty'); return; }
+    const words = norm(q).split(/\s+/).filter(Boolean);
+    const hits = index.filter((p) => words.every((w) => p.t.includes(w) || p.x.includes(w)))
+      .sort((a, b) => words.filter((w) => b.t.includes(w)).length - words.filter((w) => a.t.includes(w)).length).slice(0, 8);
+    results.hidden = false;
+    status.textContent = hits.length ? `${hits.length} artikel ditemui` : `Tiada artikel ditemui untuk “${q}”.`;
+    status.classList.toggle('is-empty', !hits.length);
+    list.innerHTML = hits.map((p) => `<li><a href="${esc(p.url)}"><span class="hm-search__title hm-serif">${esc(p.title)}</span>${p.excerpt ? `<span class="hm-search__excerpt">${esc(p.excerpt.length > 120 ? p.excerpt.slice(0, 117) + '…' : p.excerpt)}</span>` : ''}</a></li>`).join('');
+  };
+  let timer;
+  input.setAttribute('aria-describedby', status.id || (status.id = 'hm-search-status'));
+  // Keyboard: ↓ from the field moves into the results, ↑/↓ move between them, ↑ from the first returns to the field.
+  box.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    const links = [...list.querySelectorAll('a')]; if (!links.length || results.hidden) return;
+    const i = links.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); (links[i + 1] || links[i === -1 ? 0 : i]).focus(); }
+    else if (i > -1) { e.preventDefault(); (i === 0 ? input : links[i - 1]).focus(); }
+  });
+  input.addEventListener('focus', load, { once: true });
+  input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(render, 120); });
+  box.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const first = list.querySelector('a');
+    if (first) window.location.href = first.href; else render();
+  });
+  const close = () => {
+    const wasInResults = results.contains(document.activeElement);
+    results.hidden = true;
+    if (wasInResults && !(header && header.classList.contains('is-searching'))) input.focus();
+    if (header) header.classList.remove('is-searching');
+    if (openBtn) { openBtn.setAttribute('aria-expanded', 'false'); if (box.contains(document.activeElement)) openBtn.focus(); }
+  };
+  if (openBtn) openBtn.addEventListener('click', () => {
+    const on = !header.classList.contains('is-searching');
+    header.classList.toggle('is-searching', on);
+    openBtn.setAttribute('aria-expanded', String(on));
+    if (on) { load(); input.focus(); } else close();
+  });
+  box.querySelector('[data-hm-search-close]').addEventListener('click', () => { input.value = ''; render(); close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && (box.contains(document.activeElement) || header.classList.contains('is-searching'))) close(); });
+  document.addEventListener('click', (e) => { if (!box.contains(e.target) && !(openBtn && openBtn.contains(e.target))) { results.hidden = true; } });
+})();

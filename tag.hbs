@@ -1,14 +1,31 @@
 {{!< default}}
 {{#contentFor "mode"}}blog{{/contentFor}}
 {{#contentFor "preload"}}<link rel="preload" href="{{asset "fonts/newsreader-latin-standard-normal.woff2"}}" as="font" type="font/woff2" crossorigin>{{/contentFor}}
+{{!-- Topic page (/blog/topik/{slug}/): the tag's name and description (Ghost Admin → Tags), its featured
+      articles first (page 1), then every article in the topic, paginated. Built from the blog-home components. --}}
 {{> "site/blog-topbar"}}
 {{> "site/header-blog"}}
-{{!-- STAGE 1 VERIFICATION SCAFFOLD — replaced by the approved topic page design in Stage 5. --}}
-<main id="main" data-template="tag">
-    {{#tag}}<h1>{{name}}</h1>{{/tag}}
-    <ul data-test="post-list">
-        {{#foreach posts}}<li data-slug="{{slug}}"><a href="{{url}}">{{title}}</a></li>{{/foreach}}
-    </ul>
-    {{pagination}}
+<main id="main" class="hm-blog hm-topic" data-template="tag">
+    {{#tag}}
+    <header class="hm-archive-head hm-container-blog">
+        <nav class="hm-archive-head__crumbs" aria-label="{{t "Laluan"}}"><a href="{{@site.url}}/blog/">{{t "Blog"}}</a> <span class="hm-archive-head__slash" aria-hidden="true">/</span> <span aria-current="page">{{name}}</span></nav>
+        <span class="hm-kicker">{{t "TOPIK"}}</span>
+        <h1 class="hm-archive-head__title hm-serif">{{name}}</h1>
+        {{#if description}}<p class="hm-archive-head__desc">{{description}}</p>{{/if}}
+        <span class="hm-archive-head__count">{{plural ../pagination.total empty=(t "Tiada artikel lagi") singular=(t "% artikel") plural=(t "% artikel")}}</span>
+    </header>
+    {{/tag}}
+    {{#match pagination.page "<=" 1}}
+        {{#get "posts" filter="tag:{{tag.slug}}+featured:true+tag:-hash-blok" limit="3" include="tags,authors" as |feat|}}
+            {{#if feat}}
+            <section class="hm-bhero hm-bhero--topic hm-container-blog" aria-label="{{t "Artikel pilihan"}}">
+                {{#foreach feat limit="1"}}<div class="hm-bhero__lead">{{> "blog/lead"}}</div>{{/foreach}}
+                <div class="hm-bhero__second">{{#foreach feat from="2" to="3"}}{{> "blog/card" variant="second"}}{{/foreach}}</div>
+            </section>
+            {{/if}}
+        {{/get}}
+    {{/match}}
+    {{> "blog/feed" heading=(t "Semua artikel")}}
+    {{> "blog/cta"}}
 </main>
 {{> "site/footer-blog" links=true}}

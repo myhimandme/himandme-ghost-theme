@@ -1,0 +1,19 @@
+{{!-- The paginated article list of the current archive (blog home "Terkini", topic and author pages). Param: heading (default "Terkini").
+      "Muatkan lagi artikel" appends the next page with JavaScript; without it, it is a normal link. --}}
+<section class="hm-feed-wrap hm-container-blog" id="artikel" aria-labelledby="hm-feed-title">
+    <div class="hm-feed__head">
+        <h2 class="hm-bh2 hm-serif" id="hm-feed-title">{{#match pagination.page ">" 1}}{{t "Semua artikel"}}{{else}}{{#if heading}}{{heading}}{{else}}{{t "Terkini"}}{{/if}}{{/match}}</h2>
+        {{#match pagination.page ">" 1}}<span class="hm-feed__page">{{t "Halaman"}} {{pagination.page}} / {{pagination.pages}}</span>
+        {{else}}{{#unless heading}}{{#if pagination.next}}<a class="hm-feed__all hm-hide-mobile" href="{{page_url pagination.next}}">{{t "SEMUA ARTIKEL →"}}</a>{{/if}}{{/unless}}{{/match}}
+    </div>
+    <div class="hm-feed" data-hm-feed>
+        {{#foreach posts}}{{> "blog/card" variant="grid" feed=true}}{{/foreach}}
+    </div>
+    {{!-- Page navigation only when there is another page (no empty row adding space on short topics). --}}
+    {{#match pagination.pages ">" 1}}
+    <nav class="hm-feed__nav" aria-label="{{t "Halaman artikel"}}">
+        {{#if pagination.prev}}<a class="hm-feed__prev" href="{{page_url pagination.prev}}">{{t "← Artikel lebih baharu"}}</a>{{/if}}
+        {{#if pagination.next}}<a class="hm-more" href="{{page_url pagination.next}}" data-hm-more>{{t "Muatkan lagi artikel"}}</a>{{/if}}
+    </nav>
+    {{/match}}
+</section>
