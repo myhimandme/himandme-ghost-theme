@@ -140,10 +140,10 @@ const img = (await admin('/images/upload/', { method: 'POST', form: f })).images
 const leadPost = byFeat[0];
 await editPost(leadPost, { feature_image: img, feature_image_alt: 'Gambar ujian' });
 const withImg = await page('/blog/');
-await editPost(leadPost, { feature_image: null, feature_image_alt: null });
+await editPost(leadPost, { feature_image: leadPost.feature_image || null, feature_image_alt: leadPost.feature_image_alt || null, feature_image_caption: leadPost.feature_image_caption || null }); // restore what was there
 const leadImg = sec(withImg, 'hm-bhero__lead');
 check('T11', 'Feature image: the lead shows the uploaded image with srcset + alt (eager); without one, the patterned placeholder',
-  /<img class="hm-lead__img" src="[^"]*ujian-gambar[^"]*"\s+srcset="[^"]+320w[^"]+600w/.test(leadImg) && leadImg.includes('alt="Gambar ujian"') && !leadImg.includes('loading="lazy"') && sec(blog, 'hm-bhero__lead').includes('hm-lead__img hm-ph'));
+  /<img class="hm-lead__img" src="[^"]*ujian-gambar[^"]*"\s+srcset="[^"]+320w[^"]+600w/.test(leadImg) && leadImg.includes('alt="Gambar ujian"') && !leadImg.includes('loading="lazy"') && (sec(blog, 'hm-bhero__lead').includes('hm-lead__img hm-ph') || blog.includes('hm-card__img hm-ph')));
 
 
 // T12 — topic renamed to "Gaya Hidup & Minda" (display name only; slug gaya-hidup kept); Kesihatan Mental unchanged

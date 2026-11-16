@@ -79,10 +79,34 @@ const DEMO = [
   ['memahami-testosteron-hormon-lelaki', 'Memahami testosteron & hormon lelaki', 'Apa yang dilakukan hormon, dan bila paras rendah perlu dinilai.', ['hormon-testosteron', 'panduan'], {}, 120],
   ['kesihatan-lantai-pelvis-lelaki', 'Kesihatan lantai pelvis untuk lelaki', 'Mengenali, menguatkan dan menjaga otot lantai pelvis.', ['kesihatan-pelvis', 'panduan'], {}, 110],
 ];
+// Stage 6: the lead demo article carries the approved Artikel board's SAMPLE text, built from Ghost's own
+// editor blocks (grey callout = "Poin utama", alternate quote = pull quote, white callout = "Bila perlu…" box,
+// toggle = FAQ, "Rujukan" heading + list = references), so every article style can be built and tested.
+// Test data only: never imported to the live site; references are the board's placeholders.
+const RICH = [
+  '<div class="kg-card kg-callout-card kg-callout-card-grey"><div class="kg-callout-emoji">💡</div><div class="kg-callout-text">Risiko disfungsi ereksi meningkat dengan usia, tetapi usia jarang menjadi satu-satunya punca.<br>Kesihatan salur darah, hormon, tidur dan emosi semuanya memainkan peranan.<br>Masalah yang berulang wajar dinilai oleh doktor, bukan diabaikan.</div></div>',
+  '<p>Ramai lelaki menganggap kesukaran ereksi sebagai sebahagian daripada proses menua yang tidak dapat dielakkan. Walaupun usia memang memainkan peranan, gambaran sebenar biasanya lebih kompleks — dan lebih banyak yang boleh dilakukan daripada yang disangka.</p>',
+  '<h2>Usia memainkan peranan, tetapi bukan satu-satunya</h2>',
+  '<p>Ereksi ialah proses yang melibatkan otak, saraf, hormon, otot dan salur darah. Apabila mana-mana bahagian ini terganggu, fungsi ereksi boleh terjejas. Itulah sebabnya lelaki yang lebih muda juga boleh mengalaminya, dan sebabnya ramai lelaki yang lebih berusia tidak mengalaminya langsung.</p>',
+  '<h2>Salur darah: penghubung yang sering terlepas pandang</h2>',
+  '<p>Ereksi bergantung kepada aliran darah yang baik ke zakar. Keadaan yang menjejaskan salur darah — seperti darah tinggi, kolesterol tinggi, kencing manis dan merokok — juga boleh menjejaskan ereksi.</p>',
+  '<blockquote class="kg-blockquote-alt">“Perubahan pada fungsi ereksi kadangkala merupakan petunjuk awal tentang kesihatan jantung dan salur darah.”</blockquote>',
+  '<p>Kerana itu, penilaian yang baik tidak hanya memberi tumpuan kepada simptom, tetapi juga kepada kesihatan anda secara keseluruhan.</p>',
+  '<h2>Hormon, tidur dan tekanan</h2>',
+  '<p>Faktor-faktor lain yang sering dikaitkan dengan disfungsi ereksi termasuk:</p>',
+  '<ul><li><strong>Paras testosteron yang rendah</strong>, yang boleh menjejaskan keinginan dan tenaga.</li><li><strong>Kurang tidur</strong> atau gangguan tidur yang berpanjangan.</li><li><strong>Tekanan dan kebimbangan prestasi</strong>, yang boleh mewujudkan kitaran sukar diputuskan.</li></ul>',
+  '<h2>Bila perlu berjumpa doktor</h2>',
+  '<div class="kg-card kg-callout-card kg-callout-card-white"><div class="kg-callout-emoji">ℹ️</div><div class="kg-callout-text"><strong>Pertimbangkan konsultasi jika:</strong> masalah berlaku berulang kali selama beberapa minggu; ia menjejaskan keyakinan atau hubungan anda; atau anda juga mempunyai kencing manis, darah tinggi atau penyakit jantung.</div></div>',
+  '<div class="kg-card kg-toggle-card" data-kg-toggle-state="close"><div class="kg-toggle-heading"><h4 class="kg-toggle-heading-text">Adakah ini perkara biasa?</h4></div><div class="kg-toggle-content"><p>[Contoh soalan lazim dalam artikel. Jawapan ditulis dan disemak oleh doktor.]</p></div></div>',
+  '<h2>Langkah seterusnya</h2>',
+  '<p>Langkah pertama yang paling berguna ialah perbualan yang jujur dengan doktor. Penilaian membantu mengenal pasti faktor yang berkaitan dengan anda, sebelum sebarang pilihan rawatan dibincangkan.</p>',
+  '<h2>Rujukan</h2>',
+  '<ol><li>[Rujukan — sumber perubatan yang disahkan, cth. garis panduan klinikal]</li><li>[Rujukan]</li></ol>',
+].join('');
 // Newest first: the first entry is the newest post. All are newer than the Stage 1 test articles.
 DEMO.forEach(([slug, title, excerpt, t, extra, paras], i) => add({ slug, title, custom_excerpt: excerpt,
-  html: `<h2>Bahagian satu</h2>${filler(Math.ceil(paras / 2))}<h2>Bahagian dua</h2>${filler(Math.floor(paras / 2))}`,
-  published_at: at(60 - i * 3), ...extra }, t));
+  html: i === 0 ? RICH : `<h2>Bahagian satu</h2>${filler(Math.ceil(paras / 2))}<h2>Bahagian dua</h2>${filler(Math.floor(paras / 2))}`,
+  published_at: at(60 - i * 3), ...extra }, i === 0 ? [...t, 'gaya-hidup'] : t));
 
 const seed = {
   db: [{

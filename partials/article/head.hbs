@@ -1,0 +1,14 @@
+{{!-- Article header: breadcrumb, category, title, standfirst, single attribution + dates. --}}
+<header class="hm-art__head">
+    <nav class="hm-art__crumbs hm-hide-mobile" aria-label="{{t "Laluan"}}"><a href="{{@site.url}}/blog/">{{t "Blog"}}</a>{{#primary_tag}} <span class="hm-art__slash" aria-hidden="true">/</span> <a href="{{url}}">{{name}}</a>{{/primary_tag}}</nav>
+    {{#primary_tag}}<a class="hm-kicker hm-art__kicker" href="{{url}}">{{name}}</a>{{/primary_tag}}
+    <h1 class="hm-art__title hm-serif">{{title}}</h1>
+    {{#if custom_excerpt}}<p class="hm-art__dek hm-serif">{{custom_excerpt}}</p>{{/if}}
+    <div class="hm-art__byline">
+        <a class="hm-art__author" href="{{primary_author.url}}">
+            {{#if primary_author.profile_image}}<img class="hm-art__avatar" src="{{img_url primary_author.profile_image size="xs"}}" alt="" width="44" height="44">{{else}}<span class="hm-art__avatar hm-ph" aria-hidden="true"></span>{{/if}}
+            <span class="hm-art__author-text"><span class="hm-art__author-name">{{t "Ditulis dan disemak oleh"}} <strong>{{primary_author.name}}</strong></span><span class="hm-art__meta"><time datetime="{{date published_at format="YYYY-MM-DD"}}">{{date published_at format="D MMMM YYYY"}}</time> · {{reading_time minute=(t "1 min bacaan") minutes=(t "% min bacaan")}}</span></span>
+        </a>
+        <span class="hm-art__badge">{{> "icons/shield-check" size="20"}}<span>{{#if @custom.doctor_credentials}}<strong>{{@custom.doctor_credentials}}</strong><br>{{/if}}<span class="hm-art__updated">{{t "Kemas kini terakhir"}} <time datetime="{{date updated_at format="YYYY-MM-DD"}}">{{date updated_at format="D MMMM YYYY"}}</time></span></span></span>
+    </div>
+</header>

@@ -1,0 +1,16 @@
+{{!-- "Baca seterusnya": 3 articles from the same category (primary tag), newest first, never this article or a
+      #blok block; the latest articles when the category has no others. Phones: compact rows. --}}
+<section class="hm-related" aria-labelledby="hm-related-title">
+    <div class="hm-container-blog hm-related__inner">
+        <h2 class="hm-related__title hm-serif" id="hm-related-title">{{t "Baca seterusnya"}}</h2>
+        <div class="hm-related__grid">
+            {{#if primary_tag}}
+                {{#get "posts" filter="tag:{{primary_tag.slug}}+id:-{{id}}+tag:-hash-blok" limit="3" include="tags,authors"}}
+                    {{#foreach posts}}{{> "blog/card" variant="related"}}{{else}}{{> "article/related-latest" exclude=../id}}{{/foreach}}
+                {{/get}}
+            {{else}}
+                {{> "article/related-latest" exclude=id}}
+            {{/if}}
+        </div>
+    </div>
+</section>

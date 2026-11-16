@@ -1,0 +1,24 @@
+{{!-- After the text: in-article consultation band (hidden by #tanpa-cta), references (the "Rujukan" heading and
+      its list are moved here by main.js; without JavaScript they stay styled at the end of the text),
+      disclaimer, tags and the author box. --}}
+{{#has tag="#tanpa-cta"}}{{else}}
+<aside class="hm-art__band" aria-label="{{t "Temu janji"}}">
+    <div class="hm-art__band-text"><p class="hm-art__band-title hm-serif">{{t "Bincang secara sulit dengan doktor"}}</p><p class="hm-art__band-sub hm-hide-mobile">{{t "Konsultasi & penilaian di Him & Me."}}</p></div>
+    <a class="hm-art__band-btn" href="{{> "components/booking-href"}}">{{t "Buat Temu Janji"}}</a>
+</aside>
+{{/has}}
+<section class="hm-art__refs" data-hm-refs hidden aria-label="{{t "Rujukan"}}"></section>
+<p class="hm-art__disclaimer">{{t "Artikel ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Sila berjumpa doktor untuk penilaian peribadi."}}</p>
+{{#if tags}}<div class="hm-art__tags">{{#foreach tags visibility="public"}}<a href="{{url}}">{{name}}</a>{{/foreach}}</div>{{/if}}
+{{#primary_author}}
+<div class="hm-art__authorbox">
+    {{#if profile_image}}<img class="hm-art__authorbox-photo" src="{{img_url profile_image size="s"}}" alt="" width="88" height="88" loading="lazy">{{else}}<span class="hm-art__authorbox-photo hm-ph" aria-hidden="true"></span>{{/if}}
+    <div class="hm-art__authorbox-text">
+        <span class="hm-art__authorbox-label">{{t "TENTANG PENULIS"}}</span>
+        <strong class="hm-art__authorbox-name">{{name}}</strong>
+        {{#if @custom.doctor_credentials}}<span class="hm-art__authorbox-cred">{{@custom.doctor_credentials}}</span>{{/if}}
+        {{#if bio}}<p class="hm-art__authorbox-bio">{{bio}}</p>{{/if}}
+        <a class="hm-art__authorbox-link hm-hide-mobile" href="{{url}}">{{t "Semua artikel oleh"}} {{name}} →</a>
+    </div>
+</div>
+{{/primary_author}}

@@ -1,0 +1,20 @@
+{{!-- Right rail (desktop only): consultation card (hidden by #tanpa-cta) and up to 2 related guides ("panduan"). --}}
+<aside class="hm-art__aside" aria-label="{{t "Berkaitan"}}">
+    {{#has tag="#tanpa-cta"}}{{else}}
+    <div class="hm-art__card">
+        <img src="{{asset "images/logo-mark.png"}}" alt="" width="40" height="40" loading="lazy">
+        <p class="hm-art__card-title hm-serif">{{t "Ada soalan tentang artikel ini?"}}</p>
+        <p class="hm-art__card-sub">{{t "Bincang secara sulit dengan doktor kami."}}</p>
+        <a class="hm-btn hm-btn--primary hm-btn--block hm-art__card-btn" href="{{> "components/booking-href"}}">{{t "Buat Temu Janji"}}</a>
+        <a class="hm-btn hm-btn--whatsapp hm-btn--block hm-art__card-btn" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="18"}}{{t "WhatsApp Kami"}}</a>
+    </div>
+    {{/has}}
+    {{#get "posts" filter="tag:panduan+id:-{{id}}+tag:-hash-blok" limit="2" as |guides|}}
+        {{#if guides}}
+        <nav class="hm-art__guides" aria-label="{{t "Panduan berkaitan"}}">
+            <strong class="hm-art__guides-head">{{t "PANDUAN BERKAITAN"}}</strong>
+            {{#foreach guides}}<a class="hm-serif" href="{{url}}">{{title}}</a>{{/foreach}}
+        </nav>
+        {{/if}}
+    {{/get}}
+</aside>

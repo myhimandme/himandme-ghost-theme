@@ -1,0 +1,4 @@
+{{!-- Fallback for "Baca seterusnya": the 3 newest articles other than this one. Param: exclude (the article id). --}}
+{{#get "posts" filter="id:-{{exclude}}+tag:-hash-blok" limit="3" include="tags,authors" as |latest|}}
+    {{#foreach latest}}{{> "blog/card" variant="related"}}{{/foreach}}
+{{/get}}

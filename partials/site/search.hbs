@@ -1,0 +1,18 @@
+{{!-- Theme search (Stage 5): searches published articles only. Ghost's native search is not used,
+      because its index also lists #blok content blocks; entries without a public URL are dropped. --}}
+<div class="hm-search" id="hm-search" data-hm-search data-key="{{content_api_key}}" data-api="{{@site.url}}">
+    <form class="hm-bsearch" role="search" action="{{@site.url}}/blog/">
+        <label class="hm-bsearch__field">
+            {{> "icons/search" size="18" stroke="1.8"}}
+            <span class="hm-visually-hidden">{{t "Cari artikel"}}</span>
+            <input class="hm-bsearch__input" type="search" name="q" placeholder="{{t "Cari artikel"}}" autocomplete="off" aria-controls="hm-search-results" data-hm-search-input>
+        </label>
+        <button class="hm-icon-btn hm-search__close" type="button" data-hm-search-close>{{> "icons/close"}}<span class="hm-visually-hidden">{{t "Tutup carian"}}</span></button>
+    </form>
+    {{!-- Without JavaScript the field is hidden and this note takes its place (no silent, dead search box). --}}
+    <p class="hm-search__nojs">{{t "Carian memerlukan JavaScript."}} <a href="{{@site.url}}/blog/#hm-topics-title">{{t "Lihat topik"}}</a></p>
+    <div class="hm-search__results" id="hm-search-results" hidden>
+        <p class="hm-search__status" role="status" aria-live="polite" data-hm-search-status></p>
+        <ol class="hm-search__list" data-hm-search-list></ol>
+    </div>
+</div>

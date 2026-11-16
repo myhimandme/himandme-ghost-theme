@@ -141,13 +141,61 @@
   });
 })();
 
+// Articles (Stage 6): references, "Poin utama" lines, reading progress, copy link.
+(function () {
+  const content = document.querySelector('.hm-art__content');
+  if (!content) return;
+
+  // "Rujukan": the heading of that name and everything after it (until the next H2) move into the
+  // references block below the consultation band, as on the board. Without JS they stay, styled, in place.
+  const refs = document.querySelector('[data-hm-refs]');
+  const refHead = [...content.querySelectorAll('h2, h3')].find((h) => h.textContent.trim().toLowerCase() === 'rujukan');
+  if (refs && refHead) {
+    const move = [refHead];
+    for (let el = refHead.nextElementSibling; el && el.tagName !== 'H2'; el = el.nextElementSibling) move.push(el);
+    move.forEach((el) => refs.appendChild(el));
+    refs.hidden = false;
+  }
+
+  // Grey callout = "Poin utama": each line (separated by line breaks in the editor) becomes a point.
+  content.querySelectorAll('.kg-callout-card-grey .kg-callout-text').forEach((box) => {
+    const lines = box.innerHTML.split(/<br\s*\/?>/i).map((l) => l.trim()).filter(Boolean);
+    if (lines.length < 2) return;
+    box.innerHTML = '<ul class="hm-points">' + lines.map((l) => `<li><span>${l}</span></li>`).join('') + '</ul>';
+  });
+
+  // Reading progress: how far through the article text the reader is.
+  const bar = document.querySelector('[data-hm-progress]');
+  const main = document.querySelector('.hm-art__main');
+  if (bar && main) {
+    let ticking = false;
+    const update = () => {
+      const r = main.getBoundingClientRect(); const total = r.height - window.innerHeight * 0.6;
+      const done = Math.min(1, Math.max(0, (-r.top + window.innerHeight * 0.2) / Math.max(total, 1)));
+      bar.style.width = (done * 100).toFixed(1) + '%'; ticking = false;
+    };
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    window.addEventListener('resize', update); update();
+  }
+
+  // Copy link (rail share buttons)
+  document.querySelectorAll('[data-hm-copy-link]').forEach((b) => b.addEventListener('click', () => {
+    const msg = document.querySelector('[data-hm-copied]');
+    const done = () => { if (msg) { msg.textContent = 'Pautan disalin'; setTimeout(() => { msg.textContent = ''; }, 2500); } };
+    if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(done, done); else done();
+  }));
+})();
+
 // Plain pages: "Dalam halaman ini" contents, built from the H2 headings (Ghost gives each an id).
 // Open as a sticky rail on wide screens, a collapsed box on smaller ones; marks the section in view.
 (function () {
   const toc = document.querySelector('[data-hm-toc]');
   if (!toc) return;
-  const heads = [...document.querySelectorAll('.hm-doc__body h2[id]')];
-  if (heads.length < 3) return;
+  // Scope and minimum come from the element (articles: the text, 2+); plain pages default to 3+.
+  // The "Rujukan" (references) heading is never listed.
+  const scope = toc.dataset.hmTocScope || '.hm-doc__body';
+  const heads = [...document.querySelectorAll(`${scope} h2[id]`)].filter((h) => h.textContent.trim().toLowerCase() !== 'rujukan');
+  if (heads.length < (parseInt(toc.dataset.hmTocMin, 10) || 3)) return;
   const list = toc.querySelector('ol');
   const links = heads.map((h) => {
     const li = document.createElement('li');

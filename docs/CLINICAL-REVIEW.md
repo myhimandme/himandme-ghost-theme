@@ -98,6 +98,14 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 | D5 | "Slot pesakit baharu 11:00 pagi – 5:00 petang · Dengan temu janji sahaja, tiada walk-in." | Block `blok-tawaran`, last paragraph | ✅ Verified hours |
 | D6 | WhatsApp message: "Salam Him & Me, saya berminat untuk menempah First Trial RM288." | Theme text + block title + `offer_price` | ✅ As instructed |
 
+## E. Article template text (every article, Stage 6)
+| # | Text | Where | Status |
+|---|---|---|---|
+| E1 | "Artikel ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Sila berjumpa doktor untuk penilaian peribadi." | Grey box at the end of every article (theme text, from the prototype) | ☐ Please confirm |
+| E2 | "Ada soalan tentang artikel ini?" / "Bincang secara sulit dengan doktor kami." | Side consultation card (theme text) | ☐ Please confirm |
+| E3 | "Bincang secara sulit dengan doktor" / "Konsultasi & penilaian di Him & Me." | Red band after the text (theme text) | ☐ Please confirm |
+| E4 | Article content itself | Written and reviewed by the doctor in Ghost Admin; the sample article on the test site is the prototype's placeholder text and is never published | — |
+
 ## C. Site-wide
 | # | Statement | Where | Status |
 |---|---|---|---|

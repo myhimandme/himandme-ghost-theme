@@ -1,0 +1,9 @@
+{{!-- Feature image (16:7 on desktop, full width on phones) with its caption. No image → no hero. --}}
+{{#if feature_image}}
+<figure class="hm-art__hero hm-container-blog">
+    <img class="hm-art__hero-img" src="{{img_url feature_image size="xl"}}"
+         srcset="{{img_url feature_image size="m"}} 600w, {{img_url feature_image size="l"}} 1000w, {{img_url feature_image size="xl"}} 1600w, {{img_url feature_image size="xxl"}} 2400w"
+         sizes="(max-width: 1328px) 100vw, 1280px" alt="{{feature_image_alt}}" fetchpriority="high">
+    {{#if feature_image_caption}}<figcaption class="hm-art__caption">{{feature_image_caption}}</figcaption>{{/if}}
+</figure>
+{{/if}}
