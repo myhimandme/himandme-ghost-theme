@@ -197,6 +197,21 @@ Everything on an article page comes from the post in Ghost Admin. The address is
 | **Bookmark** | A bordered link card |
 | Heading **"Rujukan"** + a list | The references block, placed after the red band in small grey type. Keep it as the last section |
 
+### Before launch: replace all test content (owner requirement, Stage 6 approval)
+
+Nothing below may go to production. The live site gets only the doctor's real, reviewed content.
+
+| Test content on the local site | Replace with |
+|---|---|
+| Reference placeholders `[Rujukan]`, `[Rujukan — sumber perubatan yang disahkan…]` | The real, verified sources for each article |
+| Placeholder captions and credits: `[Kapsyen gambar & kredit]`, `[Gambar sokongan / ilustrasi ringkas — kapsyen]` | Real captions and photo credits |
+| Generic test images labelled "GAMBAR UJIAN" (`test/stage6/fixtures/`) | Real photographs (main photo ≥1600px wide, about 16:7), with alt text |
+| Test articles: "Artikel ujian 1–12", the 13 demo articles from the prototype (titles, summaries, "Teks contoh untuk ujian…" bodies, the sample ED article text) and the FAQ placeholder `[Contoh soalan lazim…]` | The doctor's own articles, written and reviewed in Ghost Admin |
+| Placeholder author image (the patterned circle) and the local test account | The doctor's real staff profile: photo, name, biography, slug; theme setting `doctor_credentials` |
+| Site-wide placeholders still listed in `docs/CLINICAL-REVIEW.md` (open items) | The verified details |
+
+The test fixtures (`test/stage1/fixtures/`, `test/stage6/`) exist only to test the theme and are never imported to himandme.my.
+
 ## Repository layout (Stage 0–1)
 
 ```

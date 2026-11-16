@@ -1,5 +1,15 @@
 # Stage 6 completion report: article pages
 
+> **Status: Stage 6 visual review approved by the owner (16 Nov 2026).** Decisions:
+> - Reading-progress bar stays in its current position (not sticky), and the article header is not pinned.
+> - The sticky phone booking bar is kept.
+> - The current desktop and phone article layouts and the topic-first related-article selection are kept.
+> - No further visual redesign.
+>
+> PRs #1–#4 stay unmerged, no Stage 6 PR is opened yet, and Stage 7 has not started. Waiting for the owner's next instruction.
+>
+> **Pre-launch requirement (owner):** every piece of test content and placeholder must be replaced before production. None of it is production-ready. See the README, "Before launch: replace all test content".
+
 **Environment:** local Ghost **6.75.0** (development mode, SQLite) at `http://localhost:2368`. **The live himandme.my installation was not touched and nothing was published.**
 **Branch:** `stage-6` (based on `stage-5`). No pull request opened (as instructed); nothing merged.
 
