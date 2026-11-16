@@ -1,5 +1,7 @@
 # Stage 5 report: blog home, topic pages, author page, blog search
 
+> **Status: approved by the owner on 16 Nov 2026.** PR #4 (`stage-5` → `stage-4`) stays open and unmerged until the owner says to merge. Stage 6 (article pages) has not started.
+
 **Environment:** local Ghost **6.75.0** (development mode, SQLite) at `http://localhost:2368`. **The live himandme.my installation was not touched and nothing was published.**
 **Branch:** `stage-5` (based on `stage-4`). Pull request `stage-5` → `stage-4` is open and **not merged**.
 
