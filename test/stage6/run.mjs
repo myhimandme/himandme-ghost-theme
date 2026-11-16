@@ -93,12 +93,26 @@ check('A7', '"Baca seterusnya": 3 newest from the same category, never this arti
   JSON.stringify(relSlugs(h)) === JSON.stringify(sameCat) && !relSlugs(h).includes(SLUG) && lonelyCatCount === 1 && lonelyRel.length === 3 && !lonelyRel.includes('perbualan-ed-dengan-pasangan')
   && ![...relSlugs(h), ...lonelyRel].some((s) => blockSlugs.includes(s)), `${relSlugs(h).join(', ')} | fallback: ${lonelyRel.join(', ')}`);
 
-// A8 — Panduan berkaitan (side): panduan articles, never the current one
-const guidesOf = (html) => [...sec(html, 'hm-art__guides').matchAll(/href="[^"]*\/blog\/([^/"]+)\/"/g)].map((m) => m[1]);
-const guideSelf = guidesOf(await page('/blog/panduan-lengkap-disfungsi-ereksi/'));
-const panduan = (await admin('/posts/?limit=all&filter=tag:panduan')).posts.map((p) => p.slug);
-check('A8', '"Panduan berkaitan": up to 2 articles tagged panduan, never the article being read',
-  guidesOf(h).length === 2 && guidesOf(h).every((s) => panduan.includes(s)) && !guideSelf.includes('panduan-lengkap-disfungsi-ereksi') && guideSelf.length === 2, `${guidesOf(h).join(', ')}`);
+// A8 — Panduan berkaitan (approved refinement): same-topic "panduan" first, then the newest from other topics;
+// 2 shown; never the current article; never a block. Checked on a normal article, a guide, and a "Panduan"-topic article.
+const guidesOf = (html) => [...sec(html, 'hm-art__guides').matchAll(/href="[^"]*\/blog\/([^/"]+)\/"/g)].map((m) => m[1]).slice(0, 2);
+const expectGuides = async (slug) => {
+  const p = (await admin(`/posts/slug/${slug}/?include=tags`)).posts[0];
+  const all = (await admin('/posts/?limit=all&include=tags&order=published_at%20desc&filter=tag:panduan%2Btag:-hash-blok')).posts.filter((x) => x.id !== p.id);
+  const same = all.filter((x) => x.tags.some((t) => t.slug === p.primary_tag.slug)); const other = all.filter((x) => !same.includes(x));
+  return [...same, ...other].slice(0, 2).map((x) => x.slug);
+};
+const g = {};
+for (const s of [SLUG, 'panduan-lengkap-disfungsi-ereksi', 'konsultasi-kesihatan-lelaki-pertama']) g[s] = { got: guidesOf(await page(`/blog/${s}/`)), want: await expectGuides(s) };
+check('A8', '"Panduan berkaitan": same-topic panduan first, then the newest from other topics (2 shown); never the article being read, never a block',
+  Object.entries(g).every(([s, v]) => v.got.length === 2 && JSON.stringify(v.got) === JSON.stringify(v.want) && !v.got.includes(s) && !v.got.some((x) => BLOCKS.some((b) => b.slug === x)))
+  && g[SLUG].got[0] === 'panduan-lengkap-disfungsi-ereksi', Object.entries(g).map(([s, v]) => `${s.slice(0, 18)}…: ${v.got.join(' + ')}`).join(' | '));
+
+// A11 — approved article statements (CLINICAL-REVIEW E1–E3), word for word
+check('A11', 'Approved wording (E1–E3) exactly as written: disclaimer at the end, side-card heading + text, red band heading + text',
+  h.includes('Artikel ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Sila berjumpa doktor untuk penilaian peribadi.')
+  && card.includes('Ada soalan tentang artikel ini?') && card.includes('Bincang secara sulit dengan doktor kami.')
+  && band.includes('Bincang secara sulit dengan doktor<') && band.includes('Konsultasi &amp; penilaian di Him &amp; Me.'));
 
 // A9 — share + SEO from Ghost
 const share = sec(h, 'hm-art__share');
@@ -122,9 +136,10 @@ if (chromium) {
     refsIn: !!document.querySelector('[data-hm-refs] #rujukan') && !document.querySelector('.hm-art__content #rujukan'), refsAfterBand: (() => { const band = document.querySelector('.hm-art__band'); const refs = document.querySelector('[data-hm-refs]'); return !!(band && refs && (band.compareDocumentPosition(refs) & Node.DOCUMENT_POSITION_FOLLOWING)); })(),
     points: document.querySelectorAll('.kg-callout-card-grey .hm-points li').length, label: getComputedStyle(document.querySelector('.kg-callout-card-grey'), '::before').content,
     dropcap: getComputedStyle(document.querySelector('.hm-art__content > p'), '::first-letter').fontSize,
+    guidesShown: [...document.querySelectorAll('.hm-art__guides a')].filter((a) => getComputedStyle(a).display !== 'none').length,
   }));
-  check('B1', 'Desktop: "Dalam artikel ini" lists the 5 H2 sections (not Rujukan), open as a rail; Rujukan moved below the consultation band; "Poin utama" box with 3 points; red drop cap',
-    ui.toc.length === 5 && !ui.toc.some((t) => /rujukan/i.test(t)) && ui.open && ui.refsIn && ui.refsAfterBand && ui.points === 3 && /POIN UTAMA/.test(ui.label) && ui.dropcap === '76px', `${ui.toc.length} sections; drop cap ${ui.dropcap}`);
+  check('B1', 'Desktop: "Dalam artikel ini" lists the 5 H2 sections (not Rujukan), open as a rail; Rujukan moved below the consultation band; "Poin utama" box with 3 points; red drop cap; exactly 2 guides visible',
+    ui.toc.length === 5 && !ui.toc.some((t) => /rujukan/i.test(t)) && ui.open && ui.refsIn && ui.refsAfterBand && ui.points === 3 && /POIN UTAMA/.test(ui.label) && ui.dropcap === '76px' && ui.guidesShown === 2, `${ui.toc.length} sections; drop cap ${ui.dropcap}; ${ui.guidesShown} guides shown`);
   // B2 — reading progress, FAQ toggle, contents link, copy link
   const p0 = await d.evaluate(() => parseFloat(document.querySelector('[data-hm-progress]').style.width) || 0);
   await d.evaluate(() => window.scrollTo(0, document.querySelector('.hm-art__main').offsetTop + document.querySelector('.hm-art__main').offsetHeight / 2)); await d.waitForTimeout(250);
@@ -149,9 +164,10 @@ if (chromium) {
   const mob = await m.evaluate(() => ({ sw: document.documentElement.scrollWidth, tocOpen: document.querySelector('.hm-art__toc').open, tocAboveText: document.querySelector('.hm-art__toc').getBoundingClientRect().top < document.querySelector('.hm-art__content').getBoundingClientRect().top,
     aside: getComputedStyle(document.querySelector('.hm-art__aside')).display, share: getComputedStyle(document.querySelector('.hm-art__share')).display, crumbs: getComputedStyle(document.querySelector('.hm-art__crumbs')).display,
     left: getComputedStyle(document.querySelector('.hm-art__head')).textAlign, heroW: Math.round(document.querySelector('.hm-art__hero-img').getBoundingClientRect().width), mbar: getComputedStyle(document.querySelector('.hm-mbar--article')).display,
-    related: [...document.querySelectorAll('.hm-card--related')].map((c) => getComputedStyle(c).flexDirection) }));
-  check('B4', 'Phone: no overflow; full-width image; left-aligned header without breadcrumb; contents collapsed above the text; side rails hidden; related as compact rows; slim sticky bar',
-    mob.sw === 390 && mob.heroW === 390 && mob.left === 'left' && mob.crumbs === 'none' && !mob.tocOpen && mob.tocAboveText && mob.aside === 'none' && mob.share === 'none' && mob.related.every((f) => f === 'row-reverse') && mob.mbar === 'flex', JSON.stringify(mob));
+    related: [...document.querySelectorAll('.hm-card--related')].map((c) => getComputedStyle(c).flexDirection),
+    tagsOk: (() => { const t = document.querySelector('.hm-art__tags'); return !!t && getComputedStyle(t).flexWrap === 'wrap' && [...t.children].every((a) => a.getBoundingClientRect().right <= 390 - 15); })() }));
+  check('B4', 'Phone: no overflow; full-width image; tag buttons visible and wrapping inside the screen; left-aligned header without breadcrumb; contents collapsed above the text; side rails hidden; related as compact rows; slim sticky bar',
+    mob.sw === 390 && mob.heroW === 390 && mob.left === 'left' && mob.crumbs === 'none' && !mob.tocOpen && mob.tocAboveText && mob.aside === 'none' && mob.share === 'none' && mob.related.every((f) => f === 'row-reverse') && mob.mbar === 'flex' && mob.tagsOk, JSON.stringify(mob));
   await m.close();
   // B5 — no overflow at four widths, two articles; no-JS still readable
   const over = [];

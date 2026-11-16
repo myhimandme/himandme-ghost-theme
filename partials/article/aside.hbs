@@ -9,12 +9,17 @@
         <a class="hm-btn hm-btn--whatsapp hm-btn--block hm-art__card-btn" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="18"}}{{t "WhatsApp Kami"}}</a>
     </div>
     {{/has}}
-    {{#get "posts" filter="tag:panduan+id:-{{id}}+tag:-hash-blok" limit="2" as |guides|}}
-        {{#if guides}}
-        <nav class="hm-art__guides" aria-label="{{t "Panduan berkaitan"}}">
-            <strong class="hm-art__guides-head">{{t "PANDUAN BERKAITAN"}}</strong>
-            {{#foreach guides}}<a class="hm-serif" href="{{url}}">{{title}}</a>{{/foreach}}
-        </nav>
+    {{!-- Panduan berkaitan (approved Stage 6 refinement): "panduan" articles from the same topic first (newest
+          first), then the newest from other topics; at most 2 shown; never this article, never a #blok block.
+          Two separate queries (Ghost cannot nest them with the article's context); CSS shows the first 2 links
+          and hides the whole box when there are none. --}}
+    <nav class="hm-art__guides" aria-label="{{t "Panduan berkaitan"}}">
+        <strong class="hm-art__guides-head">{{t "PANDUAN BERKAITAN"}}</strong>
+        {{#if primary_tag}}
+            {{#get "posts" filter="tag:panduan+tag:{{primary_tag.slug}}+id:-{{id}}+tag:-hash-blok" limit="2" as |same|}}{{#foreach same}}<a class="hm-serif" href="{{url}}" data-hm-guide="topic">{{title}}</a>{{/foreach}}{{/get}}
+            {{#get "posts" filter="tag:panduan+tag:-{{primary_tag.slug}}+id:-{{id}}+tag:-hash-blok" limit="2" as |other|}}{{#foreach other}}<a class="hm-serif" href="{{url}}" data-hm-guide="other">{{title}}</a>{{/foreach}}{{/get}}
+        {{else}}
+            {{#get "posts" filter="tag:panduan+id:-{{id}}+tag:-hash-blok" limit="2" as |other|}}{{#foreach other}}<a class="hm-serif" href="{{url}}" data-hm-guide="other">{{title}}</a>{{/foreach}}{{/get}}
         {{/if}}
-    {{/get}}
+    </nav>
 </aside>

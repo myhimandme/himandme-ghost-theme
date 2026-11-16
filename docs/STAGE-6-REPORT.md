@@ -1,7 +1,7 @@
-# Stage 6 report: article pages
+# Stage 6 completion report: article pages
 
 **Environment:** local Ghost **6.75.0** (development mode, SQLite) at `http://localhost:2368`. **The live himandme.my installation was not touched and nothing was published.**
-**Branch:** `stage-6` (based on `stage-5`). No pull request opened yet; nothing merged.
+**Branch:** `stage-6` (based on `stage-5`). No pull request opened (as instructed); nothing merged.
 
 ## Results
 
@@ -9,7 +9,7 @@
 |---|---|
 | `npm test`: build + content-block guard (103 templates) + GScan 6.7.0 `--v6` | ✅ 0 errors, 0 warnings |
 | Ghost Admin upload check | ✅ 0 errors, 0 warnings |
-| `test/stage6/run.mjs`: article page | ✅ **15 / 15** |
+| `test/stage6/run.mjs`: article page, incl. the approved refinements | ✅ **16 / 16** |
 | `test/stage5/run.mjs`: blog | ✅ **21 / 21** |
 | `test/stage4/run.mjs`: ED page, offer, Notis Privasi, email | ✅ **39 / 39** |
 | `test/stage3/run.mjs`: homepage | ✅ **12 / 12** |
@@ -30,7 +30,8 @@ Tests that edit data restore it afterwards.
 - **A5:** the red band and the side card link to the ED booking form and the configured WhatsApp number. The internal tag `#tanpa-cta` hides both; removing it brings them back.
 - **A6:** the end of each article has the disclaimer, the **public** tags (internal `#` tags never show), and the author box (name, credentials, bio, "Semua artikel oleh …").
 - **A7:** "Baca seterusnya" shows the 3 newest articles from the same category, never the current one. A category with no other articles falls back to the latest 3. It never shows a content block.
-- **A8:** "Panduan berkaitan" shows up to 2 `panduan` articles, never the one being read.
+- **A8:** "Panduan berkaitan" shows `panduan` articles **from the same topic first**, then the newest from other topics; 2 are shown, never the one being read, never a block. It's checked on three kinds of article: a normal one, a guide, and one whose topic is Panduan. The expected list is computed independently from Ghost.
+- **A11:** the approved wording E1–E3 appears exactly as written: the disclaimer, the side-card heading and text, and the red-band heading and text.
 - **A9:**
   - The WhatsApp share link carries the title and the article URL, and there is a copy-link button.
   - Ghost's SEO tags come from the post: og:title, og:image (the feature image), the published time and the canonical URL.
@@ -43,6 +44,7 @@ Tests that edit data restore it afterwards.
   - Rujukan moves below the red band.
   - "Poin utama" shows 3 points.
   - The red drop cap is 76px.
+  - Exactly 2 guides are visible.
 - **B2:**
   - The progress bar fills as you read (0% → 66% → 100%).
   - FAQ toggles open.
@@ -51,6 +53,7 @@ Tests that edit data restore it afterwards.
 - **B3:** the search icon in the article header opens the blog search (articles only), and Escape closes it.
 - **B4 (phone):**
   - No overflow, and the image is full width.
+  - **Tag buttons are visible and wrap inside the screen.**
   - The header is left-aligned with no breadcrumb.
   - The contents list is collapsed above the text.
   - The side rails are hidden, related articles are compact rows, and the slim sticky bar shows.
@@ -81,21 +84,39 @@ Tests that edit data restore it afterwards.
 - **Empty "Baca seterusnya":** when a category had no other articles, the list came out empty. It now falls back to the latest articles (test A7).
 - **Test update:** the Stage 5 image test now restores an article's original image instead of removing it.
 
-## Items for your decision (nothing below has been implemented)
+## Your Stage 6 decisions (16 Nov 2026): implemented
 
-| # | Item | Current behaviour | Options |
-|---|---|---|---|
-| 1 | **Article without a feature image.** The board shows a grey 16:7 placeholder. | No image area at all; the header runs straight into the text. Cards keep the patterned placeholder. | **A (recommended):** keep. A large empty grey box looks unfinished on a live article. **B:** show the placeholder, as on the board. |
-| 2 | **Tag buttons on phones.** The phone board leaves them out. | Shown on phones too, following your Stage 3 rule of the same content everywhere. | Keep (recommended), or hide on phones. |
-| 3 | **Wide and full-width images.** | On desktop they stay the width of the text column, because the two rails sit beside it. On phones, full-width images reach the screen edges. | Keep (recommended), or let wide images extend under the rails (needs a layout change). |
-| 4 | **"Panduan berkaitan".** | The 2 newest `panduan` articles, whatever their topic. | Keep, or prefer guides from the same topic first. |
-| 5 | **Article template text** (`docs/CLINICAL-REVIEW.md`, section E) | Disclaimer and consultation wording taken from the prototype. | Please confirm E1–E3 with the doctor. |
+| # | Decision | What was done |
+|---|---|---|
+| 1 | Articles without a feature image: Option A | Unchanged: no image area on the article; the header flows into the text. Cards keep the patterned placeholder (A3; screenshot `full-article-plain-*`) |
+| 2 | Tag buttons on phones: keep | Unchanged, and now tested: the buttons wrap inside the screen (B4). A very long tag name breaks onto two lines instead of overflowing |
+| 3 | Wide/full-width images: keep | Unchanged. Desktop: within the text column, never under the rails. Phones: full-width images use the screen width |
+| 4 | Panduan berkaitan: topic first | **Changed.** `panduan` articles from the article's topic come first (newest first). If fewer than 2, the newest from other topics fill in. Never the current article, never a `#blok` block (guard: 103 templates). Two queries, because Ghost can't nest them with the article's context; the box is hidden when there are no guides (A8, B1) |
+| 5 | Clinical text E1–E3 approved | Recorded as approved in `docs/CLINICAL-REVIEW.md`. The wording is unchanged and tested word for word (A11) |
+| 6 | Workflow | `stage-6` only; local Ghost only; single attribution "Ditulis dan disemak oleh {name}" kept; editor blocks and article content untouched; no PR, no merge, Stage 7 not started |
+
+## Outstanding items (none blocks your Stage 6 decision)
+- **Content from you:** the real articles (text and photos), your profile photo, and a check of each article's wording against the clinical checklist. The writer's guide is in the README ("Writing an article").
+- **Pull-quote style when importing:** articles written in Ghost's editor keep the alternate quote style. Only a bulk JSON import loses it (Ghost turns it into a plain quote), so any import would need the same fix-up that `prepare-demo.mjs` applies.
+- **Pull requests:**
+  - **Stage 4:** still has no PR of its own.
+  - **Stage 6:** no PR yet (you asked me not to open one).
+  - **Merging:** PRs #1–#4 stay unmerged until you say otherwise.
+- **Launch preparation (Stage 7, the only stage that touches himandme.my):**
+  - turn off Network;
+  - set up tags (with "Gaya Hidup & Minda") and the navigation;
+  - your real staff profile and credentials setting, and the routes slug;
+  - the content import and theme upload;
+  - final checks.
 
 ## Screenshots (`docs/stage-6/`)
 - **Prototype vs Ghost theme:**
   - `compare-desktop-1-header` … `compare-desktop-5-related`
   - `compare-mobile-1-header` … `compare-mobile-4-related`
-- **Full pages:** `full-article-desktop`, `-mobile`, `-768`, `-1024`
+- **Full pages:**
+  - Desktop: `full-article-desktop`
+  - Tablet: `full-article-1024`, `full-article-768`
+  - Phone: `full-article-mobile`
 - **Article without an image:** `full-article-plain-desktop`, `-mobile`
 
 ## Safeguards preserved
@@ -105,4 +126,4 @@ Tests that edit data restore it afterwards.
 - No email address or "e-mel"/"email" word on article pages.
 - Nothing touched production. No PRs merged.
 
-**Launch preparation has not started and will not start until you approve Stage 6.**
+**Stage 7 (launch preparation) has not started and will not start until you approve Stage 6.**

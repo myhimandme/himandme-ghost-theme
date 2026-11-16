@@ -101,9 +101,9 @@ Status legend: ☐ to review · **[Sahkan]** / **[Jawapan…]** = a placeholder 
 ## E. Article template text (every article, Stage 6)
 | # | Text | Where | Status |
 |---|---|---|---|
-| E1 | "Artikel ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Sila berjumpa doktor untuk penilaian peribadi." | Grey box at the end of every article (theme text, from the prototype) | ☐ Please confirm |
-| E2 | "Ada soalan tentang artikel ini?" / "Bincang secara sulit dengan doktor kami." | Side consultation card (theme text) | ☐ Please confirm |
-| E3 | "Bincang secara sulit dengan doktor" / "Konsultasi & penilaian di Him & Me." | Red band after the text (theme text) | ☐ Please confirm |
+| E1 | "Artikel ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Sila berjumpa doktor untuk penilaian peribadi." | Grey box at the end of every article (theme text, from the prototype) | ✅ Approved by the doctor (16 Nov 2026), exactly as written |
+| E2 | "Ada soalan tentang artikel ini?" / "Bincang secara sulit dengan doktor kami." | Side consultation card (theme text) | ✅ Approved by the doctor (16 Nov 2026), exactly as written |
+| E3 | "Bincang secara sulit dengan doktor" / "Konsultasi & penilaian di Him & Me." | Red band after the text (theme text) | ✅ Approved by the doctor (16 Nov 2026), exactly as written |
 | E4 | Article content itself | Written and reviewed by the doctor in Ghost Admin; the sample article on the test site is the prototype's placeholder text and is never published | — |
 
 ## C. Site-wide
