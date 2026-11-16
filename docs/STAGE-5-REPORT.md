@@ -103,6 +103,7 @@ The blog home is unchanged: the Panduan band sits between the list and the box. 
   - `full-blog-page-2-*`, `full-topic-*`, `full-author-*`
 - **Search:** `search-desktop`, `search-desktop-none`, `search-mobile`, `search-nojs-desktop` (JavaScript off)
 - **Spacing follow-up:** `full-topic-hormon-desktop`, `full-topic-hormon-mobile`
+- **Author page with the doctor's details (local test profile only):** `author-real-desktop`, `author-real-mobile`. Name "Dr. Muhammad Imran bin Faisal", credentials "MD (UKM)", draft biography (227 of Ghost's 250 characters). At launch, enter these in Ghost Admin → Staff and the `doctor_credentials` setting.
 - **Refinements:** `cats-mobile`, `cats-mobile-scrolled` (short phone labels), `topic-gaya-hidup-desktop`, `topic-gaya-hidup-mobile`
 
 ## Safeguards preserved
