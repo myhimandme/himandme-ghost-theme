@@ -1,6 +1,6 @@
 # Stage 7 plan: production readiness and launch preparation
 
-> **Status: PLAN ONLY. Revision 2 (17 Nov 2026), answering the owner's review of 16 Nov. Awaiting approval of Phase A.**
+> **Status: PLAN ONLY. Revision 3 (17 Nov 2026), the final corrections for review. Phase A has NOT started and waits for the owner's explicit approval.**
 > Nothing in this document has been carried out.
 > - No pull request was merged, created or changed. No existing branch was modified.
 > - The live VPS, Ghost, DNS and Cloudflare were not touched.
@@ -13,10 +13,20 @@
 > | # | Review point | Result | Where |
 > |---|---|---|---|
 > | 1 | Block count (22 or 23?) | **23**, from the source: 12 homepage, 8 ED, **3** shared. The third shared block, `blok-tawaran`, was added on 5 Nov 2026 for the approved RM288 offer. Nothing was added or removed | §3.2 |
-> | 2 | Protection during migration | **Private mode is mandatory** from before the import until the final launch approval. Measured on local Ghost 6.75.0: it hides every page, archive, RSS feed, sitemap and block URL. One surface stays open (the Content API, which needs a key) and is documented | §3.6, §4, §9 |
+> | 2 | Protection during migration | **Private mode is mandatory** from before the import until the final launch approval. Measured on local Ghost 6.75.0: it protects the **website** (every page, archive, RSS feed, sitemap and block URL). It does **not** protect the **Content API**, which still returns the published blocks to anyone holding the public key (see revision 3) | §3.6, §4, §9 |
 > | 3 | Author archive | **Tested** with a non-placeholder slug: 15/15 checks. Two dangers were proven, and the plan now prevents both: (a) `routes.yaml` not updated, giving 46 block leaks; (b) a second staff account that authors blocks. Ghost's importer gives imported posts to the **Owner** account | §3.7, R4, R21 |
 > | 4 | Backup and rollback | **Rehearsed** on MySQL 8.0.46 (the Ubuntu 24.04 package) with Ghost 6.75.0. One command fix found: `--no-tablespaces`. The database restore and the independent theme and routes rollback were both shown to work. `ghost backup` checked against the Ghost-CLI 1.34.1 source: it needs a staff access token and does **not** contain the database | §8 |
 > | 5 | Open assumptions and decisions | Listed in one place | §12 |
+>
+> **Revision 3: final corrections (17 Nov 2026)**
+>
+> | # | Correction | Where |
+> |---|---|---|
+> | 1 | Content API wording corrected. The API **can** list published posts as a collection, so someone holding the public key can retrieve all published blocks during the migration. Private mode protects the website, not the API. O27 rewritten | §3.6, R22, §12 |
+> | 2 | Restore-test command corrected: the disposable database is created first and named as an argument (no `<…>` placeholders that the shell would read as redirects) | §8.2 C8, §8.4 level 3, C4 |
+> | 3 | Structured data: `LocalBusiness` recommended; `MedicalBusiness` and its subtypes are **not** assumed and need the owner's evidence | §6 S7, O21 |
+> | 4 | After private mode is enabled and the Cloudflare cache purged: **mandatory anonymous checks through the real domain**, covering every URL that was public before (saved in C10), with `cf-cache-status` inspected. The import may not start until they pass | §3.6 D1–D2b, C10, R26 |
+> | 5 | Consistency review of both documents (section 13 of this plan) | §13 |
 >
 > New automated checks (local Ghost only; they refuse any other host): `test/stage7/author-archive.mjs` (15 checks) and `test/stage7/private-mode.mjs` (12 checks), run with `npm run test:stage7`. Stage 1 was re-run afterwards: 32 passed, 0 failed.
 
@@ -99,7 +109,7 @@
 | G3 | `routes.yaml`: replace the placeholder author slug `dr` (3 places) with the doctor's real staff slug | Otherwise `/blog/penulis/{slug}/` uses the unfiltered taxonomy, which could list `#blok` content blocks | ⛔ Blocked on O4 (the real slug) |
 | G4 | Add `scripts/build-launch-seed.mjs` to generate the production import file from `seed/blocks.mjs` **only** (section 3) | There is no launch seed generator yet. The existing `test/stage1/make-fixtures.mjs` mixes in test articles and must never be used for production | ✅ Ready to build |
 | G5 | Add `scripts/check-placeholders.mjs` (section 3.4) | Enforces the owner's rule that no test content or placeholder reaches production | ✅ Ready to build |
-| G6 | Add `test/prod/smoke.mjs`: a **read-only** production check (GET requests only, no login, no edits) | Phase F and H verification | ✅ Ready to build |
+| G6 | Add `test/prod/smoke.mjs`: a **read-only** production check (GET requests only, no Admin login, no edits). Modes: `--expect-private` (D2b: every URL must redirect to `/private/`, with `cf-cache-status` checked), with the private-site cookie (F), and anonymous (H3) | D2b, Phase F and H verification | ✅ Ready to build |
 | G7 | README: a "Production launch" section that points to this plan | Single entry point | ✅ Ready |
 
 ---
@@ -143,7 +153,7 @@ Environment as stated by the owner:
 | I21 | Updates | `sudo unattended-upgrades --dry-run 2>/dev/null \| tail -3; apt list --upgradable 2>/dev/null \| wc -l` | Security updates applied or scheduled | 🔍 |
 | I22 | DNS (Cloudflare dashboard, view only) | DNS → Records | `A himandme.my` → the VPS IP; `www` as CNAME or A; proxy status (orange or grey) noted; no stray old records | 🔍 |
 | I23 | Cloudflare SSL (view only) | SSL/TLS → Overview | Mode **Full (strict)**. Never "Flexible", which causes redirect loops with Ghost | 🔍 |
-| I24 | Cloudflare edge (view only) | SSL/TLS → Edge Certificates; Speed; Caching → Cache Rules | "Always Use HTTPS" on; **Rocket Loader off** (it rewrites the theme's scripts); no "Cache Everything" rule covering `/ghost/*`, `/members/*` or `/p/*` (previews) | 🔍 |
+| I24 | Cloudflare edge (view only) | SSL/TLS → Edge Certificates; Speed; Caching → Cache Rules | "Always Use HTTPS" on; **Rocket Loader off** (it rewrites the theme's scripts); no "Cache Everything" rule or edge-TTL override covering HTML, `/ghost/*`, `/members/*` or `/p/*` (previews); **Always Online off**; note whether Cache Reserve is on. Otherwise cached old pages could still be served during private mode (R26) | 🔍 |
 | I25 | Cloudflare security (view only) | Security → WAF / Bots | No rule that blocks Ghost Admin's API (`/ghost/api/admin/*`) or theme uploads | 🔍 |
 | I26 | Ghost mail | Ghost Admin → Settings → (staff invite, password reset) | A working mail transport (needed for staff password resets). Members and newsletters are **not** used (section 5) | 🔍 |
 | I27 | Current live content | Ghost Admin → Posts / Pages / Tags / Staff; Settings → Design (active theme name and version); Labs → Routes (download); Labs → Redirects (download) | An **inventory** of what is live now (section 3.1). Nothing changed | 🔍 |
@@ -263,23 +273,36 @@ Runs on the theme files, the launch seed and, read-only, on the **rendered produ
 | The private password page | Does **not** reveal the Content API key | P8 |
 | Caching | `Cache-Control: no-cache, private, no-store`, so Cloudflare does not cache it | P11 |
 | Owner with the private-site password | Sees the whole new site: homepage and blog render | P10 |
-| **Content API** (`/ghost/api/content/…?key=…`) and its search index | **Still answers** (200; 23 blocks) for anyone who already holds the 26-character public key | P6, P7 |
+| **Content API** (`/ghost/api/content/…?key=…`) and its search index | **Not protected.** Still answers (200) for anyone holding the 26-character public key. One request listed **all 23 published blocks** as a collection; the search index returned every published post | P6, P7 |
 
-**The one open surface.** Private mode does not close Ghost's Content API.
-- **Why it doesn't affect the sitemap, RSS or archives:** the API is not a listing, archive, RSS feed or sitemap. Search engines don't crawl it, and it needs a key.
-- **Where the key comes from:** visitors only see the key in a page's source. It isn't shown while the site is private (P8). But it is the same key the old live theme may already show in its pages; Ghost's own search script normally does.
-- **What it exposes:** only the blocks' text. That text is approved public copy, and it is reachable the same way after launch (Stage 1 design: "content blocks are public copy only").
-- **What is not exposed:** no draft articles and no test content (none is ever imported).
+**Website protection versus API access: two different things.**
+- **What private mode protects:** the **website**, meaning what Ghost renders for browsers and crawlers: pages, archives, RSS feeds, sitemaps and post URLs (rows P1–P5 above). Nothing there shows a block while the site is private.
+- **What private mode does not protect:** Ghost's **Content API**. It is a separate, read-only interface. It returns **collections** of published posts and pages (filterable, paginated, `limit=all`) plus a search index, to anyone who sends the site's public Content API key.
+  - Measured locally with private mode on: one request returned all 23 published blocks, and their full text was available.
+  - After the import, the same applies to the 3 imported pages and to any article published during the window.
+- **Who can do this:** anyone holding the key. Private mode does not show the key (P8), but the key is not secret.
+  - It is the same key the old live theme may already show in its page source (Ghost's search script normally does; AS5).
+  - Anyone who saw it before D1 can still use it.
+  - Search engines do not crawl the API, and it does not appear in sitemaps or RSS.
+- **What could be retrieved during the migration:** every **published** post and page: the 23 blocks, the 3 pages, and any article already published.
+  - Drafts are never returned. Test content is never imported.
+  - The blocks are approved public copy that the API serves the same way after launch (Stage 1 design: "content blocks are public copy only").
+- **Ghost has no Admin setting** to switch the Content API off, and private mode does not change it.
 
-Ghost has no Admin setting that closes this API. **Owner decision O27:** accept this residual exposure (recommended), or name a stricter requirement before Phase D.
+**Owner decision O27:** during the migration, someone with the public Content API key can retrieve the published blocks (and the 3 pages) through the API, even though the website is private.
+- **Recommended: accept this.** The residual exposure is limited to approved public copy that becomes public at launch anyway.
+- **Or:** state a stricter requirement before Phase D. For example, no article may be published until H1.
+
+Private mode is **not** described anywhere in this plan as hiding the blocks completely.
 
 **Exact cut-over sequence (Phase D–H).** Each step's check must pass before the next. Times are for one window of about 60–90 minutes.
 
 | Step | Action (owner, in Ghost Admin or the Cloudflare dashboard) | State of the public site | Check before going on |
 |---|---|---|---|
-| D0 | (Before the window, already done in C) Backups C1–C8. Theme zip **uploaded, not activated** (harmless: an inactive theme is never served) | Old site, public | Upload validation shows 0 errors |
-| D1 | **Turn private mode ON.** Set a long private-site password; keep it with the owner only | **Private** from here | In a private browser window: `/`, `/rss/` and `/sitemap.xml` all redirect to `/private/` |
-| D2 | Purge the Cloudflare cache (Caching → Purge everything) | Private | Repeat the D1 check through himandme.my |
+| D0 | (Before the window, already done in C) Backups C1–C10, including the **list of every currently public URL** (C10). Theme zip **uploaded, not activated** (harmless: an inactive theme is never served) | Old site, public | Upload validation shows 0 errors; `old-urls.txt` saved |
+| D1 | **Turn private mode ON.** Set a long private-site password; keep it with the owner only | **Private** at the origin from here | — (checked at D2b, after the purge) |
+| D2 | Purge the Cloudflare cache (Caching → Configuration → **Purge Everything**) | Private | Wait about 30 seconds |
+| D2b | **Mandatory anonymous checks through the real public domain** (below) | Private | **All pass.** Otherwise purge again and repeat. If they still fail, **stop: nothing is imported** |
 | D3 | Settings → Growth → **Network OFF** (I28) | Private | The toggle shows off |
 | D4 | Staff: confirm which account is **Owner**, and the doctor's final staff slug (§3.7) | Private | Owner account noted |
 | D5 | **Import** `launch-seed.json` (23 blocks + 3 pages) | Private | Posts filtered by `#blok`: exactly 23 |
@@ -292,8 +315,39 @@ Ghost has no Admin setting that closes this API. **Owner decision O27:** accept 
 | F | Review and testing **while still private**: the smoke test and the §7 checks run with the private-site cookie (on the owner's computer, or here if the network allows); visual review by the owner | Private | F-gate |
 | G | Go/no-go | Private | **G-gate: written "launch approved"** |
 | H1 | **Turn private mode OFF** | **Public from here** | — |
-| H2 | Purge the Cloudflare cache | Public | — |
-| H3 | Anonymous smoke test, `#blok` exclusion (§7.2) and placeholder scan | Public | If anything fails: **turn private mode back on at once** (rollback level 2), then investigate |
+| H2 | Purge the Cloudflare cache (Purge Everything) | Public | Wait about 30 seconds |
+| H3 | Anonymous checks **through https://himandme.my**: smoke test, `#blok` exclusion (§7.2), placeholder scan; every C10 URL either serves the new site or redirects (O20); no `/private/` redirects remain | Public | If anything fails: **turn private mode back on at once** (rollback level 2), then investigate |
+
+**D2b: anonymous checks through the public domain (mandatory, after the purge, before D3).**
+
+Run these on a computer that is **not** logged into Ghost Admin and has **not** entered the private-site password. Use `curl` (it sends no cookies), plus a fresh private/incognito browser window. They go through `https://himandme.my`, so through Cloudflare, not to the server directly.
+1. **Every URL that was public before the window** (the C10 list):
+   ```bash
+   while read -r u; do curl -s -o /dev/null -w '%{http_code} cf=%header{cf-cache-status} -> %{redirect_url}  %{url}\n' "$u"; done < ~/backup/old-urls.txt > ~/backup/private-check.txt; grep -vc ' -> https://himandme.my/private/' ~/backup/private-check.txt
+   ```
+   `%header{}` needs curl 7.84 or later; Ubuntu 24.04 has 8.5.
+2. **Fixed list, including host and protocol variants:**
+   - `https://himandme.my/`, `/rss/`, `/sitemap.xml`, `/sitemap-posts.xml`, `/robots.txt`
+   - `http://himandme.my/`, `https://www.himandme.my/`
+   - one old article URL with a query string added (`?v=1`)
+
+**Pass criteria:**
+
+| Check | Pass |
+|---|---|
+| Every C10 URL and every fixed-list page/feed/sitemap | `302` to `https://himandme.my/private/…`. The count printed by command 1 is **0** |
+| Any `200`, `304`, or a body with the old content | **Fail.** A cached or still-public page |
+| `cf-cache-status` | Never `HIT`, `STALE`, `UPDATING` or `REVALIDATED` (expected: `DYNAMIC`, `BYPASS`, `MISS` or `EXPIRED`) |
+| `robots.txt` | Contains `Disallow: /` |
+| `http://` and `www` | Redirect to `https://himandme.my/…`, which then redirects to `/private/` |
+| Incognito browser: `/`, an old article, `/blog/` (or the old blog index) | Shows the password page, never old content |
+
+**If anything fails:**
+- Purge again and re-run.
+- If a URL still serves content, check the Cloudflare settings that keep copies at the edge (I24: Cache Rules with an edge TTL, "Cache Everything", **Always Online**, Cache Reserve).
+- Do not import until every line passes.
+
+The same anonymous, public-domain checks are repeated at H3 after private mode is turned off. There, the pass criterion is the **new** site with no stale private redirects.
 
 If the window has to stop between D1 and H1, the site **stays private** (or goes back to the previous state via rollback level 1 or 3). It is never made public half-migrated.
 
@@ -401,7 +455,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | S4 | Canonical URLs | `{{ghost_head}}` emits a canonical on every page; pagination is handled | Verify the host is the canonical one (I13) | 🔍 |
 | S5 | Meta title and description | Home: Settings meta. `/blog/`: the `jurnal` page meta. Pages and articles: their own meta fields. Topics and author: tag and profile descriptions | ✋ O15, O16; each article's meta when written | ✋ |
 | S6 | Open Graph and X images | Articles use their feature image. A site default is needed for the home and pages | ✋ O17 (default 1200×630 image) | ✋ |
-| S7 | Structured data | Ghost outputs JSON-LD (Article, WebSite, Person/author) | Optional later: a `MedicalBusiness`/`LocalBusiness` block using only owner-confirmed facts (address, hours, phone). Not added without your approval | ✋ Decision O21 |
+| S7 | Structured data | Ghost outputs JSON-LD (Article, WebSite, Person/author) | Optional business markup, **only** with owner-confirmed facts. Recommended type: **`LocalBusiness`**, not `MedicalBusiness` (see §6.1). Not added without your approval | ✋ Decision O21 |
 | S8 | Author signals | Byline "Ditulis dan disemak oleh {name}", credentials, author page and bio | Real profile (O1–O4); optional social and website links on the profile | ✋ |
 | S9 | Internal links | Navigation, topic bar, tiles, "Baca seterusnya", "Panduan berkaitan", CTAs to the ED page | Verify there are no 404s (smoke test G6 follows every internal link) | 🔍 |
 | S10 | Redirects from the old site | Unknown: depends on what is live now (I27) | Map every old URL that is indexed or linked to its new URL in `redirects.yaml`. Check Search Console or the old sitemap | ✋ O20 |
@@ -411,6 +465,37 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | S14 | Private mode | n/a | If private mode is used during the cut-over (R1), **turn it off** at launch, or Google sees noindex | 🔍 |
 
 ---
+
+### 6.1 Structured data: which Schema.org type
+
+- **Principle:** the business type must describe what the business is **registered and licensed as**, and only facts the owner has verified may be used. The site does not describe the business as a clinic, and the markup must not either.
+
+| Option | Schema.org meaning | When it would be accurate | Recommendation |
+|---|---|---|---|
+| **`LocalBusiness`** | A physical business serving customers at an address | Any operating business at the verified address. It makes no medical-facility claim | **Recommended** (if business markup is wanted at all) |
+| `HealthAndBeautyBusiness` (a LocalBusiness subtype) | Spas, salons, beauty and wellness businesses | Only if the owner considers this an accurate description; it implies beauty or spa services | Not recommended without the owner's confirmation |
+| `MedicalBusiness` and its subtypes (`MedicalClinic`, `Physician`, …) | A medical facility or practice | **Only** if the premises is registered or licensed as a private healthcare facility (for example under Malaysia's Private Healthcare Facilities and Services Act 1998), with evidence the owner supplies | **Do not use** unless that registration is confirmed. It would contradict "not a clinic" |
+| None | Ghost's own Article, WebSite and Person markup only | Always valid | Acceptable default; no SEO penalty |
+
+**If `LocalBusiness` is chosen:**
+- **Properties:** only verified properties, each matching what the page visibly shows:
+  - `name` "Him & Me";
+  - `url`;
+  - `logo`;
+  - `telephone` (as shown);
+  - `address` (the full verified postal address, not only "Eight Setiawangsa, Kuala Lumpur");
+  - `openingHoursSpecification` (verified days and hours);
+  - optionally `legalName`, but only if the owner confirms the registered name (the Notis Privasi names "Him & Me Wellness PLT") and that it is registered and active.
+- **Status:** the business must be operating at that address at launch.
+- **Leave out:**
+  - prices and `priceRange`, unless confirmed;
+  - ratings or reviews (none exist);
+  - `medicalSpecialty`;
+  - any health claim.
+
+The doctor stays as Ghost's `Person` author markup. They are **not** marked up as `Physician` (a MedicalBusiness subtype) unless the owner confirms that is accurate.
+
+This is decision **O21** (none / `LocalBusiness` / another type with evidence). The registration evidence stays with the owner. Only the conclusion is recorded.
 
 ## 7. Functional and security tests
 
@@ -442,6 +527,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | `/blog/blok-utama-hero/` (and every block slug) | 404 |
 | `/blog/topik/hash-blok/` | 404 (internal tags have no archive) |
 | Public search index, as filtered by the theme | No result for a block title (for example the hero heading) |
+| Content API with the public key | **Returns the published blocks: expected, by design** (O27). Not a failure; listed so no one mistakes it for a leak |
 | Author page `/blog/penulis/{slug}/` and **all its pages** | Exactly the doctor's published articles, nothing else (same inspector as A4–A6) |
 | **Every** author in `sitemap-authors.xml` | No block on any page or RSS (§3.7, R21) |
 | Network | Off, so blocks are never federated |
@@ -489,11 +575,13 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | C1 | **VPS snapshot** | Tencent Cloud console → instance → Snapshots → create `pre-launch-YYYYMMDD` | The whole server: the fastest full rollback |
 | C2 | Ghost content export | Admin → Settings → Advanced → Import/Export → **Export** | Posts, pages, tags, settings (JSON) |
 | C3 | Ghost-CLI backup | `cd /var/www/himandme && ghost backup` (asks for your staff access token) | Content JSON + images, files, media, themes, routes, redirects |
-| C4 | **MySQL dump** | `mkdir -p ~/backup && sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4 <db_name> > ~/backup/ghost-pre-launch.sql 2> ~/backup/dump.err; echo $?; cat ~/backup/dump.err; tail -1 ~/backup/ghost-pre-launch.sql`. `<db_name>` is `database.connection.database` from the filtered I3 output | The exact database. **Pass:** exit 0, `dump.err` empty, last line "Dump completed" |
+| C4 | **MySQL dump** | First set the name once: `DB=ghost_prod` (replace `ghost_prod` with `database.connection.database` from the filtered I3 output; it is a name, not a secret). Then: `mkdir -p ~/backup && sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4 "$DB" > ~/backup/ghost-pre-launch.sql 2> ~/backup/dump.err; echo "exit $?"; cat ~/backup/dump.err; tail -1 ~/backup/ghost-pre-launch.sql` | The exact database. **Pass:** exit 0, `dump.err` empty, last line "Dump completed". The dump holds the tables only (no `CREATE DATABASE`), so a restore always names the target database |
 | C5 | Files | `sudo tar czf ~/backup/content-pre-launch.tgz -C /var/www/himandme content` and `sudo cp /etc/nginx/sites-available/himandme* ~/backup/` | Images, themes, `settings/routes.yaml`, `data/redirects.*` |
 | C6 | Current theme, routes and redirects | Admin: Design → active theme → **Download**; Labs → Routes → **Download**; Labs → Redirects → **Download** | Level-1 rollback, independent of the database |
 | C7 | Copies off the server | Download C2–C6 to your computer (e.g. `scp`) | Survives loss of the VPS |
-| C8 | **Restore test** | On your computer or a throw-away machine, never on production: load C4 into an empty MySQL 8.0 database (`mysql <empty_db> < ghost-pre-launch.sql`) and count the posts (`SELECT COUNT(*) FROM posts;`); open the C2 JSON; list `content-pre-launch.tgz` | Proves the files are complete and readable |
+| C8 | **Restore test** | On your computer or a throw-away machine with MySQL 8.0, **never on production**. Create the disposable database, load the dump into it by name, count, then remove it: (1) `sudo mysql -e "CREATE DATABASE ghost_restore_test CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"` (2) `sudo mysql ghost_restore_test < ghost-pre-launch.sql` (3) `sudo mysql -e "SELECT COUNT(*) AS posts FROM ghost_restore_test.posts; SELECT COUNT(*) AS tables_restored FROM information_schema.tables WHERE table_schema='ghost_restore_test';"` (4) `sudo mysql -e "DROP DATABASE ghost_restore_test;"`. Also open the C2 JSON and list the archive: `tar tzf content-pre-launch.tgz \| head` | **Pass:** step 2 prints no error; the `posts` count (posts, pages and drafts together) is consistent with Admin; the table count is about 100 (Ghost 6.75.0 created 103 in the rehearsal). Proves the dump restores |
+| C9 | Rollback rule | Always `ghost stop` before a database restore and `ghost start` after | Rehearsed (V4) |
+| C10 | **List of every currently public URL** (needed for D2b) | Before D1, while the old site is still public: `for s in posts pages tags authors; do curl -s "https://himandme.my/sitemap-$s.xml"; done \| grep -o '<loc>[^<]*' \| sed 's/<loc>//' > ~/backup/old-urls.txt; printf '%s\n' https://himandme.my/ https://himandme.my/rss/ https://himandme.my/sitemap.xml >> ~/backup/old-urls.txt; wc -l ~/backup/old-urls.txt` | Shows that no previously public page stays reachable during private mode; also the input for the redirect map (O20) |
 
 ### 8.3 Rollback triggers (any one)
 - the site is down for more than 5 minutes;
@@ -507,12 +595,13 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | Level | What | Restores | Time |
 |---|---|---|---|
 | 1 | Re-activate the previous theme; upload the C6 `routes.yaml` and redirects; purge the cache | Theme and routes only (rehearsed) | Minutes |
-| 2 | **Private mode back ON**, then investigate. Unpublish (not delete) a problem item if needed | Nothing is exposed while you decide | 1 minute |
-| 3 | `ghost stop` → (as root) `mysql -e "DROP DATABASE <db>; CREATE DATABASE <db> CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"` → `sudo mysql <db> < ghost-pre-launch.sql` → restore `content/` from C5 if files changed → `sudo chown -R ghost:ghost /var/www/himandme/content` → `ghost start` | Database and files (rehearsed) | ~30 min |
+| 2 | **Private mode back ON**, then investigate. Unpublish (not delete) a problem item if needed | The website shows nothing while you decide (the Content API still answers for published posts, O27) | 1 minute |
+| 3 | `DB=ghost_prod` (the same name as in C4) → `cd /var/www/himandme && ghost stop` → `sudo mysql -e "DROP DATABASE \`$DB\`; CREATE DATABASE \`$DB\` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"` → `sudo mysql "$DB" < ~/backup/ghost-pre-launch.sql` → restore `content/` from C5 if files changed → `sudo chown -R ghost:ghost /var/www/himandme/content` → `ghost start` | Database and files (rehearsed) | ~30 min |
 | 4 | Restore the VPS snapshot (C1) | Everything; anything after the snapshot is lost | ~30–60 min |
 
 **Level 3 notes:**
-- Before running it, check the character set and collation in the dump against I30.
+- Before running it, check the character set and collation in the dump against I30. If the server's database uses a different collation (I30), use that one in `CREATE DATABASE`.
+- Use the real database name in `DB=`. Placeholders like `<db>` must never be typed literally: the shell reads `<` as a file redirect.
 - The `GRANT` for Ghost's database user survives a drop and re-create (privileges are stored per database name). This was confirmed in the rehearsal.
 
 **Fallbacks:** if the blocks are missing, the theme still renders its built-in fallback copy (tested in Stages 2–4). The site never goes blank.
@@ -527,12 +616,12 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 |---|---|---|---|---|
 | **A. Preparation and audit** | Run I1–I31 (read-only) and send the results. Inventory the live site (I27). Supply the inputs in the checklist, section 4 (O1–O29). Decide the merge option (1.3), analytics and the old-site plan | This plan approved | Owner (server checks); me (review results, update the risk register) | 🛑 **A-gate:** infrastructure audit accepted; owner inputs complete or explicitly deferred |
 | **B. GitHub merge and release preparation** | Merge PRs per the chosen option. Open the missing Stage 4 and 6 PRs only if Option A. Release branch: G1–G7. Full local test run. Build the zip and the launch seed. Placeholder scan on both | A-gate | Me (code and PRs only after approval); owner (merges, or approves each merge) | 🛑 **B-gate:** `main` = approved Stage 6 plus release changes; tests green; zip and seed checksums recorded |
-| **C. Production backup** | C1–C8 | B-gate | Owner | 🛑 **C-gate:** backups exist, are copied off the server, and the restore has been tested |
-| **D. Theme and content deployment** | In a pre-announced window, **in mandatory private mode**: §3.6 steps D1–D10 (private ON → cache purge → Network off → Owner/slug check → import → tags/staff/nav → activate theme → settings → routes → redirects) | C-gate | Owner in Admin, following the step list; me guiding live | 🛑 **D-gate:** each step's check passes before the next |
+| **C. Production backup** | C1–C10 | B-gate | Owner | 🛑 **C-gate:** backups exist, are copied off the server, the restore has been tested (C8), and the public URL list is saved (C10) |
+| **D. Theme and content deployment** | In a pre-announced window, **in mandatory private mode**: §3.6 steps D1–D10 (private ON → cache purge → **anonymous public-domain checks D2b** → Network off → Owner/slug check → import → tags/staff/nav → activate theme → settings → routes → redirects) | C-gate | Owner in Admin, following the step list; me guiding live | 🛑 **D-gate:** each step's check passes before the next |
 | **E. Production configuration** | E1–E11, theme settings, meta, icon, OG image | D | Owner | (part of the D/E window) |
 | **F. Staging and functional testing** | **While still private**: smoke test G6 with the private-site cookie (checks every author in `sitemap-authors.xml`), §7 checklists, placeholder scan, phone checks | E | Me (read-only test, if I can reach the site; otherwise the owner runs it); owner (visual review) | 🛑 **F-gate:** every check is green; screenshots reviewed |
 | **G. Final launch approval** | Go/no-go review: risk register, open items, rollback ready | F-gate | Owner | 🛑 **G-gate: written "launch approved"** |
-| **H. Public launch and post-launch verification** | §3.6 H1–H3: **private mode OFF** → purge the cache → anonymous smoke test (on failure: private mode back ON) → Lighthouse → Search Console (TXT record, owner) and submit the sitemap → watch logs for 48 h → re-check at 7 days | G-gate | Owner (dashboard actions); me (read-only checks) | 🛑 **H-gate:** sign-off at 48 h; Stage 7 closed |
+| **H. Public launch and post-launch verification** | §3.6 H1–H3: **private mode OFF** → purge the cache → anonymous smoke test **through https://himandme.my** (on failure: private mode back ON) → Lighthouse → Search Console (TXT record, owner) and submit the sitemap → watch logs for 48 h → re-check at 7 days | G-gate | Owner (dashboard actions); me (read-only checks) | 🛑 **H-gate:** sign-off at 48 h; Stage 7 closed |
 
 **Critical path:** O4 (doctor's slug) + O28 (block ownership) → G3 (routes) → B-gate → C → D → E → F → G → H. Articles (O7) are **not** on the critical path. The site can launch with zero articles: the blog pages show their empty states. But the blog navigation then leads to empty pages, so it is your choice (O23) whether to launch with a minimum number of articles.
 
@@ -542,7 +631,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 
 | ID | Risk | Severity | Mitigation | Status |
 |---|---|---|---|---|
-| R1 | Blocks imported while the **old theme** is still active become public posts (old listings, RSS, sitemap) | **High** | **Private mode mandatory** from D1 (before the import) until the G-gate; measured to hide every page, archive, RSS feed, sitemap and block URL (§3.6, P1–P5) | ✅ Planned and tested; ✋ window date (O25) |
+| R1 | Blocks imported while the **old theme** is still active become public posts (old listings, RSS, sitemap) | **High** | **Private mode mandatory** from D1 (before the import) until the G-gate, verified through the public domain at D2b; measured to hide every page, archive, RSS feed, sitemap and block URL (§3.6, P1–P5) | ✅ Planned and tested; ✋ window date (O25) |
 | R2 | Ghost Network on: imported or published blocks federate to the fediverse and **can't be recalled** | **High** | Network off and verified (I28) before any import or publish | 🔍 |
 | R3 | Test content or placeholders reach production | **High** | Seed allowlist and denylist (3.3); placeholder scanner (3.4); a local export is never used; post-count check (3.5) | ✅ Planned |
 | R4 | Wrong author slug in `routes.yaml`: the author page lists blocks (**measured: 46 leaks**, N1) | **High** | Render step refuses to leave any `dr`; slug must match in 4 places; the read-only `inspectAuthor` check in F and H | ⛔ O4 |
@@ -563,7 +652,8 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | R19 | Launching with no articles: empty blog sections | Low | Owner decision O23 | ✋ |
 | R20 | `/jurnal/` listed in the sitemap as a redirect | Low | Accept, or noindex (S2) | ✅ Known |
 | R21 | Blocks owned by a **non-doctor Owner account** (the importer's default): that account's taxonomy archive exposes them (**measured**, N2a) | **High** | Case A (doctor = Owner) or Case B (extra filtered channel, tested N2c, or reassign the 23 blocks); smoke test checks every author archive | ✋ O28 |
-| R22 | Content API stays reachable with the public key during private mode | Low | Same data as after launch (approved public copy); no listing, RSS or sitemap; key not shown while private (P8) | ✋ O27 (accept) |
+| R22 | Private mode does not protect the **Content API**: anyone with the public key can list and retrieve every published post during the migration (the 23 blocks, the 3 pages, any published article) | Low–Medium | The blocks and pages are approved public copy, served the same way after launch. Drafts are never exposed; test content is never imported. The key is not shown while private (P8) but may already be known. Optional: publish no article before H1 | ✋ O27 |
+| R26 | Cloudflare keeps serving **cached copies of old public pages** after private mode is on | **High** | Purge Everything at D2; **mandatory anonymous public-domain checks of every C10 URL** (D2b) with `cf-cache-status`; I24 (no Cache Everything or edge TTL on HTML, Always Online off); no import until they pass | ✅ Planned |
 | R23 | Restoring the database while Ghost runs shows stale settings | Medium | `ghost stop` before and `ghost start` after (rehearsed) | ✅ |
 | R24 | `mysqldump` PROCESS-privilege error goes unnoticed (exit code 0) | Medium | `--no-tablespaces`, run with `sudo`, and check `dump.err` is empty (C4) | ✅ |
 | R25 | Staff access token for `ghost backup` exposed | Medium | Typed only at the prompt on the server; never in chat, files or the repository | ✅ Rule |
@@ -578,9 +668,10 @@ Plan approved
        └─ A-gate
             └─ B: merges (1.3) → release branch G1–G7 → local tests → zip + seed + scans
                  └─ B-gate
-                      └─ C: snapshot + exports + dump + files → restore test
+                      └─ C: snapshot + exports + dump + files + public URL list → restore test
                            └─ C-gate
-                                └─ D1 PRIVATE ON → purge → Network off → Owner/slug check → import seed
+                                └─ D1 PRIVATE ON → purge → D2b anonymous public-domain checks (gate) → Network off
+                                │   → Owner/slug check → import seed
                                 │   → tags/staff/nav → activate theme → settings → routes → redirects
                                 └─ E: remaining config (still private)
                                 └─ F: smoke (private cookie) + #blok + every author archive + placeholders
@@ -603,12 +694,36 @@ Plan approved
 | AS2 | Ghost-CLI on the server behaves like 1.34.1 for `ghost backup` (staff token, zip content) | I2, C3 |
 | AS3 | MySQL root uses socket authentication, so backups need no password | I30 |
 | AS4 | Ghost Admin is reachable and the owner has an Owner or Administrator login | Phase A |
-| AS5 | The live site's Content API key may already be public (the old theme) | I27 (view page source) |
+| AS5 | The live site's Content API key may already be public (the old theme). It is never secret in any case | I27 (view page source) |
 | AS6 | Ghost 6.75.0 behaviour measured locally (private mode, author archives, importer Owner rule) is the same in production. Same version; production mode instead of development; MySQL instead of SQLite | Phase F checks repeat the key measurements read-only |
 | AS7 | This session still cannot reach himandme.my, so production checks are run by the owner (or here if network access is granted later) | — |
+| AS8 | Cloudflare purge plus the response headers (`no-store`, `private`) are enough to stop edge copies; D2b proves it on the real domain | D2b |
 
 **Decisions needed (full list in the checklist, section 4):**
-- **O1–O26** as before: content, profile, business details, analytics, redirects, window, merge option.
-- **New, O27:** accept the Content API residual exposure during private mode (§3.6, recommended), or state a stricter requirement.
+- **O1–O29** are all listed in the checklist (section 4): content, profile, business details, analytics, redirects, window, merge option. The ones added or changed since revision 1:
+- **O27 (rewritten):** private mode protects the website but **not** the Content API. During the migration, anyone with the public key can retrieve the published blocks and pages. Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (§3.6, R22).
+- **O21 (clarified):** structured data. None, or `LocalBusiness` (recommended), or `MedicalBusiness`/a subtype **only** with confirmed healthcare-facility registration (§6.1).
 - **New, O28:** block ownership, Case A (the doctor's account is the Owner) or Case B (an extra channel, or reassign the 23 blocks), after I31.
 - **New, O29:** confirm the architecture record is corrected to **23 blocks (12 + 8 + 3)**.
+
+---
+
+## 13. Consistency review (revision 3)
+
+Both documents were re-read after the revision 3 edits. Checked and aligned:
+
+| Topic | Plan | Checklist |
+|---|---|---|
+| Blocks | 23 = 12 + 8 + 3, unchanged (§3.2) | V1, section 5, O29 |
+| Private mode | Mandatory D1 → G-gate; D2b public-domain checks gate the import; website only, not the API (§3.6, R1, R22, R26, §9, §11) | Section 5, section 10 (phases D and H), V2 |
+| Content API | Protects nothing in private mode; returns published blocks; O27 rewritten (§3.6, §7.2, R22, §12) | O27, V2 |
+| Author archive | Slug in 4 places; Owner rule; every author checked (§3.7, R4, R21, §7.2) | G3, G10, O4, O28, section 8 |
+| Backups | C1–C10, valid restore syntax, `ghost stop` rule (§8) | Section 9 (C1–C10) |
+| Structured data | `LocalBusiness` recommended; no `MedicalBusiness` without evidence (§6, §6.1) | O21, S7 |
+| Cloudflare | I24 adds Always Online and edge-TTL checks; R26 | I24 |
+| Phase order | A → B → C (incl. C10) → D (D1, D2, D2b, …) → E → F → G → H (H1–H3) | Section 10 |
+| Status | Phase A not started; nothing deployed | Header, section 10 |
+
+No contradiction remains. Two older notes were removed because they no longer applied:
+- the phrase "the API is not a listing";
+- "optionally in private mode", from revision 1.

@@ -1,7 +1,7 @@
 # Stage 7 checklist: production readiness
 
-> **Status: Revision 2 (17 Nov 2026). Planning and local verification complete; nothing deployed.** Awaiting the owner's approval of **Phase A**.
-> The direction and structure were approved on 16 Nov 2026; this revision answers the 5 review points (see the plan's Revision 2 table).
+> **Status: Revision 3 (17 Nov 2026). Planning and local verification complete; nothing deployed. Phase A has NOT started** and waits for the owner's explicit approval.
+> The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
 **Status labels:**
@@ -19,7 +19,7 @@
 | G: GitHub and release (§1) | 8 | 0 | 2 | 3 |
 | I: Infrastructure (§2) | 0 | 31 | 0 | 0 |
 | O: Owner inputs (section 4 below) | 0 | 0 | 29 | 0 |
-| V: Revision 2 verifications (section 1a) | 5 | 0 | 0 | 0 |
+| V: Revision 2–3 verifications (section 1a) | 7 | 0 | 0 | 0 |
 | E: Production config (§5) | 2 | 3 | 5 | 1 |
 | S: SEO (§6) | 1 | 6 | 7 | 0 |
 | Phases A–H | 0 | 0 | 0 | 8 (each waits for the gate before it) |
@@ -40,6 +40,7 @@
 - [x] ✅ Risk register (§10) and execution sequence (§11)
 - [x] ✅ Owner approved the plan's direction and structure (16 Nov 2026)
 - [x] ✅ Revision 2: the 5 review points answered (section 1a)
+- [x] ✅ Revision 3: final corrections (Content API wording, restore syntax, structured data, public-domain private-mode checks, consistency review)
 - [ ] ✋ **Owner approval of Phase A**
 
 ## 1a. Revision 2 verifications (local only; production untouched)
@@ -47,9 +48,11 @@
 | ID | Review point | Evidence | Status | Done |
 |---|---|---|---|---|
 | V1 | Block count | `seed/blocks.mjs` holds **23**: 12 homepage (`blok-utama-*`), 8 ED (`blok-ed-*`), 3 shared (`blok-maklumat-hubungan`, `blok-penafian`, `blok-tawaran`). The 22 figure predates `blok-tawaran` (commit `f884fb2`, 5 Nov 2026, RM288 offer). Full slug table in plan §3.2. No block added or removed | ✅ | [x] |
-| V2 | Private mode protects the migration | `test/stage7/private-mode.mjs` **12/12** on Ghost 6.75.0: pages, archives, RSS, sitemaps and block URLs all hidden; robots `Disallow: /`; not cacheable; owner can review with the password. **Content API stays open** with the public key (O27). Exact D1–H3 sequence in plan §3.6 | ✅ | [x] |
+| V2 | Private mode protects the **website** during the migration | `test/stage7/private-mode.mjs` **12/12** on Ghost 6.75.0: pages, archives, RSS, sitemaps and block URLs all hidden; robots `Disallow: /`; not cacheable; owner can review with the password. **It does not protect the Content API:** with the public key, one request listed all 23 published blocks (O27). Exact D1–H3 sequence in plan §3.6 | ✅ | [x] |
 | V3 | Author archive with a real slug | `test/stage7/author-archive.mjs` **15/15**: exactly the genuine articles over all pages and RSS; no other archive route leaks; negative controls proved the leaks when `routes.yaml` isn't updated (46) and when a second staff account owns a block | ✅ | [x] |
 | V4 | Backup and restore | Rehearsed on MySQL 8.0.46 + Ghost 6.75.0 (throw-away, deleted): `--no-tablespaces` needed for the Ghost DB user (error exits 0); `sudo` socket dump needs no password; restore requires `ghost stop`; full restore returned the exact previous state; theme and routes roll back independently. `ghost backup` (CLI 1.34.1 source): staff token required, no DB dump inside | ✅ | [x] |
+| V6 | Restore-test syntax (C8) | Create the disposable database first, then `sudo mysql ghost_restore_test < ghost-pre-launch.sql`, count, drop. The same form (database named as an argument) was used in the V4 rehearsal | ✅ | [x] |
+| V7 | Consistency review of both documents | Plan §13: no contradiction remains | ✅ | [x] |
 | V5 | Regression after the checks | Stage 1 re-run: **32 passed, 0 failed**; local data restored (staff slug, routes, block authors, private mode off) | ✅ | [x] |
 
 ## 2. GitHub and release (§1)
@@ -64,7 +67,7 @@
 | G3 | `routes.yaml` author slug `dr` → real slug (3 places) | ⛔ O4 | [ ] |
 | G4 | Launch seed builder (`seed/blocks.mjs` only, allowlist + denylist) | ✅ ready to build | [ ] |
 | G5 | Placeholder scanner | ✅ ready to build | [ ] |
-| G6 | Read-only production smoke test | ✅ ready to build | [ ] |
+| G6 | Read-only production smoke test (modes: `--expect-private` for D2b, private cookie for F, anonymous for H3) | ✅ ready to build | [ ] |
 | G7 | README "Production launch" section | ✅ ready | [ ] |
 | G8 | Local Stage 1–6 suites + guard + GScan (zip) all green on the release build | ✅ last run green (32/23/12/39/21/16; GScan 0/0) | [ ] re-run on release |
 | G9 | Zip and seed SHA-256 recorded here | ⛔ G1–G5 | [ ] |
@@ -97,7 +100,7 @@
 | I21 | Security updates | 🔍 | [ ] |
 | I22 | Cloudflare DNS records (view only) | 🔍 | [ ] |
 | I23 | Cloudflare SSL Full (strict) | 🔍 | [ ] |
-| I24 | Always HTTPS on; Rocket Loader off; no cache on `/ghost/`, `/members/`, `/p/` | 🔍 | [ ] |
+| I24 | Always HTTPS on; Rocket Loader off; no Cache Everything or edge TTL on HTML, `/ghost/`, `/members/`, `/p/`; **Always Online off**; Cache Reserve noted | 🔍 | [ ] |
 | I25 | WAF not blocking Admin | 🔍 | [ ] |
 | I26 | Ghost mail for staff | 🔍 | [ ] |
 | I27 | Inventory of current live content, theme, routes and redirects | 🔍 | [ ] |
@@ -130,13 +133,13 @@
 | O18 | Confirm: no memberships, Portal, comments or newsletter | E2–E3 | ✋ | [ ] |
 | O19 | For each item already live on himandme.my: keep / replace / unpublish | Migration | ✋ (after I27) | [ ] |
 | O20 | List of old URLs to redirect (or "none") | `redirects.yaml` | ✋ | [ ] |
-| O21 | Structured business data (`MedicalBusiness`/`LocalBusiness`): yes or no | SEO | ✋ | [ ] |
+| O21 | Structured business data: none, or **`LocalBusiness` (recommended)** with verified facts only. `MedicalBusiness` or a subtype only if you confirm the premises is registered or licensed as a healthcare facility. Also confirm whether "Him & Me Wellness PLT" may be used as `legalName` (registered and active) | SEO (plan §6.1) | ✋ | [ ] |
 | O22 | Analytics: none / Cloudflare Web Analytics / GA4 | SEO, privacy | ✋ | [ ] |
 | O23 | Launch with a minimum number of articles, or with none | Go/no-go | ✋ | [ ] |
 | O24 | Days and hours: confirm "Isnin – Sabtu, 10 pagi – 6 petang · dengan temu janji sahaja" | Footer, ED page | ✋ confirm | [ ] |
 | O25 | Launch window (date and time) and whether private mode is used during it (R1) | Phase D | ✋ | [ ] |
 | O26 | Merge option A or B (G0a), and the version number (G1) | Phase B | ✋ | [ ] |
-| O27 | Accept that Ghost's Content API (public key) still serves the blocks' approved public text during private mode, or name a stricter requirement | Plan §3.6, R22 | ✋ | [ ] |
+| O27 | Private mode protects the website but **not** Ghost's Content API. During the migration, anyone with the public Content API key can retrieve the published blocks (and the 3 imported pages, and any published article). Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (e.g. publish no article before H1) | Plan §3.6, R22 | ✋ | [ ] |
 | O28 | Block ownership: Case A (the doctor's account is the Owner), or Case B (extra filtered channel for the Owner's slug, or reassign the 23 blocks to the doctor) | Plan §3.7, R21 | ✋ (after I31) | [ ] |
 | O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✋ | [ ] |
 
@@ -145,7 +148,9 @@
 | Item | Status | Done |
 |---|---|---|
 | 23 blocks (12 homepage + 8 ED + 3 shared, reconciled in V1) + 3 pages approved; no open ❓ in `docs/CLINICAL-REVIEW.md` | ✅ | [x] |
-| **Private mode ON before the import** (D1), checked anonymously; stays on until the G-gate | ⛔ Phase D | [ ] |
+| **Private mode ON before the import** (D1); Cloudflare purged (D2); stays on until the G-gate | ⛔ Phase D | [ ] |
+| **D2b: anonymous checks through https://himandme.my** of every C10 URL plus the fixed list: all `302` to `/private/`, none `200`/`304`, no `cf-cache-status: HIT/STALE`, `robots.txt` `Disallow: /`, http/www variants and incognito browser OK. **The import does not start until this passes** | ⛔ Phase D | [ ] |
+| Content API returns the published blocks during the window: expected, not a leak (O27) | ✋ O27 | [ ] |
 | Block ownership rule applied (O28): every author archive clean | ⛔ Phase D/F | [ ] |
 | E1–E3 article wording approved | ✅ | [x] |
 | Dasar Editorial excluded (owner decision) | ✅ | [x] |
@@ -209,24 +214,25 @@
 | C1 | VPS snapshot | ⛔ B-gate | [ ] |
 | C2 | Ghost JSON export | ⛔ B-gate | [ ] |
 | C3 | `ghost backup` (staff token typed at the prompt only; zip contents listed) | ⛔ B-gate | [ ] |
-| C4 | MySQL dump: `sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4`; exit 0, empty error file, "Dump completed" | ⛔ B-gate | [ ] |
+| C4 | MySQL dump: `DB=<real name>` then `sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4 "$DB"`; exit 0, empty error file, "Dump completed" | ⛔ B-gate | [ ] |
 | C5 | `content/` + Nginx confs | ⛔ B-gate | [ ] |
 | C6 | Current theme, routes, redirects downloaded | ⛔ B-gate | [ ] |
 | C7 | Copies off the server | ⛔ B-gate | [ ] |
-| C8 | Restore tested off production (procedure rehearsed in V4) | ⛔ B-gate | [ ] |
+| C8 | Restore test off production: create `ghost_restore_test`, `sudo mysql ghost_restore_test < ghost-pre-launch.sql`, count posts and tables, drop it | ⛔ B-gate | [ ] |
 | C9 | Rollback rule: `ghost stop` before any database restore, `ghost start` after | ✅ rehearsed | [x] |
+| C10 | List of every currently public URL saved (`old-urls.txt`), for D2b and O20 | ⛔ B-gate | [ ] |
 
 ## 10. Phases and approval gates (§9)
 
 | Phase | Gate | Status | Approved |
 |---|---|---|---|
 | Plan | Owner approves the plan's direction | ✅ 16 Nov 2026 | [x] |
-| Revision 2 | Owner approves Phase A | ✋ | [ ] |
+| Revision 3 | Owner reviews the final corrections and **explicitly approves Phase A** (not started) | ✋ | [ ] |
 | A. Preparation and audit | 🛑 A-gate | ⛔ plan approval | [ ] |
 | B. GitHub merge and release prep | 🛑 B-gate | ⛔ A-gate | [ ] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
-| D. Theme and content deployment (**private mode ON at D1**) | 🛑 D-gate | ⛔ C-gate | [ ] |
+| D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |
 | E. Production configuration | (with D) | ⛔ D | [ ] |
 | F. Staging and functional testing | 🛑 F-gate | ⛔ E | [ ] |
 | G. Final launch approval | 🛑 G-gate | ⛔ F-gate | [ ] |
-| H. Public launch (**private mode OFF at H1**) and post-launch checks | 🛑 H-gate (48 h sign-off) | ⛔ G-gate | [ ] |
+| H. Public launch (**private mode OFF at H1**, purge, anonymous checks through the real domain) and post-launch checks | 🛑 H-gate (48 h sign-off) | ⛔ G-gate | [ ] |
