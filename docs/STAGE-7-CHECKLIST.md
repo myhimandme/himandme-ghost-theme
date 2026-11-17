@@ -1,6 +1,6 @@
 # Stage 7 checklist: production readiness
 
-> **Status: Revision 4 (17 Nov 2026).** Plan approved. **Phase A authorised (read-only audit only) and in progress**; first-pass findings in `docs/stage-7/PHASE-A-FINDINGS.md`. Phase B and later are not authorised.
+> **Status: Revision 6 (17 Nov 2026), for the owner's review; not committed.** Plan approved. **Phase A (read-only) in progress: server results reconciled** (plan §14). Phase B and later are **not** authorised. Server maintenance M1–M4 is a **separate track**, not authorised.
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -17,12 +17,13 @@
 | Area | ✅ | 🔍 | ✋ | ⛔ |
 |---|---|---|---|---|
 | G: GitHub and release (§1) | 9 | 0 | 2 | 3 |
-| I: Infrastructure (§2) | 1 | 30 | 0 | 0 |
-| O: Owner inputs (section 4 below) | 0 | 0 | 31 | 0 |
+| I: Infrastructure (§2) | 26 answered (incl. ⚠️ findings) | 8 | 0 | 0 |
+| O: Owner inputs (section 4 below) | 0 | 0 | 36 | 0 |
 | V: Revision 2–4 verifications (section 1a) | 8 | 0 | 0 | 0 |
 | E: Production config (§5) | 2 | 3 | 6 | 1 |
 | S: SEO (§6) | 1 | 6 | 7 | 0 |
 | Phases A–H | A in progress | 0 | 0 | 7 (B–H; each waits for the gate before it) |
+| M: Server maintenance (section 8a) | 0 | 0 | 4 (each needs its own approval) | 0 |
 
 ---
 
@@ -79,36 +80,39 @@
 
 | ID | Check | Status | Done |
 |---|---|---|---|
-| I1 | OS version, reboot pending | 🔍 | [ ] |
-| I2 | Ghost 6.75.0, `ghost ls` running, **Ghost-CLI version** | 🔍 | [ ] |
-| I3 | Config (filtered: **no secrets**): url, host, db client, mail | 🔍 | [ ] |
-| I4 | `ghost doctor` | 🔍 | [ ] |
-| I5 | Node 22 | 🔍 | [ ] |
-| I6 | systemd unit active and enabled, user `ghost` | 🔍 | [ ] |
-| I7 | No recurring errors in the journal | 🔍 | [ ] |
-| I8 | Ownership and permissions of the install and `content/` | 🔍 | [ ] |
-| I9 | `nginx -t`, site confs | 🔍 | [ ] |
-| I10 | Proxy, upload size, real IP, headers | 🔍 | [ ] |
-| I11 | TLS certificate valid, issuer noted. **Phase A:** Let's Encrypt (YR2), `himandme.my` only, valid 5 Nov 2026 – 3 Feb 2027 | ✅ | [x] |
-| I12 | Certificate renewal works | 🔍 | [ ] |
-| I13 | HTTP→HTTPS and www/apex redirects; one canonical host. **Phase A:** https apex 200; **www fails TLS** (F3, R29); http via the server script | 🔍 | [ ] |
-| I14 | MySQL 8.0 running | 🔍 | [ ] |
-| I15 | Ghost ↔ DB connectivity | 🔍 | [ ] |
-| I16 | Disk space for backups | 🔍 | [ ] |
-| I17 | Memory and swap | 🔍 | [ ] |
-| I18 | UFW and Tencent security group: only SSH/80/443 | 🔍 | [ ] |
-| I19 | 2368 and 3306 bound to localhost | 🔍 | [ ] |
-| I20 | SSH: keys only, no root password login | 🔍 | [ ] |
-| I21 | Security updates | 🔍 | [ ] |
-| I22 | Cloudflare DNS records (view only). **Phase A:** responses come straight from nginx with no Cloudflare headers, so it **appears DNS-only** (F4); confirm the proxy status | 🔍 | [ ] |
-| I23 | Cloudflare SSL Full (strict) | 🔍 | [ ] |
-| I24 | Always HTTPS on; Rocket Loader off; no Cache Everything or edge TTL on HTML, `/ghost/`, `/members/`, `/p/`; **Always Online off**; Cache Reserve noted | 🔍 | [ ] |
-| I25 | WAF not blocking Admin | 🔍 | [ ] |
-| I26 | Ghost mail for staff | 🔍 | [ ] |
+| I1 | OS version, reboot pending | ⚠️ restart pending since 5 Nov (libc6, apparmor, kernel 147, linux-base); running 6.8.0-138 → R33 | [x] |
+| I2 | Ghost 6.75.0, `ghost ls` running, **Ghost-CLI version** | ✅ Ghost 6.75.0, CLI 1.34.1 | [x] |
+| I3 | Config (filtered: **no secrets**): url, host, db client, mail | ⚠️ database `himandme`; mail Direct; device verification on → R34 | [x] |
+| I4 | `ghost doctor` | ✅ | [x] |
+| I5 | Node 22 | ✅ 22.23.4 (22.23.5 pending) | [x] |
+| I6 | systemd unit active and enabled, user `ghost` | ✅ | [x] |
+| I7 | No recurring errors in the journal | ✅ 0 errors | [x] |
+| I8 | Ownership and permissions of the install and `content/` | ✅ | [x] |
+| I9 | `nginx -t`, site confs | ⚠️ default site enabled → R35 | [x] |
+| I10 | Proxy, upload size, real IP, headers | ⚠️ only nosniff header → R31 | [x] |
+| I11 | TLS certificate valid, issuer noted. **Phase A:** Let's Encrypt (YR2), `himandme.my` only, valid 5 Nov 2026 – 3 Feb 2027 | ⚠️ apex only, to 3 Feb 2027 → R29 | [x] |
+| I12 | Certificate renewal works | ✅ acme.sh cron; next renewal 5 Jan 2027 | [x] |
+| I13 | HTTP→HTTPS and www/apex redirects; one canonical host. **Phase A:** http apex → 301 https; https apex 200; www fails (F3) | ⚠️ www: HTTP welcome page, HTTPS cert error → R29, R35 | [x] |
+| I14 | MySQL 8.0 running | ✅ 8.0.46 (.5 pending) | [x] |
+| I15 | Ghost ↔ DB connectivity | ✅ | [x] |
+| I16 | Disk space for backups | ✅ 49 GB free | [x] |
+| I17 | Memory and swap | ✅ | [x] |
+| I18 | UFW and Tencent security group: only SSH/80/443 | 🔍 ufw ✅; Tencent security group pending | [ ] |
+| I19 | 2368 and 3306 bound to localhost | ✅ | [x] |
+| I20 | SSH: keys only, no root password login | ⚠️ root + password login; no keys anywhere; 10,218 failed attempts/7 days → R32 | [x] |
+| I21 | Security updates | ⚠️ 23 security + 4 other; auto-updates exclude security → R33, R36 | [x] |
+| I22 | Cloudflare DNS records (view only). **Phase A:** no Cloudflare headers, and both names resolve to the server's own address: **DNS-only confirmed** (F4) | ✅ DNS-only (proxy off) | [x] |
+| I23 | Cloudflare SSL Full (strict) | ✅ n/a | [x] |
+| I24 | Always HTTPS on; Rocket Loader off; no Cache Everything or edge TTL on HTML, `/ghost/`, `/members/`, `/p/`; **Always Online off**; Cache Reserve noted | ✅ n/a | [x] |
+| I25 | WAF not blocking Admin | ✅ n/a | [x] |
+| I26 | Ghost mail for staff | ⚠️ port 25 blocked; 587 **reachable (TCP only; STARTTLS, auth and delivery untested)** → R34 | [x] |
 | I27 | Inventory of current live content, theme, routes and redirects. **Phase A (public part done):** Ghost 6.75, theme Source, starter post `/coming-soon/`, page `/about/`, tag `news`, author `dr`; LLM features on; sign-up open. Drafts, routes and redirects need an Admin view | 🔍 | [ ] |
 | I28 | Network status (must be off before import). **Phase A:** ActivityPub endpoints 403, so it looks inactive; confirm the toggle | 🔍 | [ ] |
 | I29 | Membership access status. **Phase A:** sign-up **open** (F8, R30); member count needed | 🔍 | [ ] |
-| I30 | MySQL root uses `auth_socket`; charset `utf8mb4`; database size (no secrets) | 🔍 | [ ] |
+| I30 | MySQL root uses `auth_socket`; charset `utf8mb4`; database size (no secrets) | ✅ auth_socket, utf8mb4 | [x] |
+| I32 | fail2ban `sshd` jail status (read-only) | 🔍 | [ ] |
+| I33 | `/etc/nginx/snippets/ssl-params.conf` contents (read-only) | 🔍 | [ ] |
+| I34 | Owner confirms the 5 accepted SSH password logins were theirs | 🔍 | [ ] |
 | I31 | Which staff account is **Owner**; all staff slugs; no unknown accounts | 🔍 | [ ] |
 
 ## 4. Owner inputs (section O): nothing here will be invented
@@ -118,7 +122,7 @@
 | O1 | Doctor's profile photo (square, ≥ 400 px) | Byline, author box, homepage team card | ✋ | [ ] |
 | O2 | Final biography (≤ 250 characters; the local draft without dashes can be the starting point) | Author box, author page | ✋ | [ ] |
 | O3 | Exact credentials text (you stated "MD (UKM)"; please confirm the exact form) | `doctor_credentials` | ✋ | [ ] |
-| O4 | Doctor's **production** staff slug (Admin → Staff → profile → Slug) | `routes.yaml` (G3), `doctor_author_slug` | ✋ (blocks G3) | [ ] |
+| O4 | Doctor's **production** staff slug (Admin → Staff → profile → Slug). Phase A: currently **`dr`**; keep it or choose another | `routes.yaml` (G3), `doctor_author_slug` | ✋ (blocks G3) | [ ] |
 | O5 | Logo: confirm `logo-him-and-me.png` / `logo-mark.png` are final, or supply new files | Header, footer | ✋ | [ ] |
 | O6 | Feature images (≥ 1600 px, ~16:7), alt text, captions and photo credits for each article | Articles | ✋ | [ ] |
 | O7 | Final articles (text), each with verified references (replacing every `[Rujukan]`) | Blog | ✋ | [ ] |
@@ -139,13 +143,18 @@
 | O22 | Analytics: none / Cloudflare Web Analytics / GA4 | SEO, privacy | ✋ | [ ] |
 | O23 | Launch with a minimum number of articles, or with none | Go/no-go | ✋ | [ ] |
 | O24 | Days and hours: confirm "Isnin – Sabtu, 10 pagi – 6 petang · dengan temu janji sahaja" | Footer, ED page | ✋ confirm | [ ] |
-| O25 | Launch window (date and time) and whether private mode is used during it (R1) | Phase D | ✋ | [ ] |
+| O25 | Launch window (date and time). Private mode is **mandatory** during it (R1, plan §3.6) | Phase D | ✋ | [ ] |
 | O26 | Merge option A or B (G0a), and the version number (G1) | Phase B | ✋ | [ ] |
 | O27 | Private mode protects the website but **not** Ghost's Content API. During the migration, anyone with the public Content API key can retrieve the published blocks (and the 3 imported pages, and any published article). Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (e.g. publish no article before H1) | Plan §3.6, R22 | ✋ | [ ] |
 | O28 | Block ownership: Case A (the doctor's account is the Owner), or Case B (extra filtered channel for the Owner's slug, or reassign the 23 blocks to the doctor) | Plan §3.7, R21 | ✋ (after I31) | [ ] |
 | O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✋ | [ ] |
 | O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✋ | [ ] |
-| O31 | `www.himandme.my`: add it to the certificate and redirect it, redirect it in Cloudflare, or remove the DNS record | R29 | ✋ | [ ] |
+| O31 | `www.himandme.my`: **A (recommended):** separate www certificate + 301 to the apex (M4 N1–N3); B: one certificate covering both names; C: remove the www DNS record. (Cloudflare redirect not possible while the proxy is off) | R29 | ✋ | [ ] |
+| O32 | SSH key-only migration (M2): approve; confirm VNC break-glass, the key's device, and a second copy | R32 | ✋ | [ ] |
+| O33 | Maintenance window for 27 updates + one reboot (M3), after a Tencent snapshot | R33 | ✋ | [ ] |
+| O34 | Ghost mail provider (SMTP; port 587 is reachable, but delivery must be proven in M1) and its SPF/DKIM DNS records | R34 | ✋ | [ ] |
+| O35 | Enable automatic security updates (add the `-security` origin); reboots stay manual | R36 | ✋ | [ ] |
+| O36 | Nginx catch-all and security headers (M4 N4–N6) | R31, R35 | ✋ | [ ] |
 
 ## 5. Content and test-data exclusion (§3)
 
@@ -180,7 +189,7 @@
 | E8 | 14 theme settings confirmed | ✋ O3, O4, O9–O13, O24 | [ ] |
 | E9 | Routes uploaded | ⛔ G3 | [ ] |
 | E10 | Unused integrations removed | 🔍 | [ ] |
-| E11 | Staff: real people only, 2FA | 🔍 | [ ] |
+| E11 | Staff: real people only, 2FA (device verification is on, but it **depends on working mail: M1**) | 🔍 | [ ] |
 | E12 | LLM setting off (Settings → General settings → Meta data) before H1 | ✋ O30 | [ ] |
 
 ## 7. SEO (§6)
@@ -213,6 +222,15 @@
 | Security checks 7.3 | ⛔ Phase F | [ ] |
 | Destructive suites never pointed at production | ✅ enforced (localhost only) | [x] |
 
+## 8a. Server maintenance track M (plan §14): separate from the website release; each step needs its own approval
+
+| ID | Step | Prerequisites | Interruption | Must precede | Approved | Done |
+|---|---|---|---|---|---|---|
+| M1 | Ghost SMTP via the chosen provider: provider port reachability → `ghost config` → restart → **delivery test passes** (invite/reset arrives, no mail error in the log) → **second-browser device-verification login passes**, with the original session kept open. Complete only when both tests pass | O34; DNS records approved; **current Admin browser session kept until done** | Ghost restart ~10 s | Phase D | [ ] | [ ] |
+| M2 | SSH key-only: VNC break-glass tested → `ubuntu` password known → ed25519 key created on Windows → public key installed (**none exists today**) → key-only login + `sudo -v` proven → drop-in `00-himandme-hardening.conf` → `sshd -t` → reload → password and root refused | O32; I32, I34 | SSH reload; sessions kept | Phase C (recommended) | [ ] | [ ] |
+| M3 | Snapshot → `apt upgrade` (23 security + 4 other) → one reboot → kernel 6.8.0-149, Ghost, Nginx, MySQL checks; security origin added | O33, O35 | Reboot ~2–5 min | Phase C (recommended) | [ ] | [ ] |
+| M4 | Nginx: W0 apex fingerprint → N1 www port 80 → W1 challenge test → **N2 issue** (`-d www.himandme.my` only, RSA 2048) → **N2b `acme.sh --install-cert`** to `/etc/nginx/ssl/www.himandme.my/{cert,fullchain,key}.pem` with `--reloadcmd "systemctl reload nginx"` → **N3** 443 block using exactly `fullchain.pem` + `key.pem` → V1–V3 (files 600, `Le_Real…` paths saved, served serial = file serial, 301, **apex fingerprint unchanged**) → N4 catch-all → N5 headers (after I33) → N6 HSTS 1 year after 7 days. Renewal: the existing acme.sh cron renews, copies and reloads; checked after the first renewal date. **Apex certificate and its renewal untouched** | O31, O36; apex ACME location untouched | Nginx reloads only | Phase D (www rows of D2b) | [ ] | [ ] |
+
 ## 9. Backup and rollback (§8)
 
 | ID | Item | Status | Done |
@@ -220,7 +238,7 @@
 | C1 | VPS snapshot | ⛔ B-gate | [ ] |
 | C2 | Ghost JSON export | ⛔ B-gate | [ ] |
 | C3 | `ghost backup` (staff token typed at the prompt only; zip contents listed) | ⛔ B-gate | [ ] |
-| C4 | MySQL dump: `DB=<real name>` then `sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4 "$DB"`; exit 0, empty error file, "Dump completed" | ⛔ B-gate | [ ] |
+| C4 | MySQL dump: `DB=himandme` (confirmed) then `sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4 "$DB"`; exit 0, empty error file, "Dump completed" | ⛔ B-gate | [ ] |
 | C5 | `content/` + Nginx confs | ⛔ B-gate | [ ] |
 | C6 | Current theme, routes, redirects downloaded | ⛔ B-gate | [ ] |
 | C7 | Copies off the server | ⛔ B-gate | [ ] |

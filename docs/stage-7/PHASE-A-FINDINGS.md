@@ -83,7 +83,9 @@ Ghost 6.40+ adds "LLM" features, **on by default** and on in production today: `
 
   Each is a production or DNS change for Phase E.
 
-### F4 (to confirm): Cloudflare appears to be DNS-only (not proxying)
+### F4 (confirmed in revision 5): Cloudflare is DNS-only (not proxying)
+
+> **Revision 5 update:** confirmed by I22. Both names resolve straight to the server's own address. See plan §14.
 - Responses come straight from nginx: no `server: cloudflare`, no `cf-ray`, no `cf-cache-status`. The site seems not to pass through Cloudflare's proxy (the "grey cloud").
 - **If I22 confirms this in the dashboard:**
   - there is no Cloudflare cache, so the D2/H2 purges are harmless no-ops and D2b's `cf-cache-status` check is "absent = pass" (R26 becomes Low);
@@ -156,7 +158,7 @@ bash phase-a-server-checks.sh
 | **R29** | `www.himandme.my` certificate error | Medium | O31 fix in Phase E; D2b/H3 www checks | ✋ O31 |
 | **R30** | Members sign-up open on the live site; existing members' personal data | Medium | I29 count; O18 decision before E2 | 🔍 / ✋ |
 | **R31** | No HSTS or Referrer-Policy header | Low | Add in Nginx (Phase E, after approval) | ✅ Planned |
-| R26 | Cloudflare cached pages | High → **Low if I22 confirms DNS-only** | D2b unchanged | 🔍 I22 |
-| R7, R8 | Cloudflare SSL, Rocket Loader, cache | Medium → **n/a if DNS-only** | I22–I24 | 🔍 I22 |
+| R26 | Cloudflare cached pages | **Low** (DNS-only confirmed) | D2b unchanged | ✅ |
+| R7, R8 | Cloudflare SSL, Rocket Loader, cache | **n/a** (DNS-only confirmed) | I22–I24 | ✅ |
 
 **Phase A remains open** until the server report and the Admin/dashboard notes come back. I will then review them, complete the audit and the risk register, and present the full Phase A result. **Nothing in Phase B will start without your separate written approval.**

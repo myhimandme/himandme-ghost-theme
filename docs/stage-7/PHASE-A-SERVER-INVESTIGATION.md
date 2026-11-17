@@ -1,6 +1,7 @@
 # Stage 7, Phase A: server investigation (read-only)
 
-> **Status (17 Nov 2026): analysis of `phase-a-report.txt` done. Exact details are pending the second read-only script.** Nothing was installed, upgraded, restarted, reloaded, edited or deleted. Phase B is not started. Every remediation below is a **recommendation awaiting the owner's approval**.
+> **Status (17 Nov 2026): the ⏳ items below were resolved by `phase-a-investigation.txt` (13:32 UTC) and reconciled into `docs/STAGE-7-PLAN.md` §14 (revision 5). That section is the current reference.** Original analysis follows.
+> Nothing was installed, upgraded, restarted, reloaded, edited or deleted. Phase B is not started. Every remediation below is a **recommendation awaiting the owner's approval**.
 >
 > **Sources**
 > - The owner's `phase-a-report.txt` (17 Nov 2026, 13:06 UTC).
