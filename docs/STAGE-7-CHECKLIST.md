@@ -1,6 +1,7 @@
 # Stage 7 checklist: production readiness
 
-> **Status: planning complete, implementation NOT started (16 Nov 2026).** Awaiting the owner's approval of `docs/STAGE-7-PLAN.md`.
+> **Status: Revision 2 (17 Nov 2026). Planning and local verification complete; nothing deployed.** Awaiting the owner's approval of **Phase A**.
+> The direction and structure were approved on 16 Nov 2026; this revision answers the 5 review points (see the plan's Revision 2 table).
 > Section numbers below (§) refer to that plan.
 
 **Status labels:**
@@ -15,9 +16,10 @@
 
 | Area | ✅ | 🔍 | ✋ | ⛔ |
 |---|---|---|---|---|
-| G: GitHub and release (§1) | 7 | 0 | 2 | 3 |
-| I: Infrastructure (§2) | 0 | 29 | 0 | 0 |
-| O: Owner inputs (section 4 below) | 0 | 0 | 26 | 0 |
+| G: GitHub and release (§1) | 8 | 0 | 2 | 3 |
+| I: Infrastructure (§2) | 0 | 31 | 0 | 0 |
+| O: Owner inputs (section 4 below) | 0 | 0 | 29 | 0 |
+| V: Revision 2 verifications (section 1a) | 5 | 0 | 0 | 0 |
 | E: Production config (§5) | 2 | 3 | 5 | 1 |
 | S: SEO (§6) | 1 | 6 | 7 | 0 |
 | Phases A–H | 0 | 0 | 0 | 8 (each waits for the gate before it) |
@@ -36,7 +38,19 @@
 - [x] ✅ Backup and rollback plan (§8)
 - [x] ✅ Launch sequence A–H with approval checkpoints (§9)
 - [x] ✅ Risk register (§10) and execution sequence (§11)
-- [ ] ✋ **Owner approval of this plan**
+- [x] ✅ Owner approved the plan's direction and structure (16 Nov 2026)
+- [x] ✅ Revision 2: the 5 review points answered (section 1a)
+- [ ] ✋ **Owner approval of Phase A**
+
+## 1a. Revision 2 verifications (local only; production untouched)
+
+| ID | Review point | Evidence | Status | Done |
+|---|---|---|---|---|
+| V1 | Block count | `seed/blocks.mjs` holds **23**: 12 homepage (`blok-utama-*`), 8 ED (`blok-ed-*`), 3 shared (`blok-maklumat-hubungan`, `blok-penafian`, `blok-tawaran`). The 22 figure predates `blok-tawaran` (commit `f884fb2`, 5 Nov 2026, RM288 offer). Full slug table in plan §3.2. No block added or removed | ✅ | [x] |
+| V2 | Private mode protects the migration | `test/stage7/private-mode.mjs` **12/12** on Ghost 6.75.0: pages, archives, RSS, sitemaps and block URLs all hidden; robots `Disallow: /`; not cacheable; owner can review with the password. **Content API stays open** with the public key (O27). Exact D1–H3 sequence in plan §3.6 | ✅ | [x] |
+| V3 | Author archive with a real slug | `test/stage7/author-archive.mjs` **15/15**: exactly the genuine articles over all pages and RSS; no other archive route leaks; negative controls proved the leaks when `routes.yaml` isn't updated (46) and when a second staff account owns a block | ✅ | [x] |
+| V4 | Backup and restore | Rehearsed on MySQL 8.0.46 + Ghost 6.75.0 (throw-away, deleted): `--no-tablespaces` needed for the Ghost DB user (error exits 0); `sudo` socket dump needs no password; restore requires `ghost stop`; full restore returned the exact previous state; theme and routes roll back independently. `ghost backup` (CLI 1.34.1 source): staff token required, no DB dump inside | ✅ | [x] |
+| V5 | Regression after the checks | Stage 1 re-run: **32 passed, 0 failed**; local data restored (staff slug, routes, block authors, private mode off) | ✅ | [x] |
 
 ## 2. GitHub and release (§1)
 
@@ -54,13 +68,14 @@
 | G7 | README "Production launch" section | ✅ ready | [ ] |
 | G8 | Local Stage 1–6 suites + guard + GScan (zip) all green on the release build | ✅ last run green (32/23/12/39/21/16; GScan 0/0) | [ ] re-run on release |
 | G9 | Zip and seed SHA-256 recorded here | ⛔ G1–G5 | [ ] |
+| G10 | `npm run test:stage7` (author archive + private mode) green on the release build; the routes render step fails if any `dr` placeholder remains | ✅ test written, 15/15 + 12/12 | [ ] re-run on release |
 
 ## 3. Infrastructure (§2): all 🔍, read-only, run by the owner
 
 | ID | Check | Status | Done |
 |---|---|---|---|
 | I1 | OS version, reboot pending | 🔍 | [ ] |
-| I2 | Ghost 6.75.0, `ghost ls` running | 🔍 | [ ] |
+| I2 | Ghost 6.75.0, `ghost ls` running, **Ghost-CLI version** | 🔍 | [ ] |
 | I3 | Config (filtered: **no secrets**): url, host, db client, mail | 🔍 | [ ] |
 | I4 | `ghost doctor` | 🔍 | [ ] |
 | I5 | Node 22 | 🔍 | [ ] |
@@ -88,6 +103,8 @@
 | I27 | Inventory of current live content, theme, routes and redirects | 🔍 | [ ] |
 | I28 | Network status (must be off before import) | 🔍 | [ ] |
 | I29 | Membership access status | 🔍 | [ ] |
+| I30 | MySQL root uses `auth_socket`; charset `utf8mb4`; database size (no secrets) | 🔍 | [ ] |
+| I31 | Which staff account is **Owner**; all staff slugs; no unknown accounts | 🔍 | [ ] |
 
 ## 4. Owner inputs (section O): nothing here will be invented
 
@@ -119,12 +136,17 @@
 | O24 | Days and hours: confirm "Isnin – Sabtu, 10 pagi – 6 petang · dengan temu janji sahaja" | Footer, ED page | ✋ confirm | [ ] |
 | O25 | Launch window (date and time) and whether private mode is used during it (R1) | Phase D | ✋ | [ ] |
 | O26 | Merge option A or B (G0a), and the version number (G1) | Phase B | ✋ | [ ] |
+| O27 | Accept that Ghost's Content API (public key) still serves the blocks' approved public text during private mode, or name a stricter requirement | Plan §3.6, R22 | ✋ | [ ] |
+| O28 | Block ownership: Case A (the doctor's account is the Owner), or Case B (extra filtered channel for the Owner's slug, or reassign the 23 blocks to the doctor) | Plan §3.7, R21 | ✋ (after I31) | [ ] |
+| O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✋ | [ ] |
 
 ## 5. Content and test-data exclusion (§3)
 
 | Item | Status | Done |
 |---|---|---|
-| 23 blocks + 3 pages approved; no open ❓ in `docs/CLINICAL-REVIEW.md` | ✅ | [x] |
+| 23 blocks (12 homepage + 8 ED + 3 shared, reconciled in V1) + 3 pages approved; no open ❓ in `docs/CLINICAL-REVIEW.md` | ✅ | [x] |
+| **Private mode ON before the import** (D1), checked anonymously; stays on until the G-gate | ⛔ Phase D | [ ] |
+| Block ownership rule applied (O28): every author archive clean | ⛔ Phase D/F | [ ] |
 | E1–E3 article wording approved | ✅ | [x] |
 | Dasar Editorial excluded (owner decision) | ✅ | [x] |
 | Launch seed generated from `seed/blocks.mjs` only | ⛔ G4 | [ ] |
@@ -176,7 +198,7 @@
 | Local suites Stage 1–6, guard, GScan on the release build | ✅ ready | [ ] |
 | Read-only production smoke test | ⛔ G6 | [ ] |
 | Functional checklist 7.1 (desktop + 390 px phone + no JS) | ⛔ Phase F | [ ] |
-| `#blok` exclusion 7.2 on production | ⛔ Phase F | [ ] |
+| `#blok` exclusion 7.2 on production, including **every** author in `sitemap-authors.xml` (private cookie in F, anonymous in H) | ⛔ Phase F/H | [ ] |
 | Security checks 7.3 | ⛔ Phase F | [ ] |
 | Destructive suites never pointed at production | ✅ enforced (localhost only) | [x] |
 
@@ -186,23 +208,25 @@
 |---|---|---|---|
 | C1 | VPS snapshot | ⛔ B-gate | [ ] |
 | C2 | Ghost JSON export | ⛔ B-gate | [ ] |
-| C3 | `ghost backup` | ⛔ B-gate | [ ] |
-| C4 | MySQL dump | ⛔ B-gate | [ ] |
+| C3 | `ghost backup` (staff token typed at the prompt only; zip contents listed) | ⛔ B-gate | [ ] |
+| C4 | MySQL dump: `sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4`; exit 0, empty error file, "Dump completed" | ⛔ B-gate | [ ] |
 | C5 | `content/` + Nginx confs | ⛔ B-gate | [ ] |
 | C6 | Current theme, routes, redirects downloaded | ⛔ B-gate | [ ] |
 | C7 | Copies off the server | ⛔ B-gate | [ ] |
-| C8 | Restore tested locally | ⛔ B-gate | [ ] |
+| C8 | Restore tested off production (procedure rehearsed in V4) | ⛔ B-gate | [ ] |
+| C9 | Rollback rule: `ghost stop` before any database restore, `ghost start` after | ✅ rehearsed | [x] |
 
 ## 10. Phases and approval gates (§9)
 
 | Phase | Gate | Status | Approved |
 |---|---|---|---|
-| Plan | Owner approves this plan | ✋ | [ ] |
+| Plan | Owner approves the plan's direction | ✅ 16 Nov 2026 | [x] |
+| Revision 2 | Owner approves Phase A | ✋ | [ ] |
 | A. Preparation and audit | 🛑 A-gate | ⛔ plan approval | [ ] |
 | B. GitHub merge and release prep | 🛑 B-gate | ⛔ A-gate | [ ] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
-| D. Theme and content deployment | 🛑 D-gate | ⛔ C-gate | [ ] |
+| D. Theme and content deployment (**private mode ON at D1**) | 🛑 D-gate | ⛔ C-gate | [ ] |
 | E. Production configuration | (with D) | ⛔ D | [ ] |
 | F. Staging and functional testing | 🛑 F-gate | ⛔ E | [ ] |
 | G. Final launch approval | 🛑 G-gate | ⛔ F-gate | [ ] |
-| H. Public launch and post-launch checks | 🛑 H-gate (48 h sign-off) | ⛔ G-gate | [ ] |
+| H. Public launch (**private mode OFF at H1**) and post-launch checks | 🛑 H-gate (48 h sign-off) | ⛔ G-gate | [ ] |

@@ -29,7 +29,8 @@
     "test:stage3": "node test/stage3/run.mjs",
     "test:stage4": "node test/stage4/run.mjs",
     "test:stage5": "node test/stage5/run.mjs",
-    "test:stage6": "node test/stage6/run.mjs"
+    "test:stage6": "node test/stage6/run.mjs",
+    "test:stage7": "node test/stage7/author-archive.mjs && node test/stage7/private-mode.mjs"
   },
   "devDependencies": {
     "bestzip": "4.0.3",
