@@ -43,11 +43,13 @@ try {
   const pages = await Promise.all(PAGES.map(async (p) => [p, await get(p)]));
   check('P1', 'Every page and archive redirects anonymous visitors to the password page (/private/)', pages.every(([, r]) => r.status === 302 && r.location.includes('/private/')), pages.map(([p, r]) => `${p} ${r.status}`).join(', '));
   const feeds = await Promise.all(FEEDS.map(async (p) => [p, await get(p)]));
-  check('P2', 'RSS feeds give nothing to anonymous visitors (no item, no block title)', feeds.every(([, r]) => !/<item>/.test(r.body) && !r.body.includes(blockTitle)), feeds.map(([p, r]) => `${p} ${r.status}`).join(', '));
+  check('P2', 'RSS feeds: 302 to /private/; nothing given to anonymous visitors (no item, no block title)', feeds.every(([, r]) => r.status === 302 && r.location.includes('/private/') && !/<item>/.test(r.body) && !r.body.includes(blockTitle)), feeds.map(([p, r]) => `${p} ${r.status}`).join(', '));
   const maps = await Promise.all(MAPS.map(async (p) => [p, await get(p)]));
-  check('P3', 'Sitemaps give nothing (no <url>, no blok- URL)', maps.every(([, r]) => !/<loc>/.test(r.body) && !r.body.includes('blok-')), maps.map(([p, r]) => `${p} ${r.status}`).join(', '));
+  check('P3', 'Sitemaps: 302 to /private/; nothing given (no <loc>, no blok- URL)', maps.every(([, r]) => r.status === 302 && r.location.includes('/private/') && !/<loc>/.test(r.body) && !r.body.includes('blok-')), maps.map(([p, r]) => `${p} ${r.status}`).join(', '));
   const robots = await get('/robots.txt');
-  check('P4', 'robots.txt disallows everything while private', /Disallow:\s*\/\s*$/m.test(robots.body), robots.body.replace(/\s+/g, ' ').trim().slice(0, 80));
+  check('P4', 'robots.txt is served directly (HTTP 200, NOT redirected to /private/) and disallows everything while private',
+    robots.status === 200 && !robots.location && /^text\/plain/.test(robots.type) && /Disallow:\s*\/\s*$/m.test(robots.body),
+    `HTTP ${robots.status}; ${robots.type}; cache-control "${robots.cache}"; body "${robots.body.replace(/\s+/g, ' ').trim().slice(0, 80)}"`);
   const bl = await Promise.all(BLOCKURLS.map(async (p) => [p, await get(p)]));
   check('P5', 'Block URLs give nothing (redirect to /private/ or 404, never the block)', bl.every(([, r]) => !r.body.includes(blockTitle)), bl.map(([p, r]) => `${p} ${r.status}`).join(', '));
   const api = await get(capi('posts/?filter=tag:hash-blok&limit=all&fields=slug,title'));

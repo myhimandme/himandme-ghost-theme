@@ -1,6 +1,6 @@
 # Stage 7 plan: production readiness and launch preparation
 
-> **Status: PLAN ONLY. Revision 3 (17 Nov 2026), the final corrections for review. Phase A has NOT started and waits for the owner's explicit approval.**
+> **Status: Revision 4 (17 Nov 2026). Plan and architecture approved by the owner. Phase A (read-only audit) authorised on 17 Nov 2026 and IN PROGRESS. First-pass findings: [`docs/stage-7/PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md). Phases B–H are NOT authorised.**
 > Nothing in this document has been carried out.
 > - No pull request was merged, created or changed. No existing branch was modified.
 > - The live VPS, Ghost, DNS and Cloudflare were not touched.
@@ -27,6 +27,14 @@
 > | 3 | Structured data: `LocalBusiness` recommended; `MedicalBusiness` and its subtypes are **not** assumed and need the owner's evidence | §6 S7, O21 |
 > | 4 | After private mode is enabled and the Cloudflare cache purged: **mandatory anonymous checks through the real domain**, covering every URL that was public before (saved in C10), with `cf-cache-status` inspected. The import may not start until they pass | §3.6 D1–D2b, C10, R26 |
 > | 5 | Consistency review of both documents (section 13 of this plan) | §13 |
+>
+> **Revision 4: D2b robots.txt correction (17 Nov 2026)**
+>
+> - **Measured on local Ghost 6.75.0 in private mode** (`test/stage7/private-mode.mjs` P4, now asserting the status):
+>   - `/robots.txt` is **not** redirected. It returns **HTTP 200**, `text/plain`, body `User-agent: *` / `Disallow: /`, and `Cache-Control: public, max-age=3600`.
+>   - Pages, articles, RSS feeds and all sitemaps return **302 to `/private/`** (P1–P3, now asserting the status and target).
+> - **D2b pass criteria corrected** accordingly. The http/www criteria now verify the canonical redirect first and then the private-mode response.
+> - **New launch risk found (R27):** robots.txt is cacheable for an hour. A copy of the private `Disallow: /` could survive the switch back to public, so H3 now requires the public robots.txt.
 >
 > New automated checks (local Ghost only; they refuse any other host): `test/stage7/author-archive.mjs` (15 checks) and `test/stage7/private-mode.mjs` (12 checks), run with `npm run test:stage7`. Stage 1 was re-run afterwards: 32 passed, 0 failed.
 
@@ -109,8 +117,9 @@
 | G3 | `routes.yaml`: replace the placeholder author slug `dr` (3 places) with the doctor's real staff slug | Otherwise `/blog/penulis/{slug}/` uses the unfiltered taxonomy, which could list `#blok` content blocks | ⛔ Blocked on O4 (the real slug) |
 | G4 | Add `scripts/build-launch-seed.mjs` to generate the production import file from `seed/blocks.mjs` **only** (section 3) | There is no launch seed generator yet. The existing `test/stage1/make-fixtures.mjs` mixes in test articles and must never be used for production | ✅ Ready to build |
 | G5 | Add `scripts/check-placeholders.mjs` (section 3.4) | Enforces the owner's rule that no test content or placeholder reaches production | ✅ Ready to build |
-| G6 | Add `test/prod/smoke.mjs`: a **read-only** production check (GET requests only, no Admin login, no edits). Modes: `--expect-private` (D2b: every URL must redirect to `/private/`, with `cf-cache-status` checked), with the private-site cookie (F), and anonymous (H3) | D2b, Phase F and H verification | ✅ Ready to build |
+| G6 | Add `test/prod/smoke.mjs`: a **read-only** production check (GET requests only, no Admin login, no edits). Modes: `--expect-private` (D2b: pages, feeds and sitemaps must 302 to `/private/`; robots.txt must be 200 with `Disallow: /`; http/www first hop then final; `cf-cache-status` checked), with the private-site cookie (F), and anonymous (H3) | D2b, Phase F and H verification | ✅ Ready to build |
 | G7 | README: a "Production launch" section that points to this plan | Single entry point | ✅ Ready |
+| G11 | Add to `test:stage7` and the smoke test: every block's `.md` URL is 404, and `llms.txt`/`llms-full.txt` list no block (Phase A finding F11) | Ghost 6.75 serves blocks as Markdown while its LLM setting is on | ✅ Ready to build (Phase B) |
 
 ---
 
@@ -267,7 +276,7 @@ Runs on the theme files, the launch seed and, read-only, on the **rendered produ
 | Every page and archive: `/`, `/blog/`, `/blog/page/2/`, the ED page, Notis Privasi, an article, topic and author archives, `/jurnal/` | 302 to the password page `/private/` | P1 |
 | RSS: `/rss/`, `/blog/rss/`, topic and author RSS | 302; no item, no block title | P2 |
 | Sitemaps: `sitemap.xml` and all 4 sub-sitemaps | 302; no `<loc>`, no `blok-` URL | P3 |
-| `robots.txt` | `Disallow: /` | P4 |
+| `robots.txt` | **HTTP 200, served directly (not redirected)**, `text/plain`, body `User-agent: *` / `Disallow: /`; `Cache-Control: public, max-age=3600` | P4 |
 | Block URLs (`/blog/blok-…/`, `/blok-…/`, `/p/blok-…/`) | 302; never the block | P5 |
 | ActivityPub (webfinger, actor) | 302 (Network must still be **off**) | P9 |
 | The private password page | Does **not** reveal the Content API key | P8 |
@@ -316,7 +325,7 @@ Private mode is **not** described anywhere in this plan as hiding the blocks com
 | G | Go/no-go | Private | **G-gate: written "launch approved"** |
 | H1 | **Turn private mode OFF** | **Public from here** | — |
 | H2 | Purge the Cloudflare cache (Purge Everything) | Public | Wait about 30 seconds |
-| H3 | Anonymous checks **through https://himandme.my**: smoke test, `#blok` exclusion (§7.2), placeholder scan; every C10 URL either serves the new site or redirects (O20); no `/private/` redirects remain | Public | If anything fails: **turn private mode back on at once** (rollback level 2), then investigate |
+| H3 | Anonymous checks **through https://himandme.my**: smoke test, `#blok` exclusion (§7.2), placeholder scan; every C10 URL either serves the new site or redirects (O20); no `/private/` redirects remain; **robots.txt is the public version** (no `Disallow: /`) | Public | If anything fails: **turn private mode back on at once** (rollback level 2), then investigate |
 
 **D2b: anonymous checks through the public domain (mandatory, after the purge, before D3).**
 
@@ -326,28 +335,36 @@ Run these on a computer that is **not** logged into Ghost Admin and has **not** 
    while read -r u; do curl -s -o /dev/null -w '%{http_code} cf=%header{cf-cache-status} -> %{redirect_url}  %{url}\n' "$u"; done < ~/backup/old-urls.txt > ~/backup/private-check.txt; grep -vc ' -> https://himandme.my/private/' ~/backup/private-check.txt
    ```
    `%header{}` needs curl 7.84 or later; Ubuntu 24.04 has 8.5.
-2. **Fixed list, including host and protocol variants:**
-   - `https://himandme.my/`, `/rss/`, `/sitemap.xml`, `/sitemap-posts.xml`, `/robots.txt`
-   - `http://himandme.my/`, `https://www.himandme.my/`
-   - one old article URL with a query string added (`?v=1`)
+2. **Fixed list, pages, feeds and sitemaps:** `https://himandme.my/`, `/rss/`, `/sitemap.xml`, `/sitemap-posts.xml`, and one old article URL with a query string added (`?v=1`). Same command as 1.
+3. **robots.txt (checked separately; it is not redirected):**
+   ```bash
+   curl -s -D - https://himandme.my/robots.txt
+   ```
+4. **Host and protocol variants.** First the canonical redirect (first hop only), then the whole chain:
+   ```bash
+   for u in http://himandme.my/ https://www.himandme.my/ http://www.himandme.my/ http://himandme.my/robots.txt; do curl -s -o /dev/null -w "first hop: %{http_code} -> %{redirect_url}  ($u)\n" "$u"; curl -s -o /dev/null -L -w "  final: %{http_code} %{url_effective} after %{num_redirects} redirects\n" "$u"; done
+   ```
+   Which www direction counts as canonical depends on I13; the plan assumes `https://himandme.my` (apex). If I13 shows the opposite, swap the expected hosts.
 
 **Pass criteria:**
 
 | Check | Pass |
 |---|---|
-| Every C10 URL and every fixed-list page/feed/sitemap | `302` to `https://himandme.my/private/…`. The count printed by command 1 is **0** |
-| Any `200`, `304`, or a body with the old content | **Fail.** A cached or still-public page |
-| `cf-cache-status` | Never `HIT`, `STALE`, `UPDATING` or `REVALIDATED` (expected: `DYNAMIC`, `BYPASS`, `MISS` or `EXPIRED`) |
-| `robots.txt` | Contains `Disallow: /` |
-| `http://` and `www` | Redirect to `https://himandme.my/…`, which then redirects to `/private/` |
-| Incognito browser: `/`, an old article, `/blog/` (or the old blog index) | Shows the password page, never old content |
+| Every C10 URL, and every fixed-list page, article, feed and sitemap (commands 1–2) | **`302` to `https://himandme.my/private/…`**. The count printed by command 1 is **0** |
+| Any of those returning `200`, `304`, or a body with old content | **Fail.** A cached or still-public page |
+| `cf-cache-status` on those URLs | Never `HIT`, `STALE`, `UPDATING` or `REVALIDATED` (expected: `DYNAMIC`, `BYPASS`, `MISS` or `EXPIRED`) |
+| **`robots.txt`** (command 3) | **HTTP `200`, not a redirect** (this is Ghost's normal private-mode behaviour, measured in P4). The body **must contain `Disallow: /`** (a line with only `/`). A `302` is **not** required. **Fail** if the body is the old public robots.txt (it has a `Sitemap:` line and no `Disallow: /`): that is a cached old copy, so purge again. `cf-cache-status: HIT` is acceptable for robots.txt **only** when the body is the private `Disallow: /` version |
+| **`http://` and `www` variants** (command 4) | **First hop:** `301` or `308` to `https://himandme.my/` with the same path. **Final:** `https://himandme.my/private/?r=…` with HTTP `200` (the password page) for the pages. For `http://himandme.my/robots.txt`, the final step is `https://himandme.my/robots.txt` with `200` and `Disallow: /`. A first hop straight to `/private/` on the wrong host, or a redirect loop, **fails** (check I13 and I23) |
+| **Cloudflare: no cached old public content** | None of the above shows any old page body. No page, feed or sitemap has a `HIT`/`STALE` status. A fresh incognito browser shows the password page for `/`, an old article and the old blog index, never old content |
 
 **If anything fails:**
 - Purge again and re-run.
 - If a URL still serves content, check the Cloudflare settings that keep copies at the edge (I24: Cache Rules with an edge TTL, "Cache Everything", **Always Online**, Cache Reserve).
 - Do not import until every line passes.
 
-The same anonymous, public-domain checks are repeated at H3 after private mode is turned off. There, the pass criterion is the **new** site with no stale private redirects.
+The same anonymous, public-domain checks are repeated at H3 after private mode is turned off. There the pass criteria are reversed:
+- **Pages:** the **new** site, with no stale `/private/` redirect.
+- **`robots.txt`:** HTTP `200` with the **public** content (a `Sitemap: https://himandme.my/sitemap.xml` line and **no** `Disallow: /` line). Ghost sends robots.txt with `Cache-Control: public, max-age=3600`, so a copy of the private version could otherwise stay at the edge or in crawlers for up to an hour, or longer under an edge-TTL rule. **If the private version is still served: purge again (H2) and re-check. Never leave it in place** (R27).
 
 If the window has to stop between D1 and H1, the site **stays private** (or goes back to the previous state via rollback level 1 or 3). It is never made public half-migrated.
 
@@ -423,6 +440,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | E9 | Routes | `routes.yaml` after G3 | ⛔ G3 |
 | E10 | Integrations | Remove unused custom integrations, without exposing keys | 🔍 |
 | E11 | Staff | Only real people. Owner role on the doctor's or the business account. 2FA/"staff device verification" on | 🔍 |
+| E12 | Settings → General settings → Meta data → **"Enable structured data for LLMs and AI search engines"** | **Off** before H1 (F11: otherwise every block is readable at `/blog/{slug}.md`; tested locally, off gives 404). Private mode covers it until then | ✋ O30 |
 
 **Theme settings (E8).** Repository defaults are shown. Every value needs your confirmation; none is assumed correct.
 
@@ -451,7 +469,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 |---|---|---|---|---|
 | S1 | `sitemap.xml` | Ghost generates it. `#blok` blocks are excluded (Stage 1) | After launch: check it lists `/`, `/disfungsi-ereksi/`, `/notis-privasi/`, `/blog/`, articles, topics and author | 🔍 (Phase H) |
 | S2 | `/jurnal/` in `sitemap-pages.xml` | The data page for `/blog/` is a published page, so Ghost lists it. It 301-redirects to `/blog/` | Acceptable (Search Console will report "page with redirect"). Optional: noindex it via its meta | ✅ Known, low |
-| S3 | `robots.txt` | Ghost default (disallows `/ghost/`, `/p/`, `/email/`, `/r/`), with a sitemap line | Verify it is **not** "Disallow: /", and that the site is not left in private mode | 🔍 |
+| S3 | `robots.txt` | Ghost default (disallows `/ghost/`, `/email/`, `/r/` and a few API paths), with a `Sitemap:` line. Cached for 1 hour (`max-age=3600`) | At H3 and again at +24 h: verify it is the public version, **not** `Disallow: /`, and that the site is not left in private mode (R27) | 🔍 |
 | S4 | Canonical URLs | `{{ghost_head}}` emits a canonical on every page; pagination is handled | Verify the host is the canonical one (I13) | 🔍 |
 | S5 | Meta title and description | Home: Settings meta. `/blog/`: the `jurnal` page meta. Pages and articles: their own meta fields. Topics and author: tag and profile descriptions | ✋ O15, O16; each article's meta when written | ✋ |
 | S6 | Open Graph and X images | Articles use their feature image. A site default is needed for the home and pages | ✋ O17 (default 1200×630 image) | ✋ |
@@ -528,6 +546,7 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | `/blog/topik/hash-blok/` | 404 (internal tags have no archive) |
 | Public search index, as filtered by the theme | No result for a block title (for example the hero heading) |
 | Content API with the public key | **Returns the published blocks: expected, by design** (O27). Not a failure; listed so no one mistakes it for a leak |
+| `/blog/{block-slug}.md` for all 23 blocks, `/llms.txt`, `/llms-full.txt` | Every block `.md` → 404; no block in the llms files (or the files are off). F11, E12 |
 | Author page `/blog/penulis/{slug}/` and **all its pages** | Exactly the doctor's published articles, nothing else (same inspector as A4–A6) |
 | **Every** author in `sitemap-authors.xml` | No block on any page or RSS (§3.7, R21) |
 | Network | Off, so blocks are never federated |
@@ -614,7 +633,7 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 
 | Phase | Work | Depends on | Who | Checkpoint |
 |---|---|---|---|---|
-| **A. Preparation and audit** | Run I1–I31 (read-only) and send the results. Inventory the live site (I27). Supply the inputs in the checklist, section 4 (O1–O29). Decide the merge option (1.3), analytics and the old-site plan | This plan approved | Owner (server checks); me (review results, update the risk register) | 🛑 **A-gate:** infrastructure audit accepted; owner inputs complete or explicitly deferred |
+| **A. Preparation and audit** (▶ in progress since 17 Nov 2026; findings in `docs/stage-7/PHASE-A-FINDINGS.md`; server script `docs/stage-7/phase-a-server-checks.sh`) | Run I1–I31 (read-only) and send the results. Inventory the live site (I27). Supply the inputs in the checklist, section 4 (O1–O29). Decide the merge option (1.3), analytics and the old-site plan | This plan approved | Owner (server checks); me (review results, update the risk register) | 🛑 **A-gate:** infrastructure audit accepted; owner inputs complete or explicitly deferred |
 | **B. GitHub merge and release preparation** | Merge PRs per the chosen option. Open the missing Stage 4 and 6 PRs only if Option A. Release branch: G1–G7. Full local test run. Build the zip and the launch seed. Placeholder scan on both | A-gate | Me (code and PRs only after approval); owner (merges, or approves each merge) | 🛑 **B-gate:** `main` = approved Stage 6 plus release changes; tests green; zip and seed checksums recorded |
 | **C. Production backup** | C1–C10 | B-gate | Owner | 🛑 **C-gate:** backups exist, are copied off the server, the restore has been tested (C8), and the public URL list is saved (C10) |
 | **D. Theme and content deployment** | In a pre-announced window, **in mandatory private mode**: §3.6 steps D1–D10 (private ON → cache purge → **anonymous public-domain checks D2b** → Network off → Owner/slug check → import → tags/staff/nav → activate theme → settings → routes → redirects) | C-gate | Owner in Admin, following the step list; me guiding live | 🛑 **D-gate:** each step's check passes before the next |
@@ -653,10 +672,15 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R20 | `/jurnal/` listed in the sitemap as a redirect | Low | Accept, or noindex (S2) | ✅ Known |
 | R21 | Blocks owned by a **non-doctor Owner account** (the importer's default): that account's taxonomy archive exposes them (**measured**, N2a) | **High** | Case A (doctor = Owner) or Case B (extra filtered channel, tested N2c, or reassign the 23 blocks); smoke test checks every author archive | ✋ O28 |
 | R22 | Private mode does not protect the **Content API**: anyone with the public key can list and retrieve every published post during the migration (the 23 blocks, the 3 pages, any published article) | Low–Medium | The blocks and pages are approved public copy, served the same way after launch. Drafts are never exposed; test content is never imported. The key is not shown while private (P8) but may already be known. Optional: publish no article before H1 | ✋ O27 |
+| R27 | The private `robots.txt` (`Disallow: /`, HTTP 200, `Cache-Control: public, max-age=3600`) stays cached after launch, so search engines are told to crawl nothing | Medium | Purge at H2; H3 requires the public robots.txt; re-check at +24 h; Search Console robots.txt report in Phase H | ✅ Planned |
 | R26 | Cloudflare keeps serving **cached copies of old public pages** after private mode is on | **High** | Purge Everything at D2; **mandatory anonymous public-domain checks of every C10 URL** (D2b) with `cf-cache-status`; I24 (no Cache Everything or edge TTL on HTML, Always Online off); no import until they pass | ✅ Planned |
 | R23 | Restoring the database while Ghost runs shows stale settings | Medium | `ghost stop` before and `ghost start` after (rehearsed) | ✅ |
 | R24 | `mysqldump` PROCESS-privilege error goes unnoticed (exit code 0) | Medium | `--no-tablespaces`, run with `sudo`, and check `dump.err` is empty (C4) | ✅ |
 | R25 | Staff access token for `ghost backup` exposed | Medium | Typed only at the prompt on the server; never in chat, files or the repository | ✅ Rule |
+| R28 | Ghost 6.75's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch (Phase A F11, measured locally: 23 of 23) | **High** | E12 off before H1 (tested: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ✋ O30 |
+| R29 | `https://www.himandme.my` gives a certificate error (the certificate covers only the apex) | Medium | O31 fix in Phase E; D2b/H3 www checks | ✋ O31 |
+| R30 | Member sign-up open on the live site; possible existing members' personal data | Medium | Count in I29; O18 decision before E2 ("Nobody") | 🔍 / ✋ |
+| R31 | No HSTS or Referrer-Policy header | Low | Add in Nginx in Phase E (after approval) | ✅ Planned |
 
 ---
 
@@ -697,7 +721,7 @@ Plan approved
 | AS5 | The live site's Content API key may already be public (the old theme). It is never secret in any case | I27 (view page source) |
 | AS6 | Ghost 6.75.0 behaviour measured locally (private mode, author archives, importer Owner rule) is the same in production. Same version; production mode instead of development; MySQL instead of SQLite | Phase F checks repeat the key measurements read-only |
 | AS7 | This session still cannot reach himandme.my, so production checks are run by the owner (or here if network access is granted later) | — |
-| AS8 | Cloudflare purge plus the response headers (`no-store`, `private`) are enough to stop edge copies; D2b proves it on the real domain | D2b |
+| AS8 | Cloudflare purge plus the response headers (`no-store`, `private`) are enough to stop edge copies of pages; D2b proves it on the real domain. robots.txt is the exception (cacheable for 1 hour), handled by D2b and H3 | D2b, H3 |
 
 **Decisions needed (full list in the checklist, section 4):**
 - **O1–O29** are all listed in the checklist (section 4): content, profile, business details, analytics, redirects, window, merge option. The ones added or changed since revision 1:
@@ -708,14 +732,14 @@ Plan approved
 
 ---
 
-## 13. Consistency review (revision 3)
+## 13. Consistency review (revision 3, re-checked for revision 4 and the Phase A findings)
 
 Both documents were re-read after the revision 3 edits. Checked and aligned:
 
 | Topic | Plan | Checklist |
 |---|---|---|
 | Blocks | 23 = 12 + 8 + 3, unchanged (§3.2) | V1, section 5, O29 |
-| Private mode | Mandatory D1 → G-gate; D2b public-domain checks gate the import; website only, not the API (§3.6, R1, R22, R26, §9, §11) | Section 5, section 10 (phases D and H), V2 |
+| Private mode | Mandatory D1 → G-gate; D2b public-domain checks gate the import (pages, feeds and sitemaps 302; robots.txt 200 + `Disallow: /`; canonical redirect then private response); website only, not the API (§3.6, R1, R22, R26, R27, §9, §11) | Section 5, section 10 (phases D and H), V2 |
 | Content API | Protects nothing in private mode; returns published blocks; O27 rewritten (§3.6, §7.2, R22, §12) | O27, V2 |
 | Author archive | Slug in 4 places; Owner rule; every author checked (§3.7, R4, R21, §7.2) | G3, G10, O4, O28, section 8 |
 | Backups | C1–C10, valid restore syntax, `ghost stop` rule (§8) | Section 9 (C1–C10) |
@@ -724,6 +748,6 @@ Both documents were re-read after the revision 3 edits. Checked and aligned:
 | Phase order | A → B → C (incl. C10) → D (D1, D2, D2b, …) → E → F → G → H (H1–H3) | Section 10 |
 | Status | Phase A not started; nothing deployed | Header, section 10 |
 
-No contradiction remains. Two older notes were removed because they no longer applied:
+Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist. No contradiction remains. Phase A first pass added G11, E12, R28–R31, O30 and O31 to the plan and the checklist alike. F4 (Cloudflare apparently DNS-only) leaves the D2b procedure valid: a missing `cf-cache-status` counts as a pass. Two older notes were removed because they no longer applied:
 - the phrase "the API is not a listing";
 - "optionally in private mode", from revision 1.

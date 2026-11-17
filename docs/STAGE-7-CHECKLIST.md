@@ -1,6 +1,6 @@
 # Stage 7 checklist: production readiness
 
-> **Status: Revision 3 (17 Nov 2026). Planning and local verification complete; nothing deployed. Phase A has NOT started** and waits for the owner's explicit approval.
+> **Status: Revision 4 (17 Nov 2026).** Plan approved. **Phase A authorised (read-only audit only) and in progress**; first-pass findings in `docs/stage-7/PHASE-A-FINDINGS.md`. Phase B and later are not authorised.
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -16,13 +16,13 @@
 
 | Area | ✅ | 🔍 | ✋ | ⛔ |
 |---|---|---|---|---|
-| G: GitHub and release (§1) | 8 | 0 | 2 | 3 |
-| I: Infrastructure (§2) | 0 | 31 | 0 | 0 |
-| O: Owner inputs (section 4 below) | 0 | 0 | 29 | 0 |
-| V: Revision 2–3 verifications (section 1a) | 7 | 0 | 0 | 0 |
-| E: Production config (§5) | 2 | 3 | 5 | 1 |
+| G: GitHub and release (§1) | 9 | 0 | 2 | 3 |
+| I: Infrastructure (§2) | 1 | 30 | 0 | 0 |
+| O: Owner inputs (section 4 below) | 0 | 0 | 31 | 0 |
+| V: Revision 2–4 verifications (section 1a) | 8 | 0 | 0 | 0 |
+| E: Production config (§5) | 2 | 3 | 6 | 1 |
 | S: SEO (§6) | 1 | 6 | 7 | 0 |
-| Phases A–H | 0 | 0 | 0 | 8 (each waits for the gate before it) |
+| Phases A–H | A in progress | 0 | 0 | 7 (B–H; each waits for the gate before it) |
 
 ---
 
@@ -53,6 +53,7 @@
 | V4 | Backup and restore | Rehearsed on MySQL 8.0.46 + Ghost 6.75.0 (throw-away, deleted): `--no-tablespaces` needed for the Ghost DB user (error exits 0); `sudo` socket dump needs no password; restore requires `ghost stop`; full restore returned the exact previous state; theme and routes roll back independently. `ghost backup` (CLI 1.34.1 source): staff token required, no DB dump inside | ✅ | [x] |
 | V6 | Restore-test syntax (C8) | Create the disposable database first, then `sudo mysql ghost_restore_test < ghost-pre-launch.sql`, count, drop. The same form (database named as an argument) was used in the V4 rehearsal | ✅ | [x] |
 | V7 | Consistency review of both documents | Plan §13: no contradiction remains | ✅ | [x] |
+| V8 | robots.txt in private mode | Measured (P4, now asserting the status): **HTTP 200**, not redirected, `text/plain`, `Disallow: /`, `Cache-Control: public, max-age=3600`. Pages, feeds and sitemaps: **302 to `/private/`** (P1–P3 assert it). D2b and H3 corrected; R27 added | ✅ | [x] |
 | V5 | Regression after the checks | Stage 1 re-run: **32 passed, 0 failed**; local data restored (staff slug, routes, block authors, private mode off) | ✅ | [x] |
 
 ## 2. GitHub and release (§1)
@@ -69,6 +70,7 @@
 | G5 | Placeholder scanner | ✅ ready to build | [ ] |
 | G6 | Read-only production smoke test (modes: `--expect-private` for D2b, private cookie for F, anonymous for H3) | ✅ ready to build | [ ] |
 | G7 | README "Production launch" section | ✅ ready | [ ] |
+| G11 | Test: every block `.md` URL is 404; no block in `llms.txt`/`llms-full.txt` (F11) | ✅ ready to build (Phase B) | [ ] |
 | G8 | Local Stage 1–6 suites + guard + GScan (zip) all green on the release build | ✅ last run green (32/23/12/39/21/16; GScan 0/0) | [ ] re-run on release |
 | G9 | Zip and seed SHA-256 recorded here | ⛔ G1–G5 | [ ] |
 | G10 | `npm run test:stage7` (author archive + private mode) green on the release build; the routes render step fails if any `dr` placeholder remains | ✅ test written, 15/15 + 12/12 | [ ] re-run on release |
@@ -87,9 +89,9 @@
 | I8 | Ownership and permissions of the install and `content/` | 🔍 | [ ] |
 | I9 | `nginx -t`, site confs | 🔍 | [ ] |
 | I10 | Proxy, upload size, real IP, headers | 🔍 | [ ] |
-| I11 | TLS certificate valid, issuer noted | 🔍 | [ ] |
+| I11 | TLS certificate valid, issuer noted. **Phase A:** Let's Encrypt (YR2), `himandme.my` only, valid 5 Nov 2026 – 3 Feb 2027 | ✅ | [x] |
 | I12 | Certificate renewal works | 🔍 | [ ] |
-| I13 | HTTP→HTTPS and www/apex redirects; one canonical host | 🔍 | [ ] |
+| I13 | HTTP→HTTPS and www/apex redirects; one canonical host. **Phase A:** https apex 200; **www fails TLS** (F3, R29); http via the server script | 🔍 | [ ] |
 | I14 | MySQL 8.0 running | 🔍 | [ ] |
 | I15 | Ghost ↔ DB connectivity | 🔍 | [ ] |
 | I16 | Disk space for backups | 🔍 | [ ] |
@@ -98,14 +100,14 @@
 | I19 | 2368 and 3306 bound to localhost | 🔍 | [ ] |
 | I20 | SSH: keys only, no root password login | 🔍 | [ ] |
 | I21 | Security updates | 🔍 | [ ] |
-| I22 | Cloudflare DNS records (view only) | 🔍 | [ ] |
+| I22 | Cloudflare DNS records (view only). **Phase A:** responses come straight from nginx with no Cloudflare headers, so it **appears DNS-only** (F4); confirm the proxy status | 🔍 | [ ] |
 | I23 | Cloudflare SSL Full (strict) | 🔍 | [ ] |
 | I24 | Always HTTPS on; Rocket Loader off; no Cache Everything or edge TTL on HTML, `/ghost/`, `/members/`, `/p/`; **Always Online off**; Cache Reserve noted | 🔍 | [ ] |
 | I25 | WAF not blocking Admin | 🔍 | [ ] |
 | I26 | Ghost mail for staff | 🔍 | [ ] |
-| I27 | Inventory of current live content, theme, routes and redirects | 🔍 | [ ] |
-| I28 | Network status (must be off before import) | 🔍 | [ ] |
-| I29 | Membership access status | 🔍 | [ ] |
+| I27 | Inventory of current live content, theme, routes and redirects. **Phase A (public part done):** Ghost 6.75, theme Source, starter post `/coming-soon/`, page `/about/`, tag `news`, author `dr`; LLM features on; sign-up open. Drafts, routes and redirects need an Admin view | 🔍 | [ ] |
+| I28 | Network status (must be off before import). **Phase A:** ActivityPub endpoints 403, so it looks inactive; confirm the toggle | 🔍 | [ ] |
+| I29 | Membership access status. **Phase A:** sign-up **open** (F8, R30); member count needed | 🔍 | [ ] |
 | I30 | MySQL root uses `auth_socket`; charset `utf8mb4`; database size (no secrets) | 🔍 | [ ] |
 | I31 | Which staff account is **Owner**; all staff slugs; no unknown accounts | 🔍 | [ ] |
 
@@ -142,6 +144,8 @@
 | O27 | Private mode protects the website but **not** Ghost's Content API. During the migration, anyone with the public Content API key can retrieve the published blocks (and the 3 imported pages, and any published article). Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (e.g. publish no article before H1) | Plan §3.6, R22 | ✋ | [ ] |
 | O28 | Block ownership: Case A (the doctor's account is the Owner), or Case B (extra filtered channel for the Owner's slug, or reassign the 23 blocks to the doctor) | Plan §3.7, R21 | ✋ (after I31) | [ ] |
 | O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✋ | [ ] |
+| O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✋ | [ ] |
+| O31 | `www.himandme.my`: add it to the certificate and redirect it, redirect it in Cloudflare, or remove the DNS record | R29 | ✋ | [ ] |
 
 ## 5. Content and test-data exclusion (§3)
 
@@ -149,7 +153,8 @@
 |---|---|---|
 | 23 blocks (12 homepage + 8 ED + 3 shared, reconciled in V1) + 3 pages approved; no open ❓ in `docs/CLINICAL-REVIEW.md` | ✅ | [x] |
 | **Private mode ON before the import** (D1); Cloudflare purged (D2); stays on until the G-gate | ⛔ Phase D | [ ] |
-| **D2b: anonymous checks through https://himandme.my** of every C10 URL plus the fixed list: all `302` to `/private/`, none `200`/`304`, no `cf-cache-status: HIT/STALE`, `robots.txt` `Disallow: /`, http/www variants and incognito browser OK. **The import does not start until this passes** | ⛔ Phase D | [ ] |
+| **D2b: anonymous checks through https://himandme.my**. **Pages, articles, feeds, sitemaps** (every C10 URL plus the fixed list): `302` to `/private/`, none `200`/`304`, no `cf-cache-status: HIT/STALE`. **robots.txt:** HTTP `200` (no redirect required) with `Disallow: /`, never the old public body. **http and www variants:** first hop `301`/`308` to `https://himandme.my/` (same path), then the private-mode response. **Cloudflare:** no cached old public content anywhere, including the incognito browser. **The import does not start until this passes** | ⛔ Phase D | [ ] |
+| **H3: robots.txt is the public version** (`Sitemap:` line, no `Disallow: /`) after private mode is off and the cache purged; re-checked at +24 h (R27) | ⛔ Phase H | [ ] |
 | Content API returns the published blocks during the window: expected, not a leak (O27) | ✋ O27 | [ ] |
 | Block ownership rule applied (O28): every author archive clean | ⛔ Phase D/F | [ ] |
 | E1–E3 article wording approved | ✅ | [x] |
@@ -176,6 +181,7 @@
 | E9 | Routes uploaded | ⛔ G3 | [ ] |
 | E10 | Unused integrations removed | 🔍 | [ ] |
 | E11 | Staff: real people only, 2FA | 🔍 | [ ] |
+| E12 | LLM setting off (Settings → General settings → Meta data) before H1 | ✋ O30 | [ ] |
 
 ## 7. SEO (§6)
 
@@ -183,7 +189,7 @@
 |---|---|---|---|
 | S1 | Sitemap correct, no `blok-` | 🔍 | [ ] |
 | S2 | `/jurnal/` redirect in sitemap: accepted | ✅ | [x] |
-| S3 | robots.txt not blocking | 🔍 | [ ] |
+| S3 | robots.txt is the public version after launch, not the cached private `Disallow: /` (H3, +24 h) | 🔍 | [ ] |
 | S4 | Canonical host | 🔍 | [ ] |
 | S5 | Meta titles and descriptions | ✋ | [ ] |
 | S6 | Default OG image | ✋ | [ ] |
@@ -227,8 +233,10 @@
 | Phase | Gate | Status | Approved |
 |---|---|---|---|
 | Plan | Owner approves the plan's direction | ✅ 16 Nov 2026 | [x] |
-| Revision 3 | Owner reviews the final corrections and **explicitly approves Phase A** (not started) | ✋ | [ ] |
-| A. Preparation and audit | 🛑 A-gate | ⛔ plan approval | [ ] |
+| Revision 3 | Owner approves the plan | ✅ 17 Nov 2026 | [x] |
+| Revision 4 | **Phase A authorised** (read-only: I1–I31, live-site inventory, owner inputs and decisions, review of findings and risk register). Excludes merges, releases, backups, database, DNS or Cloudflare changes, imports, publishing, theme activation and any production change | ✅ 17 Nov 2026 | [x] |
+| Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✋ | [ ] |
+| A. Preparation and audit | 🛑 A-gate | ▶ **in progress** (authorised 17 Nov 2026; first pass done; waiting for the server report and the Admin/dashboard notes) | [ ] |
 | B. GitHub merge and release prep | 🛑 B-gate | ⛔ A-gate | [ ] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |
