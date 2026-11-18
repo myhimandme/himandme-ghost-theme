@@ -1,11 +1,13 @@
 # Stage 7 plan: production readiness and launch preparation
 
-> **Status: Revision 6 (17 Nov 2026), for the owner's review; not committed. Plan and architecture approved. Phase A (read-only) in progress: server results reconciled in §14.** Revision 6 corrects the www certificate procedure (§14.5a) and the SMTP wording (§14.6). Remaining Phase A items: the Admin, Tencent console and fail2ban views. **Phases B–H are NOT authorised. Server maintenance (M1–M4, §14.2) is a separate track; nothing in it is authorised.**
+> **Status: Revision 6 is the approved planning baseline** (approved and committed 17 Nov 2026, `16be29c`). **Update 6.1 (18 Nov 2026)** adds §15, a record of the server maintenance the owner carried out: **M1–M3 complete; M4 N1–N5 complete; M4 N6 (HSTS) pending observation.** Revision 6's decisions are unchanged. **Phases B–H are NOT authorised.** No further server changes are authorised. **Next authorised action: read-only only (§15.9).**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
-> Nothing in this document has been carried out.
-> - No pull request was merged, created or changed. No existing branch was modified.
-> - The live VPS, Ghost, DNS and Cloudflare were not touched.
-> - Nothing was imported, published or activated, and no test data was deleted.
+> **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
+> - no pull request was merged, created or changed, and no existing branch was modified;
+> - the live VPS, Ghost, DNS and Cloudflare were not touched;
+> - nothing was imported, published or activated, and no test data was deleted.
+>
+> **Since then:** the owner separately carried out server maintenance M1–M3 and M4 N1–N5 on the production VPS on **18 Nov 2026** (§15). That changed SMTP, SSH, packages and Nginx. **No release phase (B–H) has been carried out**: no theme deployed, no content imported or published, no PR merged.
 >
 > This file and `docs/STAGE-7-CHECKLIST.md` live on a new docs-only branch, `stage-7-plan`, based on `stage-6`.
 >
@@ -140,7 +142,7 @@ Environment as stated by the owner:
 
 | ID | Area | Read-only check | Expected | Status |
 |---|---|---|---|---|
-| I1 | OS | `lsb_release -d; uname -r; uptime` | Ubuntu 24.04.5 LTS. Note the uptime and any pending reboot (`ls /var/run/reboot-required`) | ⚠️ R33 (§14.1) |
+| I1 | OS | `lsb_release -d; uname -r; uptime` | Ubuntu 24.04.5 LTS. Note the uptime and any pending reboot (`ls /var/run/reboot-required`) | ✅ resolved 18 Nov (M3: kernel 6.8.0-149 after reboot) |
 | I2 | Ghost and Ghost-CLI | `cd /var/www/himandme && ghost version && ghost ls` | Ghost 6.75.0; **Ghost-CLI version noted** (the backup procedure was checked against 1.34.1); the site shows `running (production)` | ✅ (§14.1) |
 | I3 | Ghost config (filtered) | `sudo jq 'del(.database.connection.password, .database.connection.user, .mail.options.auth, .mail.options.apiKey) ' /var/www/himandme/config.production.json` | `url` is `https://himandme.my` (no trailing path; decide www vs apex); `server.host` is `127.0.0.1`; `database.client` is `mysql`; `paths.contentPath` is set; `mail.transport` is noted; `admin.url` is noted if set | ⚠️ R34 (§14.1) |
 | I4 | Ghost health | `ghost doctor` (read-only checks) | All checks pass. Note any warnings about Node, folder permissions or systemd | ✅ (§14.1) |
@@ -148,30 +150,30 @@ Environment as stated by the owner:
 | I6 | systemd | `systemctl status ghost_himandme-my --no-pager; systemctl is-enabled ghost_himandme-my` | `active (running)`, `enabled`, `User=ghost` (see `systemctl cat ghost_himandme-my`) | ✅ (§14.1) |
 | I7 | Recent errors | `sudo journalctl -u ghost_himandme-my --since "7 days ago" -p err --no-pager \| tail -50` | No repeated errors | ✅ 0 errors (§14.1) |
 | I8 | Ownership and permissions | `ls -ld /var/www/himandme /var/www/himandme/content; sudo find /var/www/himandme/content ! -user ghost \| head` | Install directory owned by your user with `775`; `content/` and everything under it owned by `ghost:ghost`; the find prints nothing | ✅ (§14.1) |
-| I9 | Nginx config | `sudo nginx -t; ls -l /etc/nginx/sites-enabled/` | Syntax OK; himandme.my and himandme.my-ssl confs present (Ghost-CLI names) | ⚠️ R35 (§14.1) |
-| I10 | Nginx proxy | `sudo grep -nE 'proxy_pass\|server_name\|client_max_body_size\|real_ip\|add_header' /etc/nginx/sites-available/himandme*` | `proxy_pass http://127.0.0.1:2368`; `client_max_body_size` ≥ 50m (image and theme uploads); note whether Cloudflare real-IP and security headers are set | ⚠️ R31 (§14.1) |
-| I11 | TLS certificate | `sudo ls /etc/letsencrypt/himandme.my/ 2>/dev/null; echo \| openssl s_client -connect himandme.my:443 -servername himandme.my 2>/dev/null \| openssl x509 -noout -issuer -dates -subject` | A valid certificate for himandme.my (and www if used), not expiring within 30 days. Note whether it is Let's Encrypt (via Ghost-CLI's acme.sh) or a **Cloudflare Origin certificate** | ⚠️ R29 (§14.1) |
+| I9 | Nginx config | `sudo nginx -t; ls -l /etc/nginx/sites-enabled/` | Syntax OK; himandme.my and himandme.my-ssl confs present (Ghost-CLI names) | ✅ resolved 18 Nov (M4 N4) |
+| I10 | Nginx proxy | `sudo grep -nE 'proxy_pass\|server_name\|client_max_body_size\|real_ip\|add_header' /etc/nginx/sites-available/himandme*` | `proxy_pass http://127.0.0.1:2368`; `client_max_body_size` ≥ 50m (image and theme uploads); note whether Cloudflare real-IP and security headers are set | ◐ N5 done 18 Nov; N6 pending |
+| I11 | TLS certificate | `sudo ls /etc/letsencrypt/himandme.my/ 2>/dev/null; echo \| openssl s_client -connect himandme.my:443 -servername himandme.my 2>/dev/null \| openssl x509 -noout -issuer -dates -subject` | A valid certificate for himandme.my (and www if used), not expiring within 30 days. Note whether it is Let's Encrypt (via Ghost-CLI's acme.sh) or a **Cloudflare Origin certificate** | ✅ www certificate added 18 Nov (M4 N2); apex unchanged |
 | I12 | Certificate renewal | `sudo crontab -l -u root \| grep -i acme` | An acme.sh renewal job exists if Let's Encrypt is used. **Renewal can fail behind the Cloudflare proxy** (risk R9) | ✅ (§14.1) |
-| I13 | HTTPS and redirects | `curl -sI http://himandme.my; curl -sI https://himandme.my; curl -sI https://www.himandme.my` | HTTP returns 301 to `https://himandme.my/`; www returns 301 to the apex (or the reverse, matching the Ghost `url`); one canonical host only | ⚠️ R29, R35 (§14.1) |
+| I13 | HTTPS and redirects | `curl -sI http://himandme.my; curl -sI https://himandme.my; curl -sI https://www.himandme.my` | HTTP returns 301 to `https://himandme.my/`; www returns 301 to the apex (or the reverse, matching the Ghost `url`); one canonical host only | ✅ resolved 18 Nov (www 301 over HTTP and HTTPS) |
 | I14 | MySQL | `systemctl status mysql --no-pager; mysql --version` | Running, 8.0.x | ✅ (§14.1) |
 | I15 | DB connectivity | `ghost doctor` (above), plus the Admin loading without errors | Ghost connects. **Don't print the database credentials** | ✅ (§14.1) |
 | I16 | DB size and backup space | `df -h /var/www /var/lib/mysql; sudo du -sh /var/www/himandme/content` | Free disk ≥ 3× (database dump + content folder), for backups during the launch | ✅ (§14.1) |
 | I17 | Memory | `free -h` | ≥ 1 GB free or swap configured (Ghost plus MySQL on a small VPS) | ✅ (§14.1) |
 | I18 | Firewall | `sudo ufw status verbose` (and the Tencent Cloud security-group rules in the console) | Only 22 (or your SSH port), 80 and 443 open. 3306 and 2368 **not** open to the internet | 🔍 ufw ✅; Tencent group pending |
 | I19 | Ports | `sudo ss -tlnp \| grep -E ':(80\|443\|2368\|3306)\b'` | 2368 and 3306 bound to `127.0.0.1` only | ✅ (§14.1) |
-| I20 | SSH | `sudo sshd -T \| grep -Ei '^(permitrootlogin\|passwordauthentication\|pubkeyauthentication)'` | `permitrootlogin no` (or `prohibit-password`), `passwordauthentication no`, `pubkeyauthentication yes` | ⚠️ R32 (§14.1) |
-| I21 | Updates | `sudo unattended-upgrades --dry-run 2>/dev/null \| tail -3; apt list --upgradable 2>/dev/null \| wc -l` | Security updates applied or scheduled | ⚠️ R33, R36 (§14.1) |
+| I20 | SSH | `sudo sshd -T \| grep -Ei '^(permitrootlogin\|passwordauthentication\|pubkeyauthentication)'` | `permitrootlogin no` (or `prohibit-password`), `passwordauthentication no`, `pubkeyauthentication yes` | ✅ resolved 18 Nov (M2) |
+| I21 | Updates | `sudo unattended-upgrades --dry-run 2>/dev/null \| tail -3; apt list --upgradable 2>/dev/null \| wc -l` | Security updates applied or scheduled | ✅ updates applied 18 Nov (M3); auto-security (O35) open |
 | I22 | DNS (Cloudflare dashboard, view only) | DNS → Records | `A himandme.my` → the VPS IP; `www` as CNAME or A; proxy status (orange or grey) noted; no stray old records | ✅ DNS-only (§14.1) |
 | I23 | Cloudflare SSL (view only) | SSL/TLS → Overview | Mode **Full (strict)**. Never "Flexible", which causes redirect loops with Ghost | ✅ n/a (proxy off) |
 | I24 | Cloudflare edge (view only) | SSL/TLS → Edge Certificates; Speed; Caching → Cache Rules | "Always Use HTTPS" on; **Rocket Loader off** (it rewrites the theme's scripts); no "Cache Everything" rule or edge-TTL override covering HTML, `/ghost/*`, `/members/*` or `/p/*` (previews); **Always Online off**; note whether Cache Reserve is on. Otherwise cached old pages could still be served during private mode (R26) | ✅ n/a (proxy off) |
 | I25 | Cloudflare security (view only) | Security → WAF / Bots | No rule that blocks Ghost Admin's API (`/ghost/api/admin/*`) or theme uploads | ✅ n/a (proxy off) |
-| I26 | Ghost mail | Ghost Admin → Settings → (staff invite, password reset) | A working mail transport (needed for staff password resets). Members and newsletters are **not** used (section 5) | ⚠️ R34 (§14.1) |
+| I26 | Ghost mail | Ghost Admin → Settings → (staff invite, password reset) | A working mail transport (needed for staff password resets). Members and newsletters are **not** used (section 5) | ✅ resolved 18 Nov (M1, interim Gmail SMTP) |
 | I27 | Current live content | Ghost Admin → Posts / Pages / Tags / Staff; Settings → Design (active theme name and version); Labs → Routes (download); Labs → Redirects (download) | An **inventory** of what is live now (section 3.1). Nothing changed | 🔍 |
 | I28 | Network (ActivityPub) | Settings → Growth → Network | Note on or off. It **must be off before any import** (R2) | 🔍 |
 | I29 | Membership | Settings → Membership → Access | Note the current value. Planned: "Nobody" (section 5) | 🔍 |
 | I30 | MySQL backup access (no secrets) | `sudo mysql -e "SELECT user, plugin FROM mysql.user WHERE user='root'; SELECT @@character_set_server, @@collation_server; SELECT table_schema, ROUND(SUM(data_length+index_length)/1024/1024,1) AS mb FROM information_schema.tables GROUP BY table_schema;"` | root uses `auth_socket` (so `sudo mysqldump` needs no password); `utf8mb4`; database size noted | ✅ (§14.1) |
 | I32 | fail2ban (read-only) | `sudo fail2ban-client status; sudo fail2ban-client status sshd` | `sshd` jail active; current bans noted | 🔍 |
-| I33 | Nginx TLS snippet (no secrets) | `sudo cat /etc/nginx/snippets/ssl-params.conf` | Note any `add_header` lines (ignored inside locations that set their own headers) | 🔍 |
+| I33 | Nginx TLS snippet (no secrets) | `sudo cat /etc/nginx/snippets/ssl-params.conf` | Note any `add_header` lines (ignored inside locations that set their own headers) | ◐ HSTS line known (§15.5); rest not reported |
 | I34 | Owner's own SSH logins | `sudo journalctl -u ssh --since "7 days ago" --no-pager \| grep "Accepted password"` | The owner recognises all 5 accepted logins (times, source addresses) | 🔍 |
 | I31 | Staff accounts and Owner | Admin → Settings → Staff (look only) | Which account has the **Owner** role; every staff slug; no test or unknown accounts (§3.7) | 🔍 |
 
@@ -688,14 +690,16 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R24 | `mysqldump` PROCESS-privilege error goes unnoticed (exit code 0) | Medium | `--no-tablespaces`, run with `sudo`, and check `dump.err` is empty (C4) | ✅ |
 | R25 | Staff access token for `ghost backup` exposed | Medium | Typed only at the prompt on the server; never in chat, files or the repository | ✅ Rule |
 | R28 | Ghost 6.75's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch (Phase A F11, measured locally: 23 of 23) | **High** | E12 off before H1 (tested: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ✋ O30 |
-| R29 | `www.himandme.my`: certificate error over HTTPS; over HTTP the Nginx welcome page (I11, I13) | Medium | M4 steps N1–N3 (separate www certificate + 301 to apex), or O31 option C | ✋ O31 |
+| R29 | `www.himandme.my`: certificate error over HTTPS; over HTTP the Nginx welcome page (I11, I13) | Medium | M4 steps N1–N3 (separate www certificate + 301 to apex), or O31 option C | ✅ Mitigated 18 Nov (M4 N1–N3; §15.5) |
 | R30 | Member sign-up open on the live site; possible existing members' personal data | Medium | Count in I29; O18 decision before E2 ("Nobody") | 🔍 / ✋ |
-| R32 | SSH: root and password logins allowed; **no SSH key installed for any account**; **10,218 failed login attempts in 7 days**; port 22 open to all (I18, I20) | **High** | M2 (§14.4): break-glass VNC + key installed and proven first, then a drop-in disabling root and password login; fail2ban check (I32); owner confirms own logins (I34) | ✋ O32 |
-| R33 | 23 security updates pending (kernel, glibc, MySQL, perl, ca-certificates…); restart pending since 5 Nov; running kernel 6.8.0-138 (I1, I21) | **High** | M3 (§14.3): snapshot → `apt upgrade` → one reboot → checks | ✋ O33 |
-| R34 | Ghost mail `Direct` with outbound port 25 blocked, while staff device verification is on: **a login from any new browser or device cannot be completed**; resets and invites fail (I3, I26) | **High** | Keep the current Admin browser session; M1 SMTP via a provider before Phase D. Port 587 is only shown reachable; delivery and the second-browser verification must pass in M1 (§14.6) | ✋ O34 |
-| R35 | Nginx stock default site: welcome page for www and any unknown host over HTTP; unknown hosts and the bare IP over HTTPS reach Ghost with the apex certificate (I9, I13) | Low–Medium | M4 step N4 (catch-all: 444 on port 80, `ssl_reject_handshake` on 443), after N1–N3 | ✋ O36 |
-| R36 | Automatic updates enabled but limited to `noble`, so **security updates are never installed automatically** (I21) | Medium | Add the `-security` origin (O35); reboots stay manual | ✋ O35 |
-| R31 | No HSTS, Referrer-Policy, Permissions-Policy; X-Frame-Options only on `/ghost/` (I10) | Low–Medium | M4 step N5–N6 (snippet included in each HTTPS location; HSTS 300 s → 1 year; no preload) | ✋ O36 |
+| R32 | SSH: root and password logins allowed; **no SSH key installed for any account**; **10,218 failed login attempts in 7 days**; port 22 open to all (I18, I20) | **High** | M2 (§14.4): break-glass VNC + key installed and proven first, then a drop-in disabling root and password login; fail2ban check (I32); owner confirms own logins (I34) | ✅ Mitigated 18 Nov (M2; §15.3) |
+| R33 | 23 security updates pending (kernel, glibc, MySQL, perl, ca-certificates…); restart pending since 5 Nov; running kernel 6.8.0-138 (I1, I21) | **High** | M3 (§14.3): snapshot → `apt upgrade` → one reboot → checks | ✅ Mitigated 18 Nov (M3; §15.4) |
+| R34 | Ghost mail `Direct` with outbound port 25 blocked, while staff device verification is on: **a login from any new browser or device cannot be completed**; resets and invites fail (I3, I26) | **High** | Keep the current Admin browser session; M1 SMTP via a provider before Phase D. Port 587 is only shown reachable; delivery and the second-browser verification must pass in M1 (§14.6) | ✅ Mitigated 18 Nov (M1, interim Gmail; see R37) |
+| R35 | Nginx stock default site: welcome page for www and any unknown host over HTTP; unknown hosts and the bare IP over HTTPS reach Ghost with the apex certificate (I9, I13) | Low–Medium | M4 step N4 (catch-all: 444 on port 80, `ssl_reject_handshake` on 443), after N1–N3 | ✅ Mitigated 18 Nov (M4 N4; §15.5) |
+| R36 | Automatic updates enabled but limited to `noble`, so **security updates are never installed automatically** (I21) | Medium | Add the `-security` origin (O35); reboots stay manual | ✋ O35 (not reported as done in M3; §15.8) |
+| R37 | Ghost mail depends on an **interim Gmail SMTP** account (personal-account dependency, sending limits, no domain-aligned SPF/DKIM/DMARC for the site's sender identity) | Medium | Replacement provider as a future maintenance item; keep Gmail until every replacement test passes (§15.2) | ✋ O34 (long-term) |
+| R38 | An older HSTS policy (`max-age=63072000; includeSubDomains; preload`, previously in `ssl-params.conf`) **may be cached** in browsers that received it; preload-list status unchecked | Low–Medium | Keep `max-age=300` during the N6 observation; no `includeSubDomains`/`preload` without validating every subdomain; check the preload status read-only (§15.5, §15.8) | ⏳ N6 |
+| R31 | No HSTS, Referrer-Policy, Permissions-Policy; X-Frame-Options only on `/ghost/` (I10) | Low–Medium | M4 step N5–N6 (snippet included in each HTTPS location; HSTS 300 s → 1 year; no preload) | ◐ Partly: N5 done 18 Nov; **N6 pending** (§15.5) |
 
 ---
 
@@ -745,6 +749,12 @@ Plan approved
 - **O27 (rewritten):** private mode protects the website but **not** the Content API. During the migration, anyone with the public key can retrieve the published blocks and pages. Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (§3.6, R22).
 - **O21 (clarified):** structured data. None, or `LocalBusiness` (recommended), or `MedicalBusiness`/a subtype **only** with confirmed healthcare-facility registration (§6.1).
 - **New, O28:** block ownership, Case A (the doctor's account is the Owner) or Case B (an extra channel, or reassign the 23 blocks), after I31.
+- **Update 6.1 (18 Nov 2026):**
+  - **Decided:** O31 = Option A; O36 approved (N4–N6, subject to the HSTS review).
+  - **Executed:** O32 (M2) and O33 (M3).
+  - **O34:** interim (Gmail working); long-term provider still open.
+  - **O35:** open.
+  - **N6:** owner decision after the observation review (§15).
 - **New in revision 5 (Phase A server results):**
   - **O32:** approve the SSH key-only migration (M2, §14.4). Confirm VNC break-glass access, which device holds the key, and that a second copy exists.
   - **O33:** a maintenance window for the updates and reboot (M3, §14.3), about 2–5 minutes offline, after a Tencent snapshot.
@@ -772,7 +782,11 @@ Both documents were re-read after the revision 3 edits. Checked and aligned:
 | Phase order | A → B → C (incl. C10) → D (D1, D2, D2b, …) → E → F → G → H (H1–H3) | Section 10 |
 | Status | Phase A not started; nothing deployed | Header, section 10 |
 
-Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist. **Revision 6 corrections:**
+Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist.
+
+**Update 6.1 (18 Nov 2026), documentation only:** adds §15 (maintenance as executed), updates status cells in §2, §10 and §12, and adds R37, R38 and two notes in §14. Revision 6's text and decisions are otherwise unchanged; where the execution differed (www key EC-256 rather than RSA 2048), §15.6 records it.
+
+**Revision 6 corrections:**
 1. **§14.5 N2/N3:** the www certificate is now issued, then **installed** with `acme.sh --install-cert` to `/etc/nginx/ssl/www.himandme.my/{cert,fullchain,key}.pem`. N3 references exactly those paths. New §14.5a covers the steps, permissions, automatic renewal and deployment through the existing cron, checks for the first install and for renewals, proof that the apex is untouched (W0/V3), and rollback.
 2. **§14.6, I26, R34:** port 587 is described as **reachable only**. STARTTLS, authentication and delivery are untested and must be proven in M1. M1 now ends only after a delivery test and a second-browser device-verification test.
 3. **Re-checked:**
@@ -780,7 +794,7 @@ Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (me
    - M4 keeps the apex certificate and acme.sh renewal;
    - M1–M4 each keep a separate approval;
    - Phases B–H remain unauthorised;
-   - nothing was changed on the server or in Git.
+   - nothing was changed on the server or in Git (true when Revision 6 was written, 17 Nov 2026; the owner's 18 Nov maintenance is recorded in §15).
 
 **Revision 5 reconciliation (Phase A server results):** corrected in this plan:
 1. **Database name:** C4 and rollback level 3 now use the confirmed name `DB=himandme` (was a placeholder).
@@ -806,9 +820,11 @@ No contradiction remains. Phase A first pass added G11, E12, R28–R31, O30 and 
 - The owner's `phase-a-report.txt` (17 Nov 2026, 13:06 UTC) and `phase-a-investigation.txt` (13:32 UTC), both produced by read-only scripts.
 - The public read-only checks.
 
-**Nothing was changed on the server.** Detailed analysis: `docs/stage-7/PHASE-A-SERVER-INVESTIGATION.md`.
+**Nothing was changed on the server during the 17 Nov 2026 audit** (read-only); the results below are kept as a historical record. The owner's separate maintenance on 18 Nov 2026 is recorded in §15. Detailed analysis: `docs/stage-7/PHASE-A-SERVER-INVESTIGATION.md`.
 
 ### 14.1 Results per check (I1–I34)
+
+> These are the **17 Nov 2026 audit results**, kept as evidence. Several were fixed by the maintenance on 18 Nov 2026: see §15.
 
 | ID | Result | Status |
 |---|---|---|
@@ -858,6 +874,8 @@ The server fixes are **not** part of the website release (Phases B–H) and use 
 | **M4** | Nginx: www certificate (issue + `--install-cert` + 443 block), redirect, catch-all, security headers. **The apex certificate and its renewal stay untouched** | R29, R35, R31 | O31, O36 | Nginx reloads only | **Before Phase D** (D2b's www rows need it, unless O31 = remove www) |
 
 **Recommended order:** M1 → M2 → M3 → M4. M3 starts with its own Tencent snapshot. None of M1–M4 touches Ghost content, the theme or the database schema.
+
+> **Update 6.1 (18 Nov 2026):** M1 ✅ (interim Gmail SMTP), M2 ✅, M3 ✅, M4 N1–N5 ✅, **N6 pending**. Details: §15.
 
 ### 14.3 Exact pending packages (apt cache of 17 Nov 2026, 02:06 +08:00)
 
@@ -1098,3 +1116,226 @@ server {
 **M1 is complete only when steps 5 and 6 have both passed.**
 
 **Not recommended:** turning device verification off.
+
+---
+
+## 15. Server maintenance as executed: Update 6.1 (18 Nov 2026)
+
+> **What this section is:** a record of the maintenance work the owner carried out on the production VPS on **18 November 2026**, under the M1–M4 track (§14.2), as **reported by the owner**.
+> - It does not change any Revision 6 decision; where the execution differed from the Revision 6 procedure, the difference is recorded in §15.6.
+> - No command in this section was run from this documentation session.
+> - Credentials (the SSH private key, its passphrase, the SMTP password) are never recorded.
+
+### 15.1 Status at a glance
+
+| Step | Status (18 Nov 2026) | Risk |
+|---|---|---|
+| **M1** Mail | ✅ **Complete, with an interim provider** (Gmail SMTP). A replacement provider is a future maintenance item (§15.2) | R34 mitigated; R37 new |
+| **M2** SSH | ✅ **Complete** | R32 mitigated |
+| **M3** Updates + reboot | ✅ **Complete:** 27 upgraded, 7 newly installed, 0 removed, 2 phased updates deferred; rebooted (automatic security updates, O35: **not done**, still open) | R33 mitigated; R36 open |
+| **M4** Nginx | ✅ **N1–N5 complete**; ⏳ **N6 pending** (HSTS observation, §15.5) | R29, R35 mitigated; R31 partly; R38 new |
+
+### 15.2 M1: SMTP verification (complete, interim provider)
+
+**Verified on 18 Nov 2026:**
+- Ghost successfully delivered an email.
+- The second-browser/device verification email arrived.
+- The second-browser/device login verification succeeded.
+
+So M1's two completion tests (§14.6, steps 5 and 6) both passed.
+
+**Current configuration:** Gmail SMTP is working. **Gmail is temporary**, not the intended long-term provider (O34 stays open for the long-term choice).
+
+**Future maintenance item (not started; needs its own approval):**
+1. Select a replacement email provider.
+2. Configure its SMTP settings in Ghost.
+3. Configure the sender identity and domain authentication: **SPF, DKIM and DMARC** (DNS records, a DNS change).
+4. Test Ghost staff-invitation and password-reset delivery.
+5. Test the second-browser/device verification email and login.
+6. **Keep the working Gmail SMTP configuration until every replacement test passes.**
+
+### 15.3 M2: SSH hardening (complete)
+
+**Completed on 18 Nov 2026:**
+- Generated and installed an **Ed25519** public key.
+- Tested a fresh key-only SSH connection successfully.
+- Disabled root SSH login, password authentication and keyboard-interactive authentication; public-key authentication is on.
+- Verified the effective configuration with `sshd -T`, and that SSH was active after the reload.
+
+**Effective settings:** `PermitRootLogin no`, `PasswordAuthentication no`, `PubkeyAuthentication yes`, `KbdInteractiveAuthentication no`.
+
+**Phase A audit items I32 and I34:** these remain **outstanding read-only audit items**.
+- **I32:** the fail2ban `sshd` jail details were not reported.
+- **I34:** the owner has not yet confirmed the five historical password logins.
+
+They were listed alongside M2 in §14.4, but they are **not M2 completion criteria**. Their being open does **not** mean M2 failed. M2's own checks passed: the fresh key-only login and the `sshd -T` values.
+
+**Recovery:**
+- The private key is protected by a passphrase.
+- The owner keeps a backup copy on a secure USB drive.
+- The **Tencent Cloud VNC console** remains the recovery route.
+
+### 15.4 M3: Ubuntu updates and reboot (complete)
+
+**Completed on 18 Nov 2026:**
+- **Snapshot first:** Tencent Cloud system-disk snapshot **`himandme-pre-m3-updates-2026-11-18`**, taken before the updates.
+- **Packages:** 27 upgraded, 7 newly installed, 0 removed, 2 phased updates deferred.
+- **Reboot:** successful.
+
+**Verified after the reboot:**
+
+| Item | Version |
+|---|---|
+| Ubuntu | 24.04.5 LTS |
+| Kernel | `6.8.0-149-generic` |
+| Node.js | 22.23.5 |
+| MySQL | 8.0.46 (Ubuntu package revision `…24.04.5`, reported as "8.0.46.5") |
+
+**Active after the reboot:** SSH, Nginx, MySQL, Ghost (`ghost_himandme-my.service`), fail2ban. `nginx -t` passed.
+
+**Not part of this completed task:** `apt autoremove` and any distribution upgrade.
+
+### 15.5 M4: Nginx hardening (N1–N5 complete; N6 pending)
+
+**Decisions recorded (18 Nov 2026):**
+- **O31 = Option A:** a separate www certificate, with www redirected to the apex.
+- **O36 = approved:** proceed with N4–N6, **subject to the HSTS review** (N6).
+
+**N1: www HTTP redirect.**
+- Created `himandme-www.conf`.
+- `http://www.himandme.my` redirects to `https://himandme.my`.
+- The apex HTTP server block and its ACME challenge configuration were preserved.
+- DNS for `www` resolves to `129.226.93.8`.
+
+**N2: separate www certificate.**
+- Issued for `www.himandme.my` only, by Let's Encrypt.
+- **ECDSA / EC-256** key (see §15.6).
+- Valid from 18 Nov 2026 to **16 Feb 2027**.
+- acme.sh renewal scheduled for **16 Jan 2027**.
+
+**N2b: certificate installation.** Installed with `acme.sh --install-cert` and the reload command `systemctl reload nginx`. The existing root cron renewal process remains in place.
+
+| File | Owner / mode |
+|---|---|
+| `/etc/nginx/ssl/www.himandme.my/` (folder) | root / 700 |
+| `/etc/nginx/ssl/www.himandme.my/cert.pem` | root / 644 |
+| `/etc/nginx/ssl/www.himandme.my/fullchain.pem` | root / 644 |
+| `/etc/nginx/ssl/www.himandme.my/key.pem` | root / 600 |
+
+**N3: www HTTPS redirect.**
+- HTTPS www redirects to the apex over HTTPS. Both the HTTP and the HTTPS www redirects were verified.
+- Apex HTTPS returns HTTP 200.
+- **The original apex certificate's fingerprint and serial were unchanged:**
+
+| Apex certificate | Value |
+|---|---|
+| Subject | `himandme.my` |
+| Serial | `06695E5BCF4574FB421FBFF376F940009541` |
+| Expiry | 3 Feb 2027 |
+| SHA-256 fingerprint | `F7:04:58:18:1E:86:CE:4A:E0:37:DF:A4:AC:65:CD:A3:B0:5A:D7:3D:D3:3E:C7:C9:DD:E5:21:DF:AC:50:B9:10` |
+
+**N4: default-server catch-all.**
+- Removed the enabled stock default-site symlink; the original default configuration file is preserved.
+- Created `00-catch-all.conf`.
+- Unknown HTTP host names get Nginx **444** (connection closed).
+- Unknown HTTPS host names get their **TLS handshake rejected**.
+- The apex and www still work, and the ACME challenge paths are still reachable.
+
+**N5: security response headers.**
+- Created `/etc/nginx/snippets/himandme-security-headers.conf`, applied consistently to all **three apex HTTPS proxy locations**.
+- Ghost's own upstream `X-Frame-Options` was hidden with `proxy_hide_header X-Frame-Options;` to remove the duplicate. The final check showed **exactly one** `X-Frame-Options: SAMEORIGIN` on the homepage and on Ghost Admin.
+- `nginx -t` passed and the reload succeeded.
+
+| Header | Verified value |
+|---|---|
+| `Strict-Transport-Security` | `max-age=300` |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), payment=(), usb=()` |
+| `X-Frame-Options` | `SAMEORIGIN` (one copy) |
+| `X-Content-Type-Options` | `nosniff` |
+
+**N6: HSTS observation. PENDING, not complete.**
+- **Current HSTS response:** `max-age=300`.
+- **The previous policy:** `/etc/nginx/snippets/ssl-params.conf` previously contained `max-age=63072000; includeSubDomains; preload` (this answers I33 for the HSTS line).
+- **That older policy may still be cached** in browsers that received it. **It is not claimed that any browser's HSTS state has been cleared** (see R38 and §15.8 B).
+- **Observation period:** from **18 Nov 2026**; target review **around 25 Nov 2026**. Keep `max-age=300` throughout.
+- **Review items (read-only):**
+  - apex and www HTTPS availability;
+  - certificate validity and both renewal configurations;
+  - Nginx error log;
+  - any unexpected host-name behaviour.
+- **Rules:**
+  - Do **not** reintroduce `includeSubDomains` or `preload` without separately validating every relevant subdomain and considering what the HSTS preload list implies.
+  - After **seven clean days**, review whether a one-year policy (`max-age=31536000`) is appropriate. **It is not implemented automatically.** Raising it needs the owner's decision after the review.
+
+### 15.6 Differences between the Revision 6 procedure and the execution
+
+| Item | Revision 6 (§14.5a) | Executed | Effect |
+|---|---|---|---|
+| www key type | RSA 2048 (`--keylength 2048`), to keep acme.sh's folder name without `_ecc` | **ECDSA / EC-256** | Works with Nginx and renews through the same cron. acme.sh normally keeps an EC certificate's working copy in a folder ending `_ecc` (`/etc/letsencrypt/www.himandme.my_ecc/`), and manual acme.sh commands for it (`--renew`, `--remove`, `--install-cert`) then need **`--ecc`**. §14.5a's rollback commands R-a/R-b should be read with `--ecc` added. Nginx uses the installed copies in `/etc/nginx/ssl/www.himandme.my/` either way. *Recommend confirming the folder name read-only at the N6 review* |
+| Headers | Snippet included in every HTTPS location that has `add_header` | Applied to the three apex HTTPS proxy locations | Matches. Whether the www HTTPS 301 response carries the headers was not reported (it only redirects) |
+
+### 15.7 Final health check (18 Nov 2026)
+
+| Check | Result |
+|---|---|
+| Nginx syntax | Passed |
+| Nginx | Active |
+| MySQL | Active |
+| Ghost | Active |
+| SSH | Active |
+| Fail2ban | Active |
+| Apex HTTPS | HTTP 200 |
+| WWW HTTPS | HTTP 301 |
+| Security headers | All present |
+| Unknown HTTP host | Connection closed |
+| Root filesystem | 15 % used, 49 GB available |
+
+**Certificate renewal inventory:**
+
+| Certificate | Renewal scheduled |
+|---|---|
+| `himandme.my` | 5 Jan 2027 |
+| `www.himandme.my` | 16 Jan 2027 |
+
+### 15.8 Items still open after the maintenance
+
+**A. Read-only Phase A items** (views and read-only commands run by the owner; nothing changes):
+1. **I32:** fail2ban `sshd` jail details (fail2ban itself is active).
+2. **I34:** owner confirmation of the 5 historical password logins.
+3. **I33:** the rest of `ssl-params.conf` (only its HSTS line is known).
+4. **Ghost Admin views:** Network, members, staff/Owner, integrations, the LLM setting.
+5. **Tencent console view:** the security group.
+
+**B. N6 observation review** (read-only checks, around **25 Nov 2026**, §15.5):
+1. apex and www HTTPS availability;
+2. certificate validity and both renewal configurations;
+3. Nginx error log and unexpected host-name behaviour;
+4. the acme.sh folder name for the EC-256 www certificate (§15.6);
+5. whether `himandme.my` appears on the HSTS preload list.
+
+On the old HSTS policy:
+- On 17 Nov 2026 the public Phase A check saw **no** `Strict-Transport-Security` header on the homepage (PHASE-A-FINDINGS, "Other public results"). That is consistent with Nginx ignoring the snippet's server-level `add_header` inside locations that set their own headers.
+- So the 2-year `includeSubDomains; preload` policy **may never have been delivered**. This is **not proven** for every path and date, so the cautious assumption in §15.5 stands.
+
+**C. Future owner decisions** (not read-only checks; nothing here is authorised or started):
+1. **N6:** whether to raise HSTS after the review. It stays `max-age=300` until then.
+2. **O35:** automatic security updates (R36). Not done in M3.
+3. **O34 (long-term mail provider):** a future owner decision (§15.2).
+   - **Gmail SMTP stays unchanged** as the working temporary provider.
+   - No provider migration is authorised or initiated.
+
+### 15.9 Authorisation and the next authorised action
+
+**Authorisation as of 18 Nov 2026:**
+- **Completed:** M1–M3, and M4 N1–N5.
+- **M4 N6:** pending observation, no change authorised. HSTS stays `max-age=300`.
+- **Phases B–H remain unauthorised.** No production theme deployment, and no production theme, code or content change.
+- **No further server changes are authorised:** none to the VPS, SMTP, certificates or Nginx, including no HSTS increase.
+
+**Next authorised action:** **read-only** work only.
+1. Finish the read-only Phase A items in **§15.8 A**: views and read-only commands run by the owner.
+2. **Around 25 Nov 2026**, run the N6 observation review in **§15.8 B** (read-only).
+3. Present the results so the owner can decide on N6, and separately on the other **§15.8 C** decisions and on Phase B.
+
+The §15.8 C items are **decisions, not authorised work**. In particular, no mail-provider migration is authorised, and Gmail SMTP stays unchanged.

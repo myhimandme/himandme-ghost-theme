@@ -1,22 +1,46 @@
 # Stage 7, Phase A findings (read-only audit)
 
-> **Status: Phase A, first pass (17 Nov 2026). Waiting for the owner's server and Admin results.** Phase B is **not** started and needs separate written approval.
+> **Current status (18 Nov 2026):** Phase A is **still open** (outstanding work in the summary below).
+> - Phases B–H remain **unauthorised**, and Phase B needs separate written approval.
+> - No further production changes are authorised.
+>
+> **Historical status of this first pass (17 Nov 2026):** "Phase A, first pass. Waiting for the owner's server and Admin results." The server results have since been received and reconciled into `docs/STAGE-7-PLAN.md` §14. The Admin results are still outstanding.
+>
+> **Update 18 Nov 2026 (verified outcomes of the owner's separate maintenance, as reported by the owner; details in plan §15):**
+> - **F3 (www certificate error): resolved on 18 Nov** by M4 N1–N3, after **O31 was approved as Option A** (separate www certificate + redirect). www now 301s to `https://himandme.my` over HTTP and HTTPS with its own certificate; the apex certificate is unchanged. **R29: mitigated.**
+> - **Security headers (R31):** **N5 completed** on 18 Nov; **N6 remains pending** observation (review around 25 Nov 2026). HSTS stays at **`max-age=300`**.
+> - **F4 (DNS-only), F8 (member sign-up open) and F11 (Markdown copies of blocks, O30):** unchanged; still open for their decisions.
+> - **Mail, SSH and updates:** M1, M2 and M3 completed (plan §15.2–15.4).
 >
 > **What was done:** read-only checks only.
 > - Anonymous HTTPS **GET** requests to `https://himandme.my` from this session. Access was enabled for this purpose through a new personal environment, "Him & Me website", that allows only himandme.my and www.himandme.my.
 > - Tests on the **local** Ghost 6.75.0.
 >
-> **Nothing was changed on production:** no login, no Admin, no SSH, no DNS or Cloudflare change, no backup, no import, no theme change. No PR was merged or created.
+> **Nothing was changed on production during this 17 Nov 2026 audit** (it was read-only): no login, no Admin, no SSH, no DNS or Cloudflare change, no backup, no import, no theme change, and no PR merged or created. The findings below are kept as a historical record. **The owner separately changed the server on 18 Nov 2026** (maintenance M1–M3 and M4 N1–N5): see the update note above and `docs/STAGE-7-PLAN.md` §15.
 
 ## Summary
+
+**As recorded on 17 Nov 2026 (first pass, historical):**
 
 | | Count |
 |---|---|
 | Checks answered from the public site | 11 (in full or in part) |
-| Checks that need the owner (server script or Admin/dashboard view) | I1–I10, I12, I14–I31 (the server half of I13 too) |
+| Checks that needed the owner at that time (server script or Admin/dashboard view) | I1–I10, I12, I14–I31 (the server half of I13 too) |
 | **New findings that change the plan** | **4** (F11 is High) |
 | New risks added | R28–R31 |
 | New owner decisions | O30, O31 |
+
+**Current status (18 Nov 2026):**
+
+| | Status |
+|---|---|
+| Server checks (I1–I21, I30) | **Received and reconciled** (17 Nov; plan §14). The findings were acted on in the owner's maintenance on 18 Nov (M1–M3, M4 N1–N5; plan §15) |
+| I22–I25 (Cloudflare) | Answered: **DNS-only** (I22); I23–I25 not applicable |
+| **Outstanding: Ghost Admin checks** | I27 (Admin part: drafts, routes, redirects), I28 (Network), I29 (members and access), I31 (staff and Owner), plus the integrations and LLM-setting views |
+| **Outstanding: Tencent security-group review** | I18 (second half; ufw already ✅) |
+| **Outstanding: server follow-ups** | I32 (fail2ban `sshd` jail details), I33 (the rest of `ssl-params.conf`; its HSTS line is known), I34 (confirming the 5 historical logins) |
+| **Tracked separately: N6** | A read-only HSTS observation review around **25 Nov 2026** (plan §15.5, §15.8 B); HSTS stays `max-age=300` |
+| Phase A | **Open** until the outstanding items above are done; **Phases B–H unauthorised** |
 
 ## 1. What the live site is today (inventory, I27)
 
@@ -83,6 +107,8 @@ Ghost 6.40+ adds "LLM" features, **on by default** and on in production today: `
 
   Each is a production or DNS change for Phase E.
 
+> **Current status (18 Nov 2026), added later:** O31 was approved as **Option A**. F3 was resolved by M4 N1–N3 (see the update note at the top and `docs/STAGE-7-PLAN.md` §15.5). The evidence above is kept unchanged as the 17 Nov record.
+
 ### F4 (confirmed in revision 5): Cloudflare is DNS-only (not proxying)
 
 > **Revision 5 update:** confirmed by I22. Both names resolve straight to the server's own address. See plan §14.
@@ -103,16 +129,20 @@ Ghost 6.40+ adds "LLM" features, **on by default** and on in production today: `
 | ID | Result |
 |---|---|
 | I11 | Let's Encrypt certificate for `himandme.my`, valid until **3 Feb 2027** (renewal check: I12, from the server script) |
-| I13 | `https://himandme.my/` 200. `www` fails TLS (F3). `http://` could not be tested from this session; covered by the server script |
+| I13 | `https://himandme.my/` 200. `www` fails TLS (F3). `http://` could not be tested from this session; covered by the server script. *Current status (18 Nov): www fixed (M4 N1–N3)* |
 | I28 | ActivityPub endpoints 403: Network looks inactive. Confirm the toggle in Admin |
-| §7.3 | `X-Content-Type-Options: nosniff` ✓; `X-Frame-Options: sameorigin` on `/ghost/` ✓; **no HSTS and no `Referrer-Policy`** (R31, Low; an Nginx change for Phase E) |
+| §7.3 | `X-Content-Type-Options: nosniff` ✓; `X-Frame-Options: sameorigin` on `/ghost/` ✓; **no HSTS and no `Referrer-Policy`** (R31, Low; an Nginx change for Phase E). *Current status (18 Nov): headers set by M4 N5; HSTS `max-age=300`; N6 pending (plan §15.5)* |
 | AS5 | Confirmed: the public Content API key is already in the live page source (normal for Ghost). It was not copied into any document |
 | O4 | The production staff slug is **`dr`**, the same as the placeholder in `routes.yaml`. If you keep it, the routes file needs no slug change (the release check still runs) |
 | O17 | A site icon already exists; the social image is still Ghost's default |
 
 ## 3. What the owner needs to run or look at
 
-**A. Server (one read-only script):** [`docs/stage-7/phase-a-server-checks.sh`](phase-a-server-checks.sh). It covers I1–I21 and I30.
+> **Current status:** the server script results (A) were received on 17 Nov and reconciled into `docs/STAGE-7-PLAN.md` §14. B (Ghost Admin) and D (Tencent) are still outstanding. C (Cloudflare) is answered by I22: DNS-only, so the dashboard view is optional.
+
+**A. Server (one read-only script): ✅ COMPLETED, results received.** The owner ran the script and the report was received on **17 Nov 2026**, then reconciled into `docs/STAGE-7-PLAN.md` §14. **The script does not need to be run again.** The original instructions below are kept unchanged as an audit record.
+
+*Original instructions (17 Nov 2026, historical):* [`docs/stage-7/phase-a-server-checks.sh`](phase-a-server-checks.sh). It covers I1–I21 and I30.
 - **What it does:** it only reads. No restart, no fix, no update. It writes one report file, `~/phase-a-report.txt`.
 - **Secrets:** it prints the Ghost config with every password, key, token, auth and user field replaced by `[removed]`. This was tested on a sample file.
 - **Before sharing:** read the report first. Send it, or say "matches/differs" per item.
@@ -126,6 +156,7 @@ bash phase-a-server-checks.sh
 | ID | Where | Note down |
 |---|---|---|
 | I26 | Settings → Email newsletter / mail | Whether staff password-reset mail works (no test send needed) |
+| I27 (Admin part) | **Posts** and **Pages** lists filtered to **Drafts** and **Scheduled**; **Settings → Advanced → Labs → Open → Beta features → Routes → Download** and, in the same Labs section, **Redirects → Download** | The number and titles of draft and scheduled posts and pages. Whether the current `routes.yaml` is Ghost's default or customised (keep the downloaded copy privately). Whether a redirects file exists, and its entries. **Look and download only:** do not upload, edit, publish, unpublish or delete anything. *The published content (posts, pages, tag, author, theme) was already inventoried read-only from the public site on 17 Nov (§1); this row covers only what the public site cannot show* |
 | I28 | Settings → Growth → Network | On or off |
 | I29 | Members (left menu) and Settings → Membership → Access | Number of members; current access setting |
 | I31 | Settings → Staff | Which account is **Owner**; all staff names and slugs |
@@ -143,7 +174,7 @@ bash phase-a-server-checks.sh
 
 ## 4. Decisions now waiting for you
 - **New, O30:** turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep `#blok` blocks unreachable). The cost is losing `llms.txt` and the article `.md` copies.
-- **New, O31:** how to handle `www` (F3): certificate + redirect, Cloudflare redirect, or remove the record.
+- **New, O31:** how to handle `www` (F3): certificate + redirect, Cloudflare redirect, or remove the record. *Decided 18 Nov: **Option A**, executed in M4 N1–N3.*
 - **O4:** keep the staff slug `dr`, or choose another.
 - **O18/O19:** existing members (if any); unpublish the starter post and About page.
 - **O20:** the redirect suggestions above.
@@ -152,13 +183,22 @@ bash phase-a-server-checks.sh
 
 ## 5. Updated risk register (changes only; the full table is in the plan, §10)
 
+*Statuses as of 18 Nov 2026. The risk descriptions are the 17 Nov findings.*
+
 | ID | Risk | Severity | Mitigation | Status |
 |---|---|---|---|---|
 | **R28** | Ghost's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch | **High** | E12: turn the setting off before H1 (tested locally: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ✋ O30 |
-| **R29** | `www.himandme.my` certificate error | Medium | O31 fix in Phase E; D2b/H3 www checks | ✋ O31 |
+| **R29** | `www.himandme.my` certificate error | Medium | O31 = Option A, executed in M4 N1–N3 (18 Nov) | ✅ **Mitigated** (18 Nov) |
 | **R30** | Members sign-up open on the live site; existing members' personal data | Medium | I29 count; O18 decision before E2 | 🔍 / ✋ |
-| **R31** | No HSTS or Referrer-Policy header | Low | Add in Nginx (Phase E, after approval) | ✅ Planned |
+| **R31** | No HSTS or Referrer-Policy header | Low | Headers set by M4 N5 (18 Nov); HSTS held at `max-age=300`; one-year value only after the N6 review | ◐ **N5 completed; N6 pending** observation (around 25 Nov) |
 | R26 | Cloudflare cached pages | **Low** (DNS-only confirmed) | D2b unchanged | ✅ |
 | R7, R8 | Cloudflare SSL, Rocket Loader, cache | **n/a** (DNS-only confirmed) | I22–I24 | ✅ |
 
-**Phase A remains open** until the server report and the Admin/dashboard notes come back. I will then review them, complete the audit and the risk register, and present the full Phase A result. **Nothing in Phase B will start without your separate written approval.**
+**Phase A status (18 Nov 2026):** the server investigation results have been **received and reconciled** into `docs/STAGE-7-PLAN.md` §14 (and the 18 Nov maintenance into §15).
+
+**Phase A remains open** for:
+- the outstanding **Ghost Admin** checks (Network, members, staff/Owner, integrations, the LLM setting);
+- the **Tencent security-group** review;
+- **I32–I34:** fail2ban `sshd` jail details, the rest of `ssl-params.conf`, and confirmation of the 5 historical logins.
+
+The **N6 observation** is a **separate** pending read-only review, around 25 Nov 2026. **Phase B remains unauthorised** and requires separate written approval.

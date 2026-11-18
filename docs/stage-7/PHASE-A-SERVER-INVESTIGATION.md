@@ -1,7 +1,18 @@
 # Stage 7, Phase A: server investigation (read-only)
 
+> **Update 18 Nov 2026, maintenance executed by the owner (details in `docs/STAGE-7-PLAN.md` §15):**
+>
+> | Finding | Outcome |
+> |---|---|
+> | 1. SSH | ✅ **Resolved (M2):** key-only, root login off (`sshd -T` verified); recovery via passphrase-protected key, USB backup, Tencent VNC. Separate outstanding Phase A audit items: I32 (fail2ban `sshd` jail details) and I34 (confirming the 5 historical logins); these do not mean M2 failed |
+> | 2. Updates and restart | ✅ **Resolved (M3):** snapshot `himandme-pre-m3-updates-2026-11-18`; 27 upgraded, 7 new, 0 removed, 2 phased deferred; rebooted to kernel 6.8.0-149. Automatic security updates (O35) not reported, still open |
+> | 3. Mail and device verification | ✅ **Resolved (M1):** delivery, the second-browser verification email and the second-browser login all succeeded. Interim Gmail SMTP; replacement provider is a future item |
+> | 4. www | ✅ **Resolved (M4 N1–N3):** www certificate (EC-256, to 16 Feb 2027) and 301s to the apex; apex certificate serial and fingerprint unchanged |
+> | 5. Default site | ✅ **Resolved (M4 N4):** catch-all (444 / TLS handshake rejected) |
+> | 6. Headers | ◐ **N5 done; N6 (HSTS) pending observation**, review around 25 Nov 2026 |
+>
 > **Status (17 Nov 2026): the ⏳ items below were resolved by `phase-a-investigation.txt` (13:32 UTC) and reconciled into `docs/STAGE-7-PLAN.md` §14 (revision 5). That section is the current reference.** Original analysis follows.
-> Nothing was installed, upgraded, restarted, reloaded, edited or deleted. Phase B is not started. Every remediation below is a **recommendation awaiting the owner's approval**.
+> **During this 17 Nov 2026 investigation** nothing was installed, upgraded, restarted, reloaded, edited or deleted (it was read-only). The remediations below are kept as the **historical recommendations** made at that time. The owner carried out the approved ones separately on 18 Nov 2026 (table above; plan §15). Phase B is not started.
 >
 > **Sources**
 > - The owner's `phase-a-report.txt` (17 Nov 2026, 13:06 UTC).
@@ -283,4 +294,4 @@ add_header X-Frame-Options "SAMEORIGIN" always;
   - O31 (www): option A recommended.
 - **I-rows answered:** I1–I21 and I30, with the details pending the script.
 
-Waiting for `phase-a-investigation.txt` to complete the ⏳ items, then for your approval. **Nothing is changed and Phase B is not started.**
+*(Historical, 17 Nov 2026:)* Waiting for `phase-a-investigation.txt` to complete the ⏳ items, then for your approval. Nothing had been changed at that point. *(18 Nov 2026: maintenance M1–M3 and M4 N1–N5 done by the owner; see the table at the top. Phase B is still not started.)*
