@@ -3,7 +3,11 @@
 > **Update 19 Nov 2026, read-only follow-ups (details in `docs/STAGE-7-PLAN.md` §16):**
 > - **I32:** fail2ban active, 1 `sshd` jail; 262 total failed, 6 total banned.
 > - **I33:** `ssl-params.conf` permits TLS 1.0/1.1 and legacy ciphers (R40, O37; not changed).
-> - **I34:** 8 accepted password logins on 17–18 Nov not all confirmed by the owner. **Unresolved, not a confirmed breach** (R41, O39). Password login has been off since M2.
+> - **I34 (as of Update 6.2):** 8 accepted password logins on 17–18 Nov not all confirmed by the owner. Unresolved, not a confirmed breach (R41, O39). Password login has been off since M2.
+> - **I34 (Update 6.3): ✅ RESOLVED.**
+>   - *Owner-confirmed:* all 8 password logins are the owner's own, as is the 17 Nov `sudo` activity; the later ED25519 key logins matched the owner's key and originated from the owner's confirmed connection (Ghost troubleshooting and configuration).
+>   - *Technical (read-only output):* no unexpected interactive account; exactly one ED25519 key (`SHA256:B1ia0qxNC+8QAAfc8XGVkkEtuyREnFr0ipULkHVuEmk`); root cron = acme.sh + Tencent Stargate; `sgagent` and `tat_agent` are standard Tencent components (verified against Tencent docs; **do not remove**); public listeners only 22/80/443; MySQL 3306, Ghost 2368 and MySQL X 33060 on localhost.
+>   - R41 closed; O39 done (plan §16.7).
 >
 > **Update 18 Nov 2026, maintenance executed by the owner (details in `docs/STAGE-7-PLAN.md` §15):**
 >

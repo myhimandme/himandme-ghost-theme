@@ -2,10 +2,12 @@
 
 > **Status: Revision 6 is the approved planning baseline** (approved and committed 17 Nov 2026, `16be29c`). **Update 6.1 (18 Nov 2026)** adds §15, a record of the server maintenance the owner carried out: **M1–M3 complete; M4 N1–N5 complete; M4 N6 (HSTS) pending observation.** Revision 6's decisions are unchanged. **Phases B–H are NOT authorised.** No further server changes are authorised. **Next authorised action: read-only only (§15.9).**
 > **Update 6.2 (19 Nov 2026)** adds §16: the remaining read-only Phase A checks and a consolidated report. **Phase A stays open** (I34 is unresolved, and the findings await the owner's review). **No production change was made.**
+> **Update 6.3 (19 Nov 2026)** adds §16.7: **I34 resolved.** All eight password logins are the owner's own, and no unexpected account, key, cron task or public listener was found. **Phase A stays open** for the owner's review and the A-gate. **No production change was made.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
-> - the live VPS, Ghost, DNS and Cloudflare were not touched;
+> - the live VPS, Ghost, DNS and Cloudflare were not touched **by the audit**;
+> - *correction (Update 6.3): the owner separately did their own Ghost service troubleshooting and configuration on the VPS on 17 Nov 2026, outside the read-only audit scripts (§16.7);*
 > - nothing was imported, published or activated, and no test data was deleted.
 >
 > **Since then:** the owner separately carried out server maintenance M1–M3 and M4 N1–N5 on the production VPS on **18 Nov 2026** (§15). That changed SMTP, SSH, packages and Nginx. **No release phase (B–H) has been carried out**: no theme deployed, no content imported or published, no PR merged.
@@ -175,7 +177,7 @@ Environment as stated by the owner:
 | I30 | MySQL backup access (no secrets) | `sudo mysql -e "SELECT user, plugin FROM mysql.user WHERE user='root'; SELECT @@character_set_server, @@collation_server; SELECT table_schema, ROUND(SUM(data_length+index_length)/1024/1024,1) AS mb FROM information_schema.tables GROUP BY table_schema;"` | root uses `auth_socket` (so `sudo mysqldump` needs no password); `utf8mb4`; database size noted | ✅ (§14.1) |
 | I32 | fail2ban (read-only) | `sudo fail2ban-client status; sudo fail2ban-client status sshd` | `sshd` jail active; current bans noted | ✅ active, 1 jail; 262 failed total, 6 banned total (§16.1) |
 | I33 | Nginx TLS snippet (no secrets) | `sudo cat /etc/nginx/snippets/ssl-params.conf` | Note any `add_header` lines (ignored inside locations that set their own headers) | ⚠️ TLS 1.0/1.1 + legacy ciphers → R40 (§16.1) |
-| I34 | Owner's own SSH logins | `sudo journalctl -u ssh --since "7 days ago" --no-pager \| grep "Accepted password"` | The owner recognises all 5 accepted logins (times, source addresses) | ⚠️ **Unresolved:** 8 logins not all confirmed → R41 (§16.2) |
+| I34 | Owner's own SSH logins | `sudo journalctl -u ssh --since "7 days ago" --no-pager \| grep "Accepted password"` | The owner recognises all 5 accepted logins (times, source addresses) | ✅ **Resolved** (19 Nov, §16.7): all 8 logins are the owner's own |
 | I31 | Staff accounts and Owner | Admin → Settings → Staff (look only) | Which account has the **Owner** role; every staff slug; no test or unknown accounts (§3.7) | ✅ Dr Imran only, Owner, slug `dr` (§16.1) |
 
 **How to send the results:** paste the outputs, or say "matches" or "differs" per row. If anything shows a password, key or token, remove it before pasting.
@@ -702,7 +704,7 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R38 | An older HSTS policy (`max-age=63072000; includeSubDomains; preload`, previously in `ssl-params.conf`) **may be cached** in browsers that received it; preload-list status unchecked | Low–Medium | Keep `max-age=300` during the N6 observation; no `includeSubDomains`/`preload` without validating every subdomain; check the preload status read-only (§15.5, §15.8) | ⏳ N6 |
 | R39 | Staff-wide email 2FA setting in Ghost Admin is **off** (19 Nov). The config's `staffDeviceVerification: true` (new-device verification) is separate and was tested in M1 | Medium | Confirm how the two interact on Ghost 6.75, then decide; test with the original session open (§16.4) | ✋ O38 |
 | R40 | Nginx `ssl-params.conf` permits **TLS 1.0/1.1** and **legacy ciphers** (I33) | Medium | Possible M5: TLS 1.2/1.3 only with a modern cipher list; `nginx -t` + reload; rollback copy (§16.4) | ✋ O37 |
-| R41 | **Eight accepted password logins** (6 on 17 Nov, 2 on 18 Nov) **not all confirmed** by the owner (I34). Not a confirmed breach | **High until explained** | Password login has been off since M2; read-only correlation and persistence checks (§16.2) | ✋ O39 |
+| R41 | **Eight accepted password logins** (6 on 17 Nov, 2 on 18 Nov) **not all confirmed** by the owner (I34). Not a confirmed breach | **High until explained** | Password login has been off since M2; read-only correlation and persistence checks (§16.2) | ✅ **Closed** 19 Nov (I34 resolved, §16.7) |
 | R31 | No HSTS, Referrer-Policy, Permissions-Policy; X-Frame-Options only on `/ghost/` (I10) | Low–Medium | M4 step N5–N6 (snippet included in each HTTPS location; HSTS 300 s → 1 year; no preload) | ◐ Partly: N5 done 18 Nov; **N6 pending** (§15.5) |
 
 ---
@@ -787,6 +789,8 @@ Both documents were re-read after the revision 3 edits. Checked and aligned:
 | Status | Phase A not started; nothing deployed | Header, section 10 |
 
 Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist.
+
+**Update 6.3 (19 Nov 2026), documentation only:** adds §16.7 (I34 resolved; O39 done; R41 closed), with matching status cells in §2, §10 and §16. It also corrects the historical note in the header about 17 Nov. No other finding or decision changes.
 
 **Update 6.2 (19 Nov 2026), documentation only:** adds §16 (the completed Phase A checks I18, I27–I29, I31–I34, E10, the LLM setting and staff 2FA; a consolidated report). It updates status cells in §2 and §10, and adds R39–R41 and decisions O37–O39. Historical sections are unchanged.
 
@@ -1172,7 +1176,7 @@ So M1's two completion tests (§14.6, steps 5 and 6) both passed.
 
 **Phase A audit items I32 and I34:** these remain **outstanding read-only audit items**.
 - **I32:** the fail2ban `sshd` jail details were not reported.
-- **I34:** the owner has not yet confirmed the five historical password logins.
+- **I34:** the owner has not yet confirmed the five historical password logins. *(Resolved 19 Nov 2026: §16.7.)*
 
 They were listed alongside M2 in §14.4, but they are **not M2 completion criteria**. Their being open does **not** mean M2 failed. M2's own checks passed: the fresh key-only login and the `sshd -T` values.
 
@@ -1308,7 +1312,7 @@ They were listed alongside M2 in §14.4, but they are **not M2 completion criter
 
 **A. Read-only Phase A items** (views and read-only commands run by the owner; nothing changes):
 1. **I32:** fail2ban `sshd` jail details (fail2ban itself is active).
-2. **I34:** owner confirmation of the 5 historical password logins.
+2. **I34:** owner confirmation of the 5 historical password logins. *(Resolved 19 Nov 2026: §16.7.)*
 3. **I33:** the rest of `ssl-params.conf` (only its HSTS line is known).
 4. **Ghost Admin views:** Network, members, staff/Owner, integrations, the LLM setting.
 5. **Tencent console view:** the security group.
@@ -1372,9 +1376,11 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 | **Staff 2FA** | Staff-wide email 2FA setting in Ghost Admin | **OFF** | ⚠️ **Security observation (R39), not a completed change.** Separately, the server config has `security.staffDeviceVerification: true` (I3), and its new-device email verification was tested working in M1. How that config value and the Admin setting interact on Ghost 6.75 should be confirmed before any change. **Not changed** in this audit |
 | **I32** | fail2ban | Active; **one** jail (`sshd`). Total failed **262**, currently failed **3**, total banned **6**, currently banned **0** | ✅ Working as a rate-limiter. With password login disabled (M2), failed attempts can no longer succeed by guessing |
 | **I33** | `ssl-params.conf` | Permits **TLS 1.0, 1.1, 1.2 and 1.3** and includes **legacy cipher suites** | ⚠️ **Finding (R40).** TLS 1.0 and 1.1 are deprecated. Remediation needs separate owner approval (O37); **nothing was changed** |
-| **I34** | Accepted password logins | **Six** on **17 Nov** from `60.50.85.64`, **two** on **18 Nov** from `124.82.77.26`. **The owner cannot confirm all eight** | ⚠️ **Unresolved (R41). Not classified as a confirmed breach** (16.2) |
+| **I34** | Accepted password logins | **Six** on **17 Nov** from `60.50.85.64`, **two** on **18 Nov** from `124.82.77.26`. **The owner cannot confirm all eight** | ⚠️ **Unresolved (R41). Not classified as a confirmed breach** (16.2) *(Update 6.3: **resolved**, §16.7)* |
 
 ### 16.2 I34: unresolved, and why it is not called a breach
+
+> **Superseded (Update 6.3):** I34 was resolved on 19 Nov 2026 (§16.7). This section is kept as the record of the Update 6.2 state.
 
 **Facts:**
 - Eight password logins were accepted before password login was disabled in M2 (18 Nov):
@@ -1417,7 +1423,7 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 
 | Item | Status | Next |
 |---|---|---|
-| **I34** unconfirmed logins | ⚠️ **Unresolved** | Read-only checks in 16.2 (O39) |
+| **I34** unconfirmed logins | ✅ **Resolved** 19 Nov (§16.7) | None: O39 done |
 | **I33 / R40** TLS 1.0/1.1 and legacy ciphers | ⚠️ Finding | Owner decision O37 (a new maintenance step; see 16.4) |
 | **R39** staff-wide email 2FA off | ⚠️ Observation | Owner decision O38 |
 | **R28** LLM setting on | ⚠️ High, unchanged | Owner decision O30 (off before H1) |
@@ -1430,7 +1436,7 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 
 | ID | Risk | Severity | Recommendation | Decision |
 |---|---|---|---|---|
-| **R41** | Eight password logins not all confirmed by the owner (I34) | **High until explained** | Run the read-only checks in 16.2; do not treat as a breach without evidence; escalate if anything is unexplained | **O39** |
+| **R41** | Eight password logins not all confirmed by the owner (I34) | **High until explained** | Run the read-only checks in 16.2; do not treat as a breach without evidence; escalate if anything is unexplained | ✅ **O39 done; R41 closed** (§16.7) |
 | **R40** | Nginx accepts TLS 1.0/1.1 and legacy ciphers (I33) | Medium | A new maintenance step **M5**, after approval: set `ssl_protocols TLSv1.2 TLSv1.3;` and a modern cipher list (for example Mozilla's "intermediate" profile) in `ssl-params.conf`, which the apex and www blocks share. Then `nginx -t`, reload, and test apex and www. Copy the file first for rollback. Very old clients (pre-2014) would lose access | **O37** |
 | **R39** | Staff-wide email 2FA off in Ghost Admin | Medium | First confirm how this setting relates to `staffDeviceVerification: true` on Ghost 6.75. If enabling it, test with the original session kept open (mail works since M1) | **O38** |
 | **R28** | LLM setting on: blocks readable as `.md` after launch | **High** | Turn off before H1 (tested locally) | **O30** |
@@ -1440,12 +1446,12 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 ### 16.5 Recommended next steps and approval gates
 
 1. **Owner review of this report**, which is the Phase A presentation.
-2. **I34 read-only checks** (16.2), if the owner approves O39. They change nothing.
+2. ~~I34 read-only checks~~ **Done 19 Nov 2026: I34 resolved (§16.7).**
 3. **N6 HSTS review around 25 Nov 2026** (read-only), then the owner decides whether to raise HSTS.
 4. **Owner decisions:**
    - **A:** O37 (TLS, a new M5 step), O38 (2FA), O30 (LLM, before H1), O35, O34, O18, O28 and O4.
    - **B:** the content inputs in the checklist, section 4.
-5. **🛑 A-gate:** the owner accepts the Phase A findings. **I34 is resolved or explicitly accepted with a decision.**
+5. **🛑 A-gate:** the owner accepts the Phase A findings. (The I34 condition is met: resolved, §16.7.)
 6. **Only after a separate written approval:** Phase B (GitHub merge and release preparation). **Server changes** (M5 TLS, 2FA, LLM toggle, HSTS increase) each need **their own** approval, and none is authorised by this report.
 
 ### 16.6 Authorisation (unchanged)
@@ -1456,3 +1462,50 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
   - the LLM and 2FA toggles, which stay as they are;
   - Phases B–H, and production theme deployment.
 - **Phase A:** open.
+
+### 16.7 I34 resolved: Update 6.3 (19 Nov 2026)
+
+> **What this section is:** the result of the O39 read-only investigation, which the owner carried out on the production VPS after Update 6.2.
+> - **No command was run from this documentation session, and no production change was made.**
+> - **Sources:** owner-confirmed facts (what the owner recognises as their own activity) are kept separate from technical findings (what the read-only command output showed, as reported by the owner).
+
+**Result:** ✅ **I34 is resolved.**
+- All eight accepted password logins are the owner's own connections.
+- No unexpected account, key, scheduled task or public listener was found.
+- All eight investigated password logins were confirmed by the owner as authorised. The read-only checks found no evidence of unexplained access or persistence within the scope of this investigation. No evidence of a security breach was identified. R41 is closed, and O39 is done.
+
+**A. Owner-confirmed facts**
+
+| Item | Confirmed by the owner |
+|---|---|
+| SSH password logins | All **eight** were the owner's own connections: **six on 17 Nov 2026** from `60.50.85.64` and **two on 18 Nov 2026** from `124.82.77.26` |
+| Key logins | The later successful ED25519 key logins matched the owner's key and originated from the owner's confirmed connection |
+| `sudo` history | The Ghost service troubleshooting and configuration changes recorded on **17 Nov 2026** were the owner's own work. The recorded commands match the documented audits and maintenance |
+
+**B. Technical findings (read-only command output, as reported by the owner)**
+
+| Check | Finding |
+|---|---|
+| Interactive accounts | No unexpected interactive account |
+| `/home/ubuntu/.ssh/authorized_keys` | Exactly **one** ED25519 key, fingerprint `SHA256:B1ia0qxNC+8QAAfc8XGVkkEtuyREnFr0ipULkHVuEmk` |
+| Root crontab | The **acme.sh** renewal task and the **Tencent Stargate** task |
+| Tencent agents | Stargate process `/usr/local/qcloud/stargate/bin/sgagent -d` running as root; `tat_agent.service` active. The Stargate directory and executable were inspected |
+| Tencent origin | The owner verified against Tencent Cloud documentation that `/usr/local/qcloud/stargate` and its five-minute cron task are standard Tencent Cloud components. The owner did not recognise the agent at first; the documentation check established its Tencent origin |
+| Public listeners | TCP **22**, **80**, **443** only |
+| Local-only listeners | MySQL `127.0.0.1:3306`, Ghost `127.0.0.1:2368`, MySQL X Protocol `127.0.0.1:33060` |
+| Conclusion | No unexpected public application listener |
+
+**Notes:**
+- **Do not remove or disable Stargate or TAT.** They are Tencent Cloud's monitoring and automation agents.
+- **The 17 Nov activity:** the owner's `sudo` history shows the owner's own Ghost service troubleshooting and configuration changes on 17 Nov. That work was **separate from** the read-only Phase A audit scripts, which changed nothing. The plan's historical note is corrected to say so.
+- **MySQL X Protocol** (`33060`) is bound to localhost only. It was not listed in I19 because that check filtered for specific ports. It is not exposed publicly, and nothing needs to change.
+
+**Effect on status:**
+- **I34:** ✅ resolved.
+- **R41:** ✅ closed.
+- **O39:** ✅ done.
+- **Unchanged:**
+  - every other open finding and decision (R28/O30, R39/O38, R40/O37, R36/O35, R37/O34, O18, O28, O4);
+  - the N6 HSTS review (around 25 Nov 2026, `max-age=300`);
+  - **Phase A stays open** until the owner reviews the findings and decides the A-gate;
+  - **Phases B–H remain unauthorised.**

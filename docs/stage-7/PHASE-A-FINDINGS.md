@@ -52,9 +52,9 @@
 | Tencent firewall (I18) | ✅ **Done:** TCP 443/22/80 + ICMP allowed (IPv4); no 3306 or 2368 |
 | I32 | ✅ **Done:** fail2ban active, 1 jail; 262 total failed, 6 total banned |
 | I33 | ⚠️ **Done, finding:** TLS 1.0/1.1 and legacy ciphers permitted (R40; O37), not changed |
-| I34 | ⚠️ **Unresolved:** 8 accepted password logins (17–18 Nov) not all confirmed; **not a confirmed breach** (R41; O39) |
+| I34 | ✅ **Resolved (Update 6.3):** all 8 accepted password logins (17–18 Nov) confirmed by the owner as their own. Read-only checks found no unexpected account, key, cron task or public listener; Tencent Stargate/TAT are standard Tencent components. R41 closed; O39 done (plan §16.7). *(The Update 6.2 state was “unresolved, not a confirmed breach”.)* |
 | N6 | ⏳ Read-only review around 25 Nov 2026; HSTS `max-age=300` |
-| Phase A | **Open** until the owner reviews these findings and I34 is resolved or decided; **Phases B–H unauthorised** |
+| Phase A | **Open** until the owner reviews these findings and decides the A-gate (I34 is now resolved); **Phases B–H unauthorised** |
 
 ## 1. What the live site is today (inventory, I27)
 
@@ -218,7 +218,8 @@ bash phase-a-server-checks.sh
 The **N6 observation** is a **separate** pending read-only review, around 25 Nov 2026. **Phase B remains unauthorised** and requires separate written approval.
 
 **Phase A status (19 Nov 2026):** the Ghost Admin, Tencent and I32–I34 checks above have been performed (see the 19 Nov update table near the top and plan §16). Phase A **remains open**:
-- **I34** is unresolved;
-- the new findings (R39 2FA, R40 TLS, R41 logins) and decisions O30 and O37–O39 await the owner's review.
+- the new findings (R39 2FA, R40 TLS) and decisions O30, O37 and O38 await the owner's review.
+
+*(Update 6.3, 19 Nov 2026: **I34 resolved**, R41 closed and O39 done; see plan §16.7. When this paragraph was first written, I34 was still unresolved.)*
 
 No production change was made during these checks.

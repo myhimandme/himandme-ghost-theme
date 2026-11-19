@@ -2,6 +2,7 @@
 
 > **Status: Revision 6 approved baseline (committed 17 Nov 2026) + Update 6.1 (18 Nov 2026).** Server maintenance recorded: **M1–M3 done; M4 N1–N5 done; N6 pending observation** (plan §15). Phase A (read-only) still in progress. **Phases B–H are not authorised.** No further server changes are authorised.
 > **Update 6.2 (19 Nov 2026):** remaining Phase A checks recorded (plan §16). **Phase A stays open:** I34 is unresolved, and the findings await the owner's review. No production change was made.
+> **Update 6.3 (19 Nov 2026):** **I34 resolved** (plan §16.7). Phase A **stays open** for the owner's review and the A-gate. No production change was made.
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -18,7 +19,7 @@
 | Area | ✅ | 🔍 | ✋ | ⛔ |
 |---|---|---|---|---|
 | G: GitHub and release (§1) | 9 | 0 | 2 | 3 |
-| I: Infrastructure (§2) | 33 answered (incl. ⚠️ findings) | 1 (I34 unresolved) | 0 | 0 |
+| I: Infrastructure (§2) | 34 answered (incl. ⚠️ findings) | 0 | 0 | 0 |
 | O: Owner inputs (section 4 below) | see rows | 0 | 39 items (some ✅ decided) | 0 |
 | V: Revision 2–4 verifications (section 1a) | 8 | 0 | 0 | 0 |
 | E: Production config (§5) | 2 | 3 | 6 | 1 |
@@ -113,7 +114,7 @@
 | I30 | MySQL root uses `auth_socket`; charset `utf8mb4`; database size (no secrets) | ✅ auth_socket, utf8mb4 | [x] |
 | I32 | fail2ban `sshd` jail status (read-only) | ✅ fail2ban active, 1 jail (`sshd`): 262 total failed, 3 currently failed, 6 total banned, 0 currently banned (19 Nov) | [x] |
 | I33 | `/etc/nginx/snippets/ssl-params.conf` contents (read-only) | ⚠️ Read (19 Nov): permits **TLS 1.0, 1.1, 1.2, 1.3** and **legacy ciphers** → R40; remediation needs approval (O37) | [x] |
-| I34 | Owner confirms the 5 accepted SSH password logins were theirs | ⚠️ **Unresolved:** 6 accepted password logins on 17 Nov (`60.50.85.64`), 2 on 18 Nov (`124.82.77.26`); owner cannot confirm all 8 → R41. **Not a confirmed breach** (plan §16.2) | [ ] |
+| I34 | Owner confirms the accepted SSH password logins were theirs | ✅ **Resolved 19 Nov** (plan §16.7). *Owner-confirmed:* all 8 password logins (6 on 17 Nov from `60.50.85.64`, 2 on 18 Nov from `124.82.77.26`) are the owner's own; the later ED25519 key logins matched the owner's key and originated from the owner's confirmed connection; the 17 Nov `sudo` activity was the owner's. *Technical:* no unexpected interactive account; one ED25519 key (`SHA256:B1ia0qxNC+8QAAfc8XGVkkEtuyREnFr0ipULkHVuEmk`); root cron = acme.sh + Tencent Stargate (standard, verified against Tencent docs); public listeners only 22/80/443; 3306, 2368, 33060 on localhost. All eight investigated password logins were confirmed by the owner as authorised. The read-only checks found no evidence of unexplained access or persistence within the scope of this investigation. No evidence of a security breach was identified. | [x] |
 | I31 | Which staff account is **Owner**; all staff slugs; no unknown accounts | ✅ Only **Dr Imran**, role **Owner**, slug `dr` (19 Nov) → §3.7 Case A | [x] |
 
 ## 4. Owner inputs (section O): nothing here will be invented
@@ -158,7 +159,7 @@
 | O36 | Nginx catch-all and security headers (M4 N4–N6) | R31, R35 | ✅ Approved 18 Nov (subject to the HSTS review); N4–N5 done, N6 pending | [ ] |
 | O37 | TLS hardening (possible M5): TLS 1.2/1.3 only, modern ciphers in `ssl-params.conf` (I33, R40) | R40 | ✋ | [ ] |
 | O38 | Staff-wide email 2FA in Ghost Admin (currently **off**); first confirm its interaction with `staffDeviceVerification` (R39) | R39 | ✋ | [ ] |
-| O39 | I34 follow-up: approve the read-only correlation and persistence checks (plan §16.2), then close I34 or escalate | R41 | ✋ | [ ] |
+| O39 | I34 follow-up: read-only correlation and persistence checks (plan §16.2) | R41 | ✅ **Done 19 Nov:** I34 resolved, R41 closed (plan §16.7) | [x] |
 
 ## 5. Content and test-data exclusion (§3)
 
@@ -250,7 +251,7 @@
 | **M4 N6** | **Pending:** observe from 18 Nov, review ~25 Nov; keep `max-age=300`; no `includeSubDomains`/`preload` without validating every subdomain; one-year HSTS only by owner decision after review | [ ] |
 | Health 18 Nov | `nginx -t` OK; Nginx, MySQL, Ghost, SSH, fail2ban active; apex 200; www 301; headers present; unknown HTTP closed; disk 15 % used, 49 GB free; renewals: apex 5 Jan 2027, www 16 Jan 2027 | [x] |
 
-**Next authorised action:** read-only only. Finish the open Phase A items (Admin/console views, I32, I33 rest, I34), then the N6 observation review around 25 Nov 2026, then the owner's decisions (plan §15.9).
+**Next authorised action:** read-only only. Finish the open Phase A items (Admin/console views, I32, I33 rest, I34; *all done by 19 Nov, I34 resolved, plan §16.7*), then the N6 observation review around 25 Nov 2026, then the owner's decisions (plan §15.9).
 
 ## 9. Backup and rollback (§8)
 
@@ -275,7 +276,7 @@
 | Revision 3 | Owner approves the plan | ✅ 17 Nov 2026 | [x] |
 | Revision 4 | **Phase A authorised** (read-only: I1–I31, live-site inventory, owner inputs and decisions, review of findings and risk register). Excludes merges, releases, backups, database, DNS or Cloudflare changes, imports, publishing, theme activation and any production change | ✅ 17 Nov 2026 | [x] |
 | Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✋ | [ ] |
-| A. Preparation and audit | 🛑 A-gate | ▶ **in progress**: all listed checks performed by 19 Nov 2026 (plan §16); **open** until the owner reviews the findings and I34 is resolved or decided (O39) | [ ] |
+| A. Preparation and audit | 🛑 A-gate | ▶ **in progress**: all listed checks performed by 19 Nov 2026, **I34 resolved** (plan §16, §16.7); **open** until the owner reviews the findings and decides the A-gate | [ ] |
 | B. GitHub merge and release prep | 🛑 B-gate | ⛔ A-gate | [ ] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |
