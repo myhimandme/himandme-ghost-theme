@@ -4,6 +4,7 @@
 > **Update 6.2 (19 Nov 2026)** adds §16: the remaining read-only Phase A checks and a consolidated report. **Phase A stays open** (I34 is unresolved, and the findings await the owner's review). **No production change was made.**
 > **Update 6.3 (19 Nov 2026)** adds §16.7: **I34 resolved.** All eight password logins are the owner's own, and no unexpected account, key, cron task or public listener was found. **Phase A stays open** for the owner's review and the A-gate. **No production change was made.**
 > **Update 6.4 (19 Nov 2026)** adds §16.8: the **O28 block-ownership rule** (every `#blok` post belongs only to `dr`), safeguards **G6** (extended) and **G12**, and multi-author attribution as future enhancement **FE1**. Single-author attribution is unchanged. Documentation only.
+> **Update 6.5 (19 Nov 2026)** adds §16.9: the **owner's Phase A decision register**. The owner accepts the §16 findings. **The A-gate is ready for sign-off once this update is approved.** Recorded decisions are **not** executed automatically. **Phases B–H remain unauthorised** until the owner approves Phase B in writing.
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -419,6 +420,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
    - **Case B:** the Owner is a different account (for example a business or admin login). Before launch, **change the author of all 23 blocks to `dr` as their only author** in Admin. This is required by the O28 rule (§16.8). A second filtered channel for the Owner's slug (the N2c pattern, tested) may be added **only as temporary containment** while ownership is being corrected; it hides the blocks but does **not** satisfy O28.
    - Owner decision **O28**, after I27/D4. The production smoke test checks **every** author listed in `sitemap-authors.xml`, not only the doctor's.
    - **Update 6.4 (19 Nov 2026):** O28 is decided as a general **ownership rule**: every `#blok` post has `dr` as its only author. That makes additional authors of any role safe without changing routes or the theme. Safeguards: G6 (extended) and G12 (§16.8).
+   - **Update 6.5 (19 Nov 2026):** the owner confirmed this rule; all Phase A decisions are recorded in the register in **§16.9**.
 3. On production, the smoke test (G6) re-uses the same read-only inspector (`inspectAuthor`, GET requests only) with the real slug, in Phase F (private cookie) and Phase H (anonymous).
 
 ## 4. Theme deployment procedure (Phase D; not run now)
@@ -456,7 +458,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | E9 | Routes | `routes.yaml` after G3 | ⛔ G3 |
 | E10 | Integrations | Remove unused custom integrations, without exposing keys | ✅ No custom integrations (§16.1) |
 | E11 | Staff | Only real people. Owner role on the doctor's or the business account. 2FA/"staff device verification" on, which **depends on working mail (M1, R34)** | 🔍 |
-| E12 | Settings → General settings → Meta data → **"Enable structured data for LLMs and AI search engines"** | **Off** before H1 (F11: otherwise every block is readable at `/blog/{slug}.md`; tested locally, off gives 404). Private mode covers it until then | ✋ O30 |
+| E12 | Settings → General settings → Meta data → **"Enable structured data for LLMs and AI search engines"** | **Off** before H1 (F11: otherwise every block is readable at `/blog/{slug}.md`; tested locally, off gives 404). Private mode covers it until then | ✅ O30 approved 19 Nov: turn off **now** (owner action), then verify; not yet executed |
 
 **Theme settings (E8).** Repository defaults are shown. Every value needs your confirmation; none is assumed correct.
 
@@ -695,18 +697,18 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R23 | Restoring the database while Ghost runs shows stale settings | Medium | `ghost stop` before and `ghost start` after (rehearsed) | ✅ |
 | R24 | `mysqldump` PROCESS-privilege error goes unnoticed (exit code 0) | Medium | `--no-tablespaces`, run with `sudo`, and check `dump.err` is empty (C4) | ✅ |
 | R25 | Staff access token for `ghost backup` exposed | Medium | Typed only at the prompt on the server; never in chat, files or the repository | ✅ Rule |
-| R28 | Ghost 6.75's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch (Phase A F11, measured locally: 23 of 23) | **High** | E12 off before H1 (tested: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ✋ O30. **Confirmed ON** in Admin (19 Nov, §16.1); not changed |
+| R28 | Ghost 6.75's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch (Phase A F11, measured locally: 23 of 23) | **High** | E12 off before H1 (tested: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ✅ O30 approved 19 Nov (turn off now); **open until switched off and verified** (§16.9) |
 | R29 | `www.himandme.my`: certificate error over HTTPS; over HTTP the Nginx welcome page (I11, I13) | Medium | M4 steps N1–N3 (separate www certificate + 301 to apex), or O31 option C | ✅ Mitigated 18 Nov (M4 N1–N3; §15.5) |
 | R30 | Member sign-up open on the live site; possible existing members' personal data | Medium | Count in I29; O18 decision before E2 ("Nobody") | ✅ Currently mitigated (19 Nov: 0 members, subscriptions Nobody; §16.1); O18 to confirm |
 | R32 | SSH: root and password logins allowed; **no SSH key installed for any account**; **10,218 failed login attempts in 7 days**; port 22 open to all (I18, I20) | **High** | M2 (§14.4): break-glass VNC + key installed and proven first, then a drop-in disabling root and password login; fail2ban check (I32); owner confirms own logins (I34) | ✅ Mitigated 18 Nov (M2; §15.3) |
 | R33 | 23 security updates pending (kernel, glibc, MySQL, perl, ca-certificates…); restart pending since 5 Nov; running kernel 6.8.0-138 (I1, I21) | **High** | M3 (§14.3): snapshot → `apt upgrade` → one reboot → checks | ✅ Mitigated 18 Nov (M3; §15.4) |
 | R34 | Ghost mail `Direct` with outbound port 25 blocked, while staff device verification is on: **a login from any new browser or device cannot be completed**; resets and invites fail (I3, I26) | **High** | Keep the current Admin browser session; M1 SMTP via a provider before Phase D. Port 587 is only shown reachable; delivery and the second-browser verification must pass in M1 (§14.6) | ✅ Mitigated 18 Nov (M1, interim Gmail; see R37) |
 | R35 | Nginx stock default site: welcome page for www and any unknown host over HTTP; unknown hosts and the bare IP over HTTPS reach Ghost with the apex certificate (I9, I13) | Low–Medium | M4 step N4 (catch-all: 444 on port 80, `ssl_reject_handshake` on 443), after N1–N3 | ✅ Mitigated 18 Nov (M4 N4; §15.5) |
-| R36 | Automatic updates enabled but limited to `noble`, so **security updates are never installed automatically** (I21) | Medium | Add the `-security` origin (O35); reboots stay manual | ✋ O35 (not reported as done in M3; §15.8) |
-| R37 | Ghost mail depends on an **interim Gmail SMTP** account (personal-account dependency, sending limits, no domain-aligned SPF/DKIM/DMARC for the site's sender identity) | Medium | Replacement provider as a future maintenance item; keep Gmail until every replacement test passes (§15.2) | ✋ O34 (long-term) |
+| R36 | Automatic updates enabled but limited to `noble`, so **security updates are never installed automatically** (I21) | Medium | Add the `-security` origin (O35); reboots stay manual | ✅ O35 approved 19 Nov (M6, security-only, reboots manual); not yet executed (§16.9) |
+| R37 | Ghost mail depends on an **interim Gmail SMTP** account (personal-account dependency, sending limits, no domain-aligned SPF/DKIM/DMARC for the site's sender identity) | Medium | Replacement provider as a future maintenance item; keep Gmail until every replacement test passes (§15.2) | ⏸ O34 deferred 19 Nov: Gmail kept for now (§16.9) |
 | R38 | An older HSTS policy (`max-age=63072000; includeSubDomains; preload`, previously in `ssl-params.conf`) **may be cached** in browsers that received it; preload-list status unchecked | Low–Medium | Keep `max-age=300` during the N6 observation; no `includeSubDomains`/`preload` without validating every subdomain; check the preload status read-only (§15.5, §15.8) | ⏳ N6 |
-| R39 | Staff-wide email 2FA setting in Ghost Admin is **off** (19 Nov). The config's `staffDeviceVerification: true` (new-device verification) is separate and was tested in M1 | Medium | Confirm how the two interact on Ghost 6.75, then decide; test with the original session open (§16.4) | ✋ O38 |
-| R40 | Nginx `ssl-params.conf` permits **TLS 1.0/1.1** and **legacy ciphers** (I33) | Medium | Possible M5: TLS 1.2/1.3 only with a modern cipher list; `nginx -t` + reload; rollback copy (§16.4) | ✋ O37 |
+| R39 | Staff-wide email 2FA setting in Ghost Admin is **off** (19 Nov). The config's `staffDeviceVerification: true` (new-device verification) is separate and was tested in M1 | Medium | Confirm how the two interact on Ghost 6.75, then decide; test with the original session open (§16.4) | ⏸ O38 deferred pending read-only investigation; both settings unchanged (§16.9) |
+| R40 | Nginx `ssl-params.conf` permits **TLS 1.0/1.1** and **legacy ciphers** (I33) | Medium | Possible M5: TLS 1.2/1.3 only with a modern cipher list; `nginx -t` + reload; rollback copy (§16.4) | ✅ O37 approved 19 Nov (M5, with or after N6; procedure + backup first); not yet executed (§16.9) |
 | R41 | **Eight accepted password logins** (6 on 17 Nov, 2 on 18 Nov) **not all confirmed** by the owner (I34). Not a confirmed breach | **High until explained** | Password login has been off since M2; read-only correlation and persistence checks (§16.2) | ✅ **Closed** 19 Nov (I34 resolved, §16.7) |
 | R31 | No HSTS, Referrer-Policy, Permissions-Policy; X-Frame-Options only on `/ghost/` (I10) | Low–Medium | M4 step N5–N6 (snippet included in each HTTPS location; HSTS 300 s → 1 year; no preload) | ◐ Partly: N5 done 18 Nov; **N6 pending** (§15.5) |
 
@@ -792,6 +794,8 @@ Both documents were re-read after the revision 3 edits. Checked and aligned:
 | Status | Phase A not started; nothing deployed | Header, section 10 |
 
 Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist.
+
+**Update 6.5 (19 Nov 2026), documentation only:** adds §16.9 (the owner's Phase A decision register, proposed O20 redirect mappings for verification, new maintenance steps M5/M6 approved in principle). Updates the status cells of R28, R36, R37, R39, R40 and E12. Nothing is executed.
 
 **Update 6.4 (19 Nov 2026), documentation only:** adds §16.8 (O28 ownership rule; G6 extended; new G12; future enhancement FE1, multi-author attribution). Updates the R21 status, §1.4 and §3.7. Single-author attribution and the `dr` slug are unchanged.
 
@@ -1568,3 +1572,60 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
   - N6;
   - Phase A stays open;
   - Phases B–H remain unauthorised.
+
+### 16.9 Phase A owner decision register: Update 6.5 (19 Nov 2026)
+
+> **What this section records:** the owner's Phase A decisions of 19 Nov 2026.
+> - **Decisions are not execution.** Recording an approval here does **not** carry out any server or Ghost Admin change. Each approved change is done later as its own step, with its procedure, backup and verification.
+> - **Phases B–H and production deployment remain unauthorised** until the owner approves Phase B in writing.
+
+**Security and infrastructure**
+
+| ID | Decision (owner, 19 Nov 2026) | Type | Status / next step |
+|---|---|---|---|
+| **O30** | **Turn the LLM setting OFF now.** The hidden blocks must not be exposed through Markdown (`.md`) addresses | Ghost Admin change | ✅ **Approved; not yet executed.** The owner switches off Settings → General settings → Meta data → "Enable structured data for LLMs and AI search engines". **Read-only verification:** (1) **straight after the change:** `https://himandme.my/llms.txt` no longer returns the LLM index, and an existing post's `.md` address (for example `/coming-soon.md`, while that post is still published) no longer returns Markdown; (2) **after the blocks are imported (Phase F, and again at H3):** **every one of the 23 hidden-block addresses `/blog/{block-slug}.md` returns 404** (G11; tested locally: all 23 return 404 when the setting is off, §F11). R28 stays High until both checks pass |
+| **O38** | **Staff-wide email 2FA: deferred pending a read-only investigation** of how it interacts with `security.staffDeviceVerification`. **Both settings stay unchanged** | Deferred (read-only investigation first) | ⏸ **Explicitly deferred.** Next: a read-only check of the Ghost 6.75 documentation (and, if needed, the local Ghost). The decision is taken after that. **No change** to the staff-wide 2FA setting or to `staffDeviceVerification` |
+| **O37** | **Approve M5: TLS 1.2/1.3 only**, scheduled alongside or after the N6 review, subject to the implementation procedure and backup | Server change (Nginx) | ✅ **Approved in principle; not yet executed.** Next: prepare the M5 procedure for the owner's review (backup of `ssl-params.conf`, exact directives, `nginx -t`, reload, apex and www tests, rollback). Run only after the owner approves that procedure |
+| **O35** | **Approve security-only automatic updates, reboots manual**; take a snapshot and verify the exact APT configuration before implementation | Server change (APT) | ✅ **Approved in principle; not yet executed** (new maintenance step **M6**). Next: (1) a read-only check of the current `/etc/apt/apt.conf.d/50unattended-upgrades` and `20auto-upgrades`; (2) the exact proposed change for review; (3) snapshot → change → verify (for example `unattended-upgrades --dry-run`). `Unattended-Upgrade::Automatic-Reboot` stays `false` |
+| **O34** | **Keep Gmail temporarily**; choose a long-term provider later; preserve the working configuration | Deferred | ⏸ **Deferred.** Gmail SMTP stays unchanged. Replacement procedure as in §15.2 |
+
+**Ghost and publishing**
+
+| ID | Decision (owner, 19 Nov 2026) | Type | Status / next step |
+|---|---|---|---|
+| **O18** | **Confirmed:** no membership, subscriptions, comments or newsletters for the current website | Documentation decision + later Admin verification | ✅ **Decided.** The remaining Portal-button and newsletter settings are verified (look only) during the planned Admin audit at **E2/E3** |
+| **O4** | **Keep `dr`** | Documentation decision | ✅ **Decided.** `routes.yaml` keeps `dr` (the G3 render check still runs); `doctor_author_slug` = `dr` at E8 |
+| **O28** | **Confirmed:** the Update 6.4 rule, every `#blok` post has `dr` as its only author | Documentation decision | ✅ **Decided and confirmed** (§16.8) |
+| **O26** | **Option A:** a separate PR for each stage; release version **1.0.0** | Decision for Phase B | ✅ **Decided** (G0a, G1). Carried out only in Phase B, after written approval |
+| **O27** | **Accept** the documented Content API exposure during migration, **provided** the hidden blocks stay excluded from public listings and protected by the agreed safeguards | Documentation decision | ✅ **Accepted (conditional).** Conditions: private mode (§3.6), `routes.yaml` filtering, O28 rule, O30 (LLM off), G6, G11, G12 |
+| **O29** | **Confirmed:** 23 internal content blocks (12 + 8 + 3) | Documentation decision | ✅ **Decided** |
+| **O19** | **Unpublish** "Coming soon" (`/coming-soon/`) and "About" (`/about/`) | Ghost Admin change | ✅ **Approved; not yet executed.** Must be done no later than the D-window, before `routes.yaml` is uploaded (D9). Otherwise "Coming soon" would appear at `/blog/coming-soon/` |
+| **O20** | **Approved (19 Nov 2026): the four mappings below**, after the owner verified them | Redirect file (uploaded at D10) | ✅ **Approved; not yet implemented.** `redirects.yaml` is prepared in the release (Phase B) and uploaded at D10. It is re-checked against the C10 URL list first |
+| **O22** | **Cloudflare Web Analytics**, subject to checking the privacy and consent implications before implementation | Ghost Admin change (code injection) + privacy review | ✅ **Chosen, conditional; not implemented.** Before implementation: (1) a privacy and consent review (PDPA) of what the beacon collects; (2) an update to the Notis Privasi (O14) if needed; (3) confirm the setup method while the Cloudflare proxy is off (DNS-only, I22), for example Cloudflare's JavaScript beacon added through Ghost's code injection |
+
+**O20: approved redirect mappings (verified and approved by the owner, 19 Nov 2026).** These are based **only** on the URLs observed publicly on 17 Nov 2026 (PHASE-A-FINDINGS §1; Admin I27: no other drafts or scheduled items; `redirects.yaml` currently empty). They are re-checked against the C10 URL list before they are finalised.
+
+| Old URL (live today) | Proposed new URL | Type | Reason |
+|---|---|---|---|
+| `/` | (no redirect) | — | Becomes the new homepage |
+| `/about/` | `/` | 301 | Starter page, unpublished (O19); no new equivalent page |
+| `/coming-soon/` | `/` | 301 | Starter post, unpublished (O19) |
+| `/tag/news/` | `/blog/` | 301 | Default tag address removed by the new routes; the new site has no "news" topic |
+| `/author/dr/` | `/blog/penulis/dr/` | 301 | Same author, new archive address (§3.7) |
+
+**Not proposed, unless the owner asks:** RSS variants (`/author/dr/rss/`, `/tag/news/rss/`) and the `.md` copies. They are not in the public inventory, and the `.md` copies stop existing once the LLM setting is off (O30).
+
+**Content inputs:** O1–O3, O5–O17, O21 and O23–O25 are **deferred until before Phase D** by the owner's decision. They **do not block** the Phase A sign-off.
+
+**Phase A findings:** the owner **accepts** the Phase A findings in §16, including the I34 resolution (§16.7), subject to this register.
+
+**A-gate:** the plan's condition is "infrastructure audit accepted; owner inputs complete or explicitly deferred". With this register, every owner input is decided, accepted or explicitly deferred. **O38** (staff-wide 2FA) is **explicitly deferred** pending its read-only investigation, with both settings unchanged. **O20** is approved.
+- **The A-gate is ready for the owner's sign-off once Update 6.5 is approved.**
+- **Signing the A-gate does not authorise Phase B.** Phase B needs separate written approval.
+
+**Still open after this update** (none blocks the A-gate):
+- **Approved, awaiting execution or a procedure:** O30 (LLM off: owner action, then read-only verification); M5 (O37); M6 (O35); O19 (unpublish, by the D-window).
+- **Deferred pending investigation:** O38 (staff-wide 2FA; both settings unchanged).
+- **Approved, implemented later:** O20 redirects (prepared in Phase B, uploaded at D10).
+- **Scheduled:** N6 (read-only review around 25 Nov 2026).
+- **Deferred:** O34, plus the content inputs listed above.

@@ -4,6 +4,7 @@
 > **Update 6.2 (19 Nov 2026):** remaining Phase A checks recorded (plan §16). **Phase A stays open:** I34 is unresolved, and the findings await the owner's review. No production change was made.
 > **Update 6.3 (19 Nov 2026):** **I34 resolved** (plan §16.7). Phase A **stays open** for the owner's review and the A-gate. No production change was made.
 > **Update 6.4 (19 Nov 2026):** O28 decided (blocks belong only to `dr`); G6 extended; G12 added; FE1 (multi-author attribution) noted as a future enhancement (plan §16.8). Documentation only.
+> **Update 6.5 (19 Nov 2026):** the owner's Phase A decisions are recorded (plan §16.9). Findings accepted. **The A-gate is ready for sign-off once this update is approved.** Decisions are not executed automatically. **Phase B is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -26,7 +27,7 @@
 | E: Production config (§5) | 2 | 3 | 6 | 1 |
 | S: SEO (§6) | 1 | 6 | 7 | 0 |
 | Phases A–H | A in progress | 0 | 0 | 7 (B–H; each waits for the gate before it) |
-| M: Server maintenance (section 8a) | M1, M2, M3 done; M4 N1–N5 done | N6 observation | O34 long-term, O35 | 0 |
+| M: Server maintenance (section 8a) | M1, M2, M3 done; M4 N1–N5 done | N6 observation | M5, M6 approved, not executed; O34 deferred | 0 |
 
 ---
 
@@ -65,9 +66,9 @@
 | ID | Item | Status | Done |
 |---|---|---|---|
 | G0 | Branch chain is linear (`main` → `stage-0-1` → … → `stage-6`); no conflicts; `stage-6` holds all approved work | ✅ Verified | [x] |
-| G0a | Merge option A (per-stage, recommended) or B (single release PR) chosen | ✋ | [ ] |
+| G0a | Merge option A (per-stage, recommended) or B (single release PR) chosen | ✅ **Option A** (separate PR per stage), decided 19 Nov (O26) | [x] |
 | G0b | Merges carried out with merge commits; `git diff stage-6 main` is empty afterwards | ⛔ needs G0a and approval | [ ] |
-| G1 | Version 1.0.0 and tag `v1.0.0` | ✋ approve | [ ] |
+| G1 | Version 1.0.0 and tag `v1.0.0` | ✅ Version **1.0.0** decided 19 Nov (O26); tag created in Phase B | [ ] |
 | G2 | Logo PNG permissions `0600` → `0644` | ✅ ready | [ ] |
 | G3 | `routes.yaml` author slug `dr` → real slug (3 places) | ⛔ O4 | [ ] |
 | G4 | Launch seed builder (`seed/blocks.mjs` only, allowlist + denylist) | ✅ ready to build | [ ] |
@@ -123,44 +124,44 @@
 
 | ID | Needed from you | Used for | Status | Done |
 |---|---|---|---|---|
-| O1 | Doctor's profile photo (square, ≥ 400 px) | Byline, author box, homepage team card | ✋ | [ ] |
-| O2 | Final biography (≤ 250 characters; the local draft without dashes can be the starting point) | Author box, author page | ✋ | [ ] |
-| O3 | Exact credentials text (you stated "MD (UKM)"; please confirm the exact form) | `doctor_credentials` | ✋ | [ ] |
-| O4 | Doctor's **production** staff slug (Admin → Staff → profile → Slug). Phase A: currently **`dr`**; keep it or choose another | `routes.yaml` (G3), `doctor_author_slug` | ✋ (blocks G3) | [ ] |
-| O5 | Logo: confirm `logo-him-and-me.png` / `logo-mark.png` are final, or supply new files | Header, footer | ✋ | [ ] |
-| O6 | Feature images (≥ 1600 px, ~16:7), alt text, captions and photo credits for each article | Articles | ✋ | [ ] |
-| O7 | Final articles (text), each with verified references (replacing every `[Rujukan]`) | Blog | ✋ | [ ] |
-| O8 | Business name and operator as it should appear (Notis Privasi names "Him & Me Wellness PLT") | Footer, legal | ✋ confirm | [ ] |
-| O9 | Address and Google Maps link (`address_short`, `google_maps_url`) | Footer, contact | ✋ | [ ] |
-| O10 | WhatsApp number, default message and phone display | Every CTA | ✋ confirm | [ ] |
-| O11 | Booking: confirm the WhatsApp form is the booking method (no separate booking link) | CTAs | ✋ | [ ] |
-| O12 | RM288 First Trial offer: still valid at launch? Any end date or terms? | Offer card and bar | ✋ | [ ] |
-| O13 | Prices (consultation, shockwave, Kegel EMS) and whether to show them | ED page, homepage | ✋ confirm | [ ] |
-| O14 | Notis Privasi: confirm the current text is final (update it if analytics are added, O22) | `/notis-privasi/` | ✋ | [ ] |
-| O15 | Homepage meta title and description; `/blog/` meta (the `jurnal` page) | SEO | ✋ | [ ] |
-| O16 | Descriptions for the 7 category tags | Topic tiles and pages, SEO | ✋ | [ ] |
-| O17 | Favicon / site icon (≥ 256 px square) and default social image (1200×630) | Browser, sharing | ✋ | [ ] |
-| O18 | Confirm: no memberships, Portal, comments or newsletter | E2–E3 | ✋ | [ ] |
-| O19 | For each item already live on himandme.my: keep / replace / unpublish | Migration | ✋ (after I27) | [ ] |
-| O20 | List of old URLs to redirect (or "none") | `redirects.yaml` | ✋ | [ ] |
-| O21 | Structured business data: none, or **`LocalBusiness` (recommended)** with verified facts only. `MedicalBusiness` or a subtype only if you confirm the premises is registered or licensed as a healthcare facility. Also confirm whether "Him & Me Wellness PLT" may be used as `legalName` (registered and active) | SEO (plan §6.1) | ✋ | [ ] |
-| O22 | Analytics: none / Cloudflare Web Analytics / GA4 | SEO, privacy | ✋ | [ ] |
-| O23 | Launch with a minimum number of articles, or with none | Go/no-go | ✋ | [ ] |
-| O24 | Days and hours: confirm "Isnin – Sabtu, 10 pagi – 6 petang · dengan temu janji sahaja" | Footer, ED page | ✋ confirm | [ ] |
-| O25 | Launch window (date and time). Private mode is **mandatory** during it (R1, plan §3.6) | Phase D | ✋ | [ ] |
-| O26 | Merge option A or B (G0a), and the version number (G1) | Phase B | ✋ | [ ] |
-| O27 | Private mode protects the website but **not** Ghost's Content API. During the migration, anyone with the public Content API key can retrieve the published blocks (and the 3 imported pages, and any published article). Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (e.g. publish no article before H1) | Plan §3.6, R22 | ✋ | [ ] |
-| O28 | Block ownership | Plan §3.7, §16.8, R21 | ✅ **Decided 19 Nov (Update 6.4): every `#blok` post has `dr` as its only author.** Additional authors of any role need no route or theme change. Safeguards G6 + G12. If broken: **reassign the block to `dr` only** (primary recovery). A filtered route (N2c) is only temporary containment; O28 stays unresolved, and G6 fails, until the block belongs exclusively to `dr` | [x] |
-| O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✋ | [ ] |
-| O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✋ LLM setting **currently ON** (19 Nov); must be off before H1 | [ ] |
+| O1 | Doctor's profile photo (square, ≥ 400 px) | Byline, author box, homepage team card | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O2 | Final biography (≤ 250 characters; the local draft without dashes can be the starting point) | Author box, author page | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O3 | Exact credentials text (you stated "MD (UKM)"; please confirm the exact form) | `doctor_credentials` | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O4 | Doctor's **production** staff slug (Admin → Staff → profile → Slug). Phase A: currently **`dr`**; keep it or choose another | `routes.yaml` (G3), `doctor_author_slug` | ✅ **Keep `dr`** (19 Nov) | [x] |
+| O5 | Logo: confirm `logo-him-and-me.png` / `logo-mark.png` are final, or supply new files | Header, footer | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O6 | Feature images (≥ 1600 px, ~16:7), alt text, captions and photo credits for each article | Articles | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O7 | Final articles (text), each with verified references (replacing every `[Rujukan]`) | Blog | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O8 | Business name and operator as it should appear (Notis Privasi names "Him & Me Wellness PLT") | Footer, legal | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O9 | Address and Google Maps link (`address_short`, `google_maps_url`) | Footer, contact | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O10 | WhatsApp number, default message and phone display | Every CTA | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O11 | Booking: confirm the WhatsApp form is the booking method (no separate booking link) | CTAs | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O12 | RM288 First Trial offer: still valid at launch? Any end date or terms? | Offer card and bar | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O13 | Prices (consultation, shockwave, Kegel EMS) and whether to show them | ED page, homepage | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O14 | Notis Privasi: confirm the current text is final (update it if analytics are added, O22) | `/notis-privasi/` | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O15 | Homepage meta title and description; `/blog/` meta (the `jurnal` page) | SEO | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O16 | Descriptions for the 7 category tags | Topic tiles and pages, SEO | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O17 | Favicon / site icon (≥ 256 px square) and default social image (1200×630) | Browser, sharing | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O18 | Confirm: no memberships, Portal, comments or newsletter | E2–E3 | ✅ **Confirmed** (19 Nov): no membership, subscriptions, comments or newsletters. Portal button + newsletter settings verified (look only) at E2/E3 | [x] |
+| O19 | For each item already live on himandme.my: keep / replace / unpublish | Migration | ✅ **Approved** (19 Nov): unpublish "Coming soon" and "About". **Not yet executed**; due no later than the D-window, before D9 | [ ] |
+| O20 | List of old URLs to redirect (or "none") | `redirects.yaml` | ✅ **Approved** (19 Nov): `/about/`→`/`, `/coming-soon/`→`/`, `/tag/news/`→`/blog/`, `/author/dr/`→`/blog/penulis/dr/` (301). Not yet implemented: prepared in Phase B, uploaded at D10 after re-checking against C10 | [x] |
+| O21 | Structured business data: none, or **`LocalBusiness` (recommended)** with verified facts only. `MedicalBusiness` or a subtype only if you confirm the premises is registered or licensed as a healthcare facility. Also confirm whether "Him & Me Wellness PLT" may be used as `legalName` (registered and active) | SEO (plan §6.1) | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O22 | Analytics: none / Cloudflare Web Analytics / GA4 | SEO, privacy | ◐ **Cloudflare Web Analytics** chosen (19 Nov), **subject to a privacy/consent review** (and O14 update if needed) before implementation; not implemented | [ ] |
+| O23 | Launch with a minimum number of articles, or with none | Go/no-go | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O24 | Days and hours: confirm "Isnin – Sabtu, 10 pagi – 6 petang · dengan temu janji sahaja" | Footer, ED page | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O25 | Launch window (date and time). Private mode is **mandatory** during it (R1, plan §3.6) | Phase D | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O26 | Merge option A or B (G0a), and the version number (G1) | Phase B | ✅ **Option A**, version **1.0.0** (19 Nov) | [x] |
+| O27 | Private mode protects the website but **not** Ghost's Content API. During the migration, anyone with the public Content API key can retrieve the published blocks (and the 3 imported pages, and any published article). Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (e.g. publish no article before H1) | Plan §3.6, R22 | ✅ **Accepted (conditional)** 19 Nov: blocks stay out of public listings and are protected by private mode, routes filtering, O28, O30, G6, G11, G12 | [x] |
+| O28 | Block ownership | Plan §3.7, §16.8, R21 | ✅ **Decided 19 Nov (Update 6.4): every `#blok` post has `dr` as its only author.** Additional authors of any role need no route or theme change. Safeguards G6 + G12. **Confirmed by the owner 19 Nov (Update 6.5).** If broken: **reassign the block to `dr` only** (primary recovery). A filtered route (N2c) is only temporary containment; O28 stays unresolved, and G6 fails, until the block belongs exclusively to `dr` | [x] |
+| O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✅ **Confirmed** 23 blocks (19 Nov) | [x] |
+| O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✅ **Approved** 19 Nov: turn OFF **now**. **Not yet executed.** Verify afterwards: `/llms.txt` and an existing post's `.md` stop working; after import, all 23 `/blog/{block-slug}.md` return 404 (G11, Phase F and H3) | [ ] |
 | O31 | `www.himandme.my`: **A (recommended):** separate www certificate + 301 to the apex (M4 N1–N3); B: one certificate covering both names; C: remove the www DNS record. (Cloudflare redirect not possible while the proxy is off) | R29 | ✅ Decided 18 Nov: **Option A**; executed (N1–N3) | [x] |
 | O32 | SSH key-only migration (M2): approve; confirm VNC break-glass, the key's device, and a second copy | R32 | ✅ Executed 18 Nov (M2) | [x] |
 | O33 | Maintenance window for 27 updates + one reboot (M3), after a Tencent snapshot | R33 | ✅ Executed 18 Nov (M3; snapshot `himandme-pre-m3-updates-2026-11-18`) | [x] |
-| O34 | Ghost mail provider (SMTP; port 587 is reachable, but delivery must be proven in M1) and its SPF/DKIM DNS records | R34 | ◐ Interim: Gmail SMTP working (18 Nov); long-term provider ✋ | [ ] |
-| O35 | Enable automatic security updates (add the `-security` origin); reboots stay manual | R36 | ✋ Not reported as done in M3 | [ ] |
+| O34 | Ghost mail provider (SMTP; port 587 is reachable, but delivery must be proven in M1) and its SPF/DKIM DNS records | R34 | ⏸ **Deferred** (19 Nov): Gmail kept temporarily; working config preserved; long-term provider later | [ ] |
+| O35 | Enable automatic security updates (add the `-security` origin); reboots stay manual | R36 | ✅ **Approved** 19 Nov (new step M6): security-only, reboots manual; snapshot + APT config check first. **Not yet executed** | [ ] |
 | O36 | Nginx catch-all and security headers (M4 N4–N6) | R31, R35 | ✅ Approved 18 Nov (subject to the HSTS review); N4–N5 done, N6 pending | [ ] |
-| O37 | TLS hardening (possible M5): TLS 1.2/1.3 only, modern ciphers in `ssl-params.conf` (I33, R40) | R40 | ✋ | [ ] |
-| O38 | Staff-wide email 2FA in Ghost Admin (currently **off**); first confirm its interaction with `staffDeviceVerification` (R39) | R39 | ✋ | [ ] |
+| O37 | TLS hardening (possible M5): TLS 1.2/1.3 only, modern ciphers in `ssl-params.conf` (I33, R40) | R40 | ✅ **Approved** 19 Nov (M5): TLS 1.2/1.3 only, with or after N6, subject to procedure + backup. **Not yet executed** | [ ] |
+| O38 | Staff-wide email 2FA in Ghost Admin (currently **off**); first confirm its interaction with `staffDeviceVerification` (R39) | R39 | ⏸ **Deferred** (19 Nov) pending a read-only investigation of its interaction with `staffDeviceVerification`; **both settings unchanged** | [ ] |
 | O39 | I34 follow-up: read-only correlation and persistence checks (plan §16.2) | R41 | ✅ **Done 19 Nov:** I34 resolved, R41 closed (plan §16.7) | [x] |
 
 ## 4a. Future enhancements (not in scope)
@@ -203,7 +204,7 @@
 | E9 | Routes uploaded | ⛔ G3 | [ ] |
 | E10 | Unused integrations removed | ✅ No custom integrations (19 Nov) | [x] |
 | E11 | Staff: real people only, 2FA (device verification is on, but it **depends on working mail: M1**) | 🔍 | [ ] |
-| E12 | LLM setting off (Settings → General settings → Meta data) before H1 | ✋ O30 | [ ] |
+| E12 | LLM setting off (Settings → General settings → Meta data) before H1 | ✅ O30 approved: turn off now (owner action); not yet executed | [ ] |
 
 ## 7. SEO (§6)
 
@@ -220,7 +221,7 @@
 | S9 | No broken internal links | 🔍 | [ ] |
 | S10 | Old-URL redirects | ✋ O20 | [ ] |
 | S11 | Search Console (DNS TXT) + sitemap submitted | ✋ | [ ] |
-| S12 | Analytics decision | ✋ O22 | [ ] |
+| S12 | Analytics decision | ◐ Cloudflare Web Analytics, subject to privacy/consent review (O22) | [ ] |
 | S13 | Lighthouse (mobile) | 🔍 | [ ] |
 | S14 | Private mode off at launch | 🔍 | [ ] |
 
@@ -243,6 +244,8 @@
 | M2 | SSH key-only (planned sequence in plan §14.4). **Executed 18 Nov 2026:** Ed25519 key installed (before M2, no account had a key) → fresh key-only login tested → root login, password login and keyboard-interactive login off; public-key login on → effective values verified with `sshd -T` → SSH active after reload. Recovery: passphrase-protected key, USB backup, Tencent VNC | O32 ✅. (I32 and I34 are separate **outstanding Phase A audit items**, not M2 prerequisites that failed) | SSH reload; sessions kept | Phase C (recommended) | [x] | [x] |
 | M3 | Ubuntu updates + reboot (plan §14.3). **Executed 18 Nov 2026:** snapshot `himandme-pre-m3-updates-2026-11-18` → **27 upgraded, 7 newly installed, 0 removed, 2 phased updates deferred** → reboot → kernel 6.8.0-149, Node 22.23.5, MySQL 8.0.46.5; SSH, Nginx, MySQL, Ghost, fail2ban active. **Automatic security updates (O35) not done**, still open | O33 ✅; O35 open | Reboot ~2–5 min | Phase C (recommended) | [x] | [x] |
 | M4 | Nginx hardening. **Original Revision 6 procedure (plan §14.5–14.5a):** W0 apex fingerprint → N1 → W1 → N2 issue with **RSA 2048** → N2b `--install-cert` to `/etc/nginx/ssl/www.himandme.my/{cert,fullchain,key}.pem` → N3 → V1–V3 → N4 → N5 → N6. **Actual execution, 18 Nov 2026:** N1–N5 **complete**; the www certificate was issued as **ECDSA / EC-256** (not RSA) and installed via `--install-cert` to those paths (Update 6.1 below; plan §15.5–15.6). **The apex certificate is unchanged** (serial and SHA-256 fingerprint verified). **N6 pending** (HSTS `max-age=300`; review around 25 Nov) | O31 = Option A ✅; O36 approved (subject to the HSTS review) ✅; apex ACME location untouched | Nginx reloads only | Phase D (www rows of D2b) | [x] | [ ] (N6 pending) |
+| M5 | TLS 1.2/1.3 only, modern ciphers in `ssl-params.conf` (O37, R40). Procedure + backup to be prepared and reviewed first; with or after N6 | O37 ✅ | Nginx reload | — | [x] | [ ] |
+| M6 | Security-only automatic updates, reboots manual (O35, R36). Snapshot + read-only APT config check, then the exact change for review | O35 ✅ | none expected | — | [x] | [ ] |
 
 **Update 6.1, executed 18 Nov 2026 (plan §15):**
 
@@ -284,7 +287,7 @@
 | Revision 3 | Owner approves the plan | ✅ 17 Nov 2026 | [x] |
 | Revision 4 | **Phase A authorised** (read-only: I1–I31, live-site inventory, owner inputs and decisions, review of findings and risk register). Excludes merges, releases, backups, database, DNS or Cloudflare changes, imports, publishing, theme activation and any production change | ✅ 17 Nov 2026 | [x] |
 | Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✋ | [ ] |
-| A. Preparation and audit | 🛑 A-gate | ▶ **in progress**: all listed checks performed by 19 Nov 2026, **I34 resolved** (plan §16, §16.7); **open** until the owner reviews the findings and decides the A-gate | [ ] |
+| A. Preparation and audit | 🛑 A-gate | ▶ All checks done; **owner accepted the findings and recorded decisions (19 Nov, plan §16.9)**. **A-gate ready for owner sign-off once Update 6.5 is approved.** Phase B needs separate written approval | [ ] |
 | B. GitHub merge and release prep | 🛑 B-gate | ⛔ A-gate | [ ] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |
