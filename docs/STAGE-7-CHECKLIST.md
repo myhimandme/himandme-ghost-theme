@@ -3,6 +3,7 @@
 > **Status: Revision 6 approved baseline (committed 17 Nov 2026) + Update 6.1 (18 Nov 2026).** Server maintenance recorded: **M1–M3 done; M4 N1–N5 done; N6 pending observation** (plan §15). Phase A (read-only) still in progress. **Phases B–H are not authorised.** No further server changes are authorised.
 > **Update 6.2 (19 Nov 2026):** remaining Phase A checks recorded (plan §16). **Phase A stays open:** I34 is unresolved, and the findings await the owner's review. No production change was made.
 > **Update 6.3 (19 Nov 2026):** **I34 resolved** (plan §16.7). Phase A **stays open** for the owner's review and the A-gate. No production change was made.
+> **Update 6.4 (19 Nov 2026):** O28 decided (blocks belong only to `dr`); G6 extended; G12 added; FE1 (multi-author attribution) noted as a future enhancement (plan §16.8). Documentation only.
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -71,7 +72,8 @@
 | G3 | `routes.yaml` author slug `dr` → real slug (3 places) | ⛔ O4 | [ ] |
 | G4 | Launch seed builder (`seed/blocks.mjs` only, allowlist + denylist) | ✅ ready to build | [ ] |
 | G5 | Placeholder scanner | ✅ ready to build | [ ] |
-| G6 | Read-only production smoke test (modes: `--expect-private` for D2b, private cookie for F, anonymous for H3) | ✅ ready to build | [ ] |
+| G6 | Read-only production smoke test (modes: `--expect-private` for D2b, private cookie for F, anonymous for H3). **Plus (Update 6.4):** every `#blok` post has exactly one author, `dr`, and G6 **fails if any block has any other author, even when a containment route hides it**; every author archive in `sitemap-authors.xml` inspected; re-run after any staff change | ✅ ready to build | [ ] |
+| G12 | Local test: an additional author (Author role) with only real articles. Their archive, pagination and RSS show no block; `dr` archive unchanged (plan §16.8) | ✅ ready to build (Phase B) | [ ] |
 | G7 | README "Production launch" section | ✅ ready | [ ] |
 | G11 | Test: every block `.md` URL is 404; no block in `llms.txt`/`llms-full.txt` (F11) | ✅ ready to build (Phase B) | [ ] |
 | G8 | Local Stage 1–6 suites + guard + GScan (zip) all green on the release build | ✅ last run green (32/23/12/39/21/16; GScan 0/0) | [ ] re-run on release |
@@ -148,7 +150,7 @@
 | O25 | Launch window (date and time). Private mode is **mandatory** during it (R1, plan §3.6) | Phase D | ✋ | [ ] |
 | O26 | Merge option A or B (G0a), and the version number (G1) | Phase B | ✋ | [ ] |
 | O27 | Private mode protects the website but **not** Ghost's Content API. During the migration, anyone with the public Content API key can retrieve the published blocks (and the 3 imported pages, and any published article). Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (e.g. publish no article before H1) | Plan §3.6, R22 | ✋ | [ ] |
-| O28 | Block ownership: Case A (the doctor's account is the Owner), or Case B (extra filtered channel for the Owner's slug, or reassign the 23 blocks to the doctor) | Plan §3.7, R21 | ◐ I31 shows **Case A** (Dr Imran is the only staff account and the Owner); owner to confirm | [ ] |
+| O28 | Block ownership | Plan §3.7, §16.8, R21 | ✅ **Decided 19 Nov (Update 6.4): every `#blok` post has `dr` as its only author.** Additional authors of any role need no route or theme change. Safeguards G6 + G12. If broken: **reassign the block to `dr` only** (primary recovery). A filtered route (N2c) is only temporary containment; O28 stays unresolved, and G6 fails, until the block belongs exclusively to `dr` | [x] |
 | O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✋ | [ ] |
 | O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✋ LLM setting **currently ON** (19 Nov); must be off before H1 | [ ] |
 | O31 | `www.himandme.my`: **A (recommended):** separate www certificate + 301 to the apex (M4 N1–N3); B: one certificate covering both names; C: remove the www DNS record. (Cloudflare redirect not possible while the proxy is off) | R29 | ✅ Decided 18 Nov: **Option A**; executed (N1–N3) | [x] |
@@ -160,6 +162,12 @@
 | O37 | TLS hardening (possible M5): TLS 1.2/1.3 only, modern ciphers in `ssl-params.conf` (I33, R40) | R40 | ✋ | [ ] |
 | O38 | Staff-wide email 2FA in Ghost Admin (currently **off**); first confirm its interaction with `staffDeviceVerification` (R39) | R39 | ✋ | [ ] |
 | O39 | I34 follow-up: read-only correlation and persistence checks (plan §16.2) | R41 | ✅ **Done 19 Nov:** I34 resolved, R41 closed (plan §16.7) | [x] |
+
+## 4a. Future enhancements (not in scope)
+
+| ID | Enhancement | Trigger | Status |
+|---|---|---|---|
+| FE1 | Multi-author attribution: separate the **article author** from the **medical reviewer** (for example, per-author credentials or a separate reviewer line) | Only if additional authors are introduced | Not started. The current single-author attribution ("Ditulis dan disemak oleh Dr. Imran", one profile, slug `dr`, the existing author box and credentials) stays unchanged (plan §16.8) |
 
 ## 5. Content and test-data exclusion (§3)
 

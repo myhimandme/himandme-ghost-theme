@@ -3,6 +3,7 @@
 > **Status: Revision 6 is the approved planning baseline** (approved and committed 17 Nov 2026, `16be29c`). **Update 6.1 (18 Nov 2026)** adds §15, a record of the server maintenance the owner carried out: **M1–M3 complete; M4 N1–N5 complete; M4 N6 (HSTS) pending observation.** Revision 6's decisions are unchanged. **Phases B–H are NOT authorised.** No further server changes are authorised. **Next authorised action: read-only only (§15.9).**
 > **Update 6.2 (19 Nov 2026)** adds §16: the remaining read-only Phase A checks and a consolidated report. **Phase A stays open** (I34 is unresolved, and the findings await the owner's review). **No production change was made.**
 > **Update 6.3 (19 Nov 2026)** adds §16.7: **I34 resolved.** All eight password logins are the owner's own, and no unexpected account, key, cron task or public listener was found. **Phase A stays open** for the owner's review and the A-gate. **No production change was made.**
+> **Update 6.4 (19 Nov 2026)** adds §16.8: the **O28 block-ownership rule** (every `#blok` post belongs only to `dr`), safeguards **G6** (extended) and **G12**, and multi-author attribution as future enhancement **FE1**. Single-author attribution is unchanged. Documentation only.
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -123,8 +124,9 @@
 | G3 | `routes.yaml`: replace the placeholder author slug `dr` (3 places) with the doctor's real staff slug | Otherwise `/blog/penulis/{slug}/` uses the unfiltered taxonomy, which could list `#blok` content blocks | ⛔ Blocked on O4 (the real slug) |
 | G4 | Add `scripts/build-launch-seed.mjs` to generate the production import file from `seed/blocks.mjs` **only** (section 3) | There is no launch seed generator yet. The existing `test/stage1/make-fixtures.mjs` mixes in test articles and must never be used for production | ✅ Ready to build |
 | G5 | Add `scripts/check-placeholders.mjs` (section 3.4) | Enforces the owner's rule that no test content or placeholder reaches production | ✅ Ready to build |
-| G6 | Add `test/prod/smoke.mjs`: a **read-only** production check (GET requests only, no Admin login, no edits). Modes: `--expect-private` (D2b: pages, feeds and sitemaps must 302 to `/private/`; robots.txt must be 200 with `Disallow: /`; http/www first hop then final; `cf-cache-status` checked), with the private-site cookie (F), and anonymous (H3) | D2b, Phase F and H verification | ✅ Ready to build |
+| G6 | Add `test/prod/smoke.mjs`: a **read-only** production check (GET requests only, no Admin login, no edits). Modes: `--expect-private` (D2b: pages, feeds and sitemaps must 302 to `/private/`; robots.txt must be 200 with `Disallow: /`; http/www first hop then final; `cf-cache-status` checked), with the private-site cookie (F), and anonymous (H3). **Update 6.4:** also checks that every `#blok` post has exactly one author, `dr` (Content API), and **fails if any block has any other author, even when a containment route hides it**; inspects **every** author archive in `sitemap-authors.xml`; re-run after any staff change (§16.8) | D2b, Phase F and H verification; O28 rule | ✅ Ready to build |
 | G7 | README: a "Production launch" section that points to this plan | Single entry point | ✅ Ready |
+| G12 | Add a local test: an additional author (Author role) with only real articles. Their archive, pagination and RSS list only their articles, never a block; `dr` unchanged (§16.8) | Proves the O28 rule's multi-author case, which has not been tested directly | ✅ Ready to build (Phase B) |
 | G11 | Add to `test:stage7` and the smoke test: every block's `.md` URL is 404, and `llms.txt`/`llms-full.txt` list no block (Phase A finding F11) | Ghost 6.75 serves blocks as Markdown while its LLM setting is on | ✅ Ready to build (Phase B) |
 
 ---
@@ -327,7 +329,7 @@ Private mode is **not** described anywhere in this plan as hiding the blocks com
 | D6 | Tags (7), staff profile (photo, bio, slug), navigation | Private | — |
 | D7 | **Activate the new theme** | Private | Owner (logged in with the private password) sees the homepage |
 | D8 | Theme settings (E8), including `doctor_author_slug` = the staff slug | Private | Homepage team card shows the doctor, not "[Nama Penuh]" |
-| D9 | **Upload `routes.yaml`**, rendered with the real slug (and an extra channel if §3.7 case B applies) | Private | Labs → Routes download matches the release file |
+| D9 | **Upload `routes.yaml`**, rendered with the real slug (an extra filtered channel only as **temporary containment**, §16.8, if a block's ownership is still being corrected) | Private | Labs → Routes download matches the release file |
 | D10 | Redirects (if O20 lists any) | Private | — |
 | E | Remaining production configuration (§5) | Private | — |
 | F | Review and testing **while still private**: the smoke test and the §7 checks run with the private-site cookie (on the owner's computer, or here if the network allows); visual review by the owner | Private | F-gate |
@@ -414,8 +416,9 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 1. **The slug must match in four places:** the staff profile, `routes.yaml` (3 places, via the release render step that fails if any `dr` remains), and the theme setting `doctor_author_slug`. Release check G3 and production check §7.2.
 2. **Who owns the blocks.** The importer gives the blocks to the **Owner** account.
    - **Case A:** the doctor's account is the Owner. Nothing extra is needed. This is the simplest option.
-   - **Case B:** the Owner is a different account (for example a business or admin login). Before launch, **either** add a second filtered channel for the Owner's slug to `routes.yaml` (the N2c pattern, tested), **or** change the author of all 23 blocks to the doctor in Admin.
+   - **Case B:** the Owner is a different account (for example a business or admin login). Before launch, **change the author of all 23 blocks to `dr` as their only author** in Admin. This is required by the O28 rule (§16.8). A second filtered channel for the Owner's slug (the N2c pattern, tested) may be added **only as temporary containment** while ownership is being corrected; it hides the blocks but does **not** satisfy O28.
    - Owner decision **O28**, after I27/D4. The production smoke test checks **every** author listed in `sitemap-authors.xml`, not only the doctor's.
+   - **Update 6.4 (19 Nov 2026):** O28 is decided as a general **ownership rule**: every `#blok` post has `dr` as its only author. That makes additional authors of any role safe without changing routes or the theme. Safeguards: G6 (extended) and G12 (§16.8).
 3. On production, the smoke test (G6) re-uses the same read-only inspector (`inspectAuthor`, GET requests only) with the real slug, in Phase F (private cookie) and Phase H (anonymous).
 
 ## 4. Theme deployment procedure (Phase D; not run now)
@@ -685,7 +688,7 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R18 | Logo files are owner-read-only in the zip | Low | G2 | ✅ Fix ready |
 | R19 | Launching with no articles: empty blog sections | Low | Owner decision O23 | ✋ |
 | R20 | `/jurnal/` listed in the sitemap as a redirect | Low | Accept, or noindex (S2) | ✅ Known |
-| R21 | Blocks owned by a **non-doctor Owner account** (the importer's default): that account's taxonomy archive exposes them (**measured**, N2a) | **High** | Case A (doctor = Owner) or Case B (extra filtered channel, tested N2c, or reassign the 23 blocks); smoke test checks every author archive | ✋ O28 |
+| R21 | Blocks owned by a **non-doctor Owner account** (the importer's default): that account's taxonomy archive exposes them (**measured**, N2a) | **High** | O28: every block belongs only to `dr`. Case A at import; otherwise reassign the blocks to `dr`. An extra filtered channel (N2c) is temporary containment only. G6 checks block authorship and every author archive | ✅ O28 decided 19 Nov: blocks belong only to `dr`; safeguards G6 + G12 (§16.8) |
 | R22 | Private mode does not protect the **Content API**: anyone with the public key can list and retrieve every published post during the migration (the 23 blocks, the 3 pages, any published article) | Low–Medium | The blocks and pages are approved public copy, served the same way after launch. Drafts are never exposed; test content is never imported. The key is not shown while private (P8) but may already be known. Optional: publish no article before H1 | ✋ O27 |
 | R27 | The private `robots.txt` (`Disallow: /`, HTTP 200, `Cache-Control: public, max-age=3600`) stays cached after launch, so search engines are told to crawl nothing | Medium | Purge at H2; H3 requires the public robots.txt; re-check at +24 h; Search Console robots.txt report in Phase H | ✅ Planned |
 | R26 | Cloudflare keeps serving cached copies of old public pages after private mode is on | Low | **Proxy off (I22): there is no Cloudflare cache in the path.** D2b still run unchanged (a missing `cf-cache-status` is a pass) | ✅ |
@@ -754,7 +757,7 @@ Plan approved
 - **O1–O29** are all listed in the checklist (section 4): content, profile, business details, analytics, redirects, window, merge option. The ones added or changed since revision 1:
 - **O27 (rewritten):** private mode protects the website but **not** the Content API. During the migration, anyone with the public key can retrieve the published blocks and pages. Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (§3.6, R22).
 - **O21 (clarified):** structured data. None, or `LocalBusiness` (recommended), or `MedicalBusiness`/a subtype **only** with confirmed healthcare-facility registration (§6.1).
-- **New, O28:** block ownership, Case A (the doctor's account is the Owner) or Case B (an extra channel, or reassign the 23 blocks), after I31.
+- **New, O28:** block ownership, Case A (the doctor's account is the Owner) or Case B (an extra channel, or reassign the 23 blocks), after I31. *Decided 19 Nov 2026 (Update 6.4): the ownership rule "every `#blok` post belongs only to `dr`", with G6 and G12 (§16.8). The extra-channel option is now temporary containment only, not a resolution.*
 - **Update 6.1 (18 Nov 2026):**
   - **Decided:** O31 = Option A; O36 approved (N4–N6, subject to the HSTS review).
   - **Executed:** O32 (M2) and O33 (M3).
@@ -789,6 +792,8 @@ Both documents were re-read after the revision 3 edits. Checked and aligned:
 | Status | Phase A not started; nothing deployed | Header, section 10 |
 
 Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist.
+
+**Update 6.4 (19 Nov 2026), documentation only:** adds §16.8 (O28 ownership rule; G6 extended; new G12; future enhancement FE1, multi-author attribution). Updates the R21 status, §1.4 and §3.7. Single-author attribution and the `dr` slug are unchanged.
 
 **Update 6.3 (19 Nov 2026), documentation only:** adds §16.7 (I34 resolved; O39 done; R41 closed), with matching status cells in §2, §10 and §16. It also corrects the historical note in the header about 17 Nov. No other finding or decision changes.
 
@@ -1509,3 +1514,57 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
   - the N6 HSTS review (around 25 Nov 2026, `max-age=300`);
   - **Phase A stays open** until the owner reviews the findings and decides the A-gate;
   - **Phases B–H remain unauthorised.**
+
+### 16.8 O28 block ownership rule and multi-author safeguards: Update 6.4 (19 Nov 2026)
+
+> **Decision recorded:** the owner approved the O28 ownership rule and safeguards G6 and G12 on 19 Nov 2026. This is a **documentation-only** decision: no code, theme, route, Ghost or server change.
+
+**Current design (unchanged by this update):**
+- **One** Ghost author profile, Dr Imran, slug **`dr`**.
+- Every article says **"Ditulis dan disemak oleh Dr. Imran"**.
+- The author box and the credentials line (theme setting `doctor_credentials`) stay as they are.
+
+**O28: the ownership rule.**
+> **Every `#blok` post has `dr` as its only author.**
+
+- **Why it is enough:**
+  - The doctor's archive `/blog/penulis/dr/` is a filtered route that excludes blocks (tested, §3.7).
+  - Any other author's archive uses Ghost's standard author route, which ignores filters but lists only that author's own posts.
+  - So blocks can appear on an author page **only if a block lists that author** (N2a).
+  - While the rule holds, **additional authors of any role can be added without changing `routes.yaml` or the theme.**
+- **How the rule is met at launch:** Ghost gives authorless imported posts to the account that is Owner **at import time**. Dr Imran is the only staff account and the Owner (I31), and that is re-checked at D4.
+- **How it could break** (none of these happens automatically when an author is added):
+  1. An Editor, Administrator or the Owner adds another author to a block. Author and Contributor roles cannot edit other people's posts.
+  2. The `dr` account is deleted: Ghost reassigns its posts to the current Owner.
+  3. Blocks are re-imported while someone else is Owner.
+  4. The `dr` slug is changed. It stays `dr`.
+- **If it is ever broken:**
+  1. **Primary recovery:** reassign the affected block so that `dr` is its **only** author. This is the only action that restores the O28 rule.
+  2. **Exceptional temporary containment:** while ownership is being corrected, a filtered route for the other author's slug (the N2c pattern, tested) may be added to stop public exposure. **O28 remains unresolved until the block belongs exclusively to `dr`**, and G6 keeps failing until then. Remove the containment route afterwards, unless it is needed for another reason.
+- **Operating rules:**
+  - never add authors to a block;
+  - give new writers the Author or Contributor role where possible;
+  - re-run G6 after any staff change (new account, role or Owner change, deletion).
+
+**Safeguards approved (built in Phase B; not built now):**
+
+| ID | Safeguard | Type |
+|---|---|---|
+| **G6** (extended) | The production smoke test also checks: (a) through the public Content API, every `#blok` post has exactly one author, `dr`. **G6 fails if any block has any author other than `dr`, even when a containment route hides it**; (b) **every** author listed in `sitemap-authors.xml` with the existing archive inspector (all pages and RSS, no block). Runs in Phase F (private cookie), at H3 (anonymous) and after any staff change | Read-only |
+| **G12** (new) | A local test: an additional author with the **Author** role and only real articles. Their archive, pagination and RSS list only their articles and never a block; the `dr` archive is unchanged | Local only |
+
+**Noted, no action:** the public Content API (with the public key) can report the `dr` author's post count, and that count includes the 23 blocks. The theme never displays author post counts. This is the same category as O27.
+
+**Future enhancement FE1: multi-author attribution (not in scope; nothing changes now).**
+- **Today:** the article byline ("Ditulis dan disemak oleh …"), the author box and the `doctor_credentials` line assume a single medical author. They would show the doctor's credentials for any author.
+- **When to revisit:** only if additional authors are introduced. At that point, design the distinction between the **article author** and the **medical reviewer** (for example, per-author credentials, or a separate reviewer line).
+- **Until then:** the single-author attribution stays exactly as it is.
+
+**Effect on status:**
+- **Changed:** O28 ✅ decided. R21 is mitigated by the rule plus G6/G12. G12 is added to the Phase B list.
+- **Unchanged:**
+  - O4 (`dr` is kept as the slug, but O4 is not formally closed by this update);
+  - all other open decisions (O30, O34, O35, O37, O38, O18 and the O1–O29 inputs);
+  - N6;
+  - Phase A stays open;
+  - Phases B–H remain unauthorised.
