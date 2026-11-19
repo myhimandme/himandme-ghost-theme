@@ -1,6 +1,7 @@
 # Stage 7 plan: production readiness and launch preparation
 
 > **Status: Revision 6 is the approved planning baseline** (approved and committed 17 Nov 2026, `16be29c`). **Update 6.1 (18 Nov 2026)** adds §15, a record of the server maintenance the owner carried out: **M1–M3 complete; M4 N1–N5 complete; M4 N6 (HSTS) pending observation.** Revision 6's decisions are unchanged. **Phases B–H are NOT authorised.** No further server changes are authorised. **Next authorised action: read-only only (§15.9).**
+> **Update 6.2 (19 Nov 2026)** adds §16: the remaining read-only Phase A checks and a consolidated report. **Phase A stays open** (I34 is unresolved, and the findings await the owner's review). **No production change was made.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -159,7 +160,7 @@ Environment as stated by the owner:
 | I15 | DB connectivity | `ghost doctor` (above), plus the Admin loading without errors | Ghost connects. **Don't print the database credentials** | ✅ (§14.1) |
 | I16 | DB size and backup space | `df -h /var/www /var/lib/mysql; sudo du -sh /var/www/himandme/content` | Free disk ≥ 3× (database dump + content folder), for backups during the launch | ✅ (§14.1) |
 | I17 | Memory | `free -h` | ≥ 1 GB free or swap configured (Ghost plus MySQL on a small VPS) | ✅ (§14.1) |
-| I18 | Firewall | `sudo ufw status verbose` (and the Tencent Cloud security-group rules in the console) | Only 22 (or your SSH port), 80 and 443 open. 3306 and 2368 **not** open to the internet | 🔍 ufw ✅; Tencent group pending |
+| I18 | Firewall | `sudo ufw status verbose` (and the Tencent Cloud security-group rules in the console) | Only 22 (or your SSH port), 80 and 443 open. 3306 and 2368 **not** open to the internet | ✅ Tencent firewall: 443/22/80 TCP + ICMP allowed (IPv4); no 3306/2368 (§16.1) |
 | I19 | Ports | `sudo ss -tlnp \| grep -E ':(80\|443\|2368\|3306)\b'` | 2368 and 3306 bound to `127.0.0.1` only | ✅ (§14.1) |
 | I20 | SSH | `sudo sshd -T \| grep -Ei '^(permitrootlogin\|passwordauthentication\|pubkeyauthentication)'` | `permitrootlogin no` (or `prohibit-password`), `passwordauthentication no`, `pubkeyauthentication yes` | ✅ resolved 18 Nov (M2) |
 | I21 | Updates | `sudo unattended-upgrades --dry-run 2>/dev/null \| tail -3; apt list --upgradable 2>/dev/null \| wc -l` | Security updates applied or scheduled | ✅ updates applied 18 Nov (M3); auto-security (O35) open |
@@ -168,14 +169,14 @@ Environment as stated by the owner:
 | I24 | Cloudflare edge (view only) | SSL/TLS → Edge Certificates; Speed; Caching → Cache Rules | "Always Use HTTPS" on; **Rocket Loader off** (it rewrites the theme's scripts); no "Cache Everything" rule or edge-TTL override covering HTML, `/ghost/*`, `/members/*` or `/p/*` (previews); **Always Online off**; note whether Cache Reserve is on. Otherwise cached old pages could still be served during private mode (R26) | ✅ n/a (proxy off) |
 | I25 | Cloudflare security (view only) | Security → WAF / Bots | No rule that blocks Ghost Admin's API (`/ghost/api/admin/*`) or theme uploads | ✅ n/a (proxy off) |
 | I26 | Ghost mail | Ghost Admin → Settings → (staff invite, password reset) | A working mail transport (needed for staff password resets). Members and newsletters are **not** used (section 5) | ✅ resolved 18 Nov (M1, interim Gmail SMTP) |
-| I27 | Current live content | Ghost Admin → Posts / Pages / Tags / Staff; Settings → Design (active theme name and version); Labs → Routes (download); Labs → Redirects (download) | An **inventory** of what is live now (section 3.1). Nothing changed | 🔍 |
-| I28 | Network (ActivityPub) | Settings → Growth → Network | Note on or off. It **must be off before any import** (R2) | 🔍 |
-| I29 | Membership | Settings → Membership → Access | Note the current value. Planned: "Nobody" (section 5) | 🔍 |
+| I27 | Current live content | Ghost Admin → Posts / Pages / Tags / Staff; Settings → Design (active theme name and version); Labs → Routes (download); Labs → Redirects (download) | An **inventory** of what is live now (section 3.1). Nothing changed | ✅ 0 drafts/scheduled; default routes; empty redirects (§16.1) |
+| I28 | Network (ActivityPub) | Settings → Growth → Network | Note on or off. It **must be off before any import** (R2) | ✅ OFF (§16.1); re-check at D3 |
+| I29 | Membership | Settings → Membership → Access | Note the current value. Planned: "Nobody" (section 5) | ✅ 0 members; subscriptions Nobody (§16.1) |
 | I30 | MySQL backup access (no secrets) | `sudo mysql -e "SELECT user, plugin FROM mysql.user WHERE user='root'; SELECT @@character_set_server, @@collation_server; SELECT table_schema, ROUND(SUM(data_length+index_length)/1024/1024,1) AS mb FROM information_schema.tables GROUP BY table_schema;"` | root uses `auth_socket` (so `sudo mysqldump` needs no password); `utf8mb4`; database size noted | ✅ (§14.1) |
-| I32 | fail2ban (read-only) | `sudo fail2ban-client status; sudo fail2ban-client status sshd` | `sshd` jail active; current bans noted | 🔍 |
-| I33 | Nginx TLS snippet (no secrets) | `sudo cat /etc/nginx/snippets/ssl-params.conf` | Note any `add_header` lines (ignored inside locations that set their own headers) | ◐ HSTS line known (§15.5); rest not reported |
-| I34 | Owner's own SSH logins | `sudo journalctl -u ssh --since "7 days ago" --no-pager \| grep "Accepted password"` | The owner recognises all 5 accepted logins (times, source addresses) | 🔍 |
-| I31 | Staff accounts and Owner | Admin → Settings → Staff (look only) | Which account has the **Owner** role; every staff slug; no test or unknown accounts (§3.7) | 🔍 |
+| I32 | fail2ban (read-only) | `sudo fail2ban-client status; sudo fail2ban-client status sshd` | `sshd` jail active; current bans noted | ✅ active, 1 jail; 262 failed total, 6 banned total (§16.1) |
+| I33 | Nginx TLS snippet (no secrets) | `sudo cat /etc/nginx/snippets/ssl-params.conf` | Note any `add_header` lines (ignored inside locations that set their own headers) | ⚠️ TLS 1.0/1.1 + legacy ciphers → R40 (§16.1) |
+| I34 | Owner's own SSH logins | `sudo journalctl -u ssh --since "7 days ago" --no-pager \| grep "Accepted password"` | The owner recognises all 5 accepted logins (times, source addresses) | ⚠️ **Unresolved:** 8 logins not all confirmed → R41 (§16.2) |
+| I31 | Staff accounts and Owner | Admin → Settings → Staff (look only) | Which account has the **Owner** role; every staff slug; no test or unknown accounts (§3.7) | ✅ Dr Imran only, Owner, slug `dr` (§16.1) |
 
 **How to send the results:** paste the outputs, or say "matches" or "differs" per row. If anything shows a password, key or token, remove it before pasting.
 
@@ -448,7 +449,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | E7 | Navigation | Primary: Utama `/`, Disfungsi Ereksi `/disfungsi-ereksi/`, Blog `/blog/`. Secondary: 7 categories in the README order | ✅ |
 | E8 | Theme settings | As below | ✋ |
 | E9 | Routes | `routes.yaml` after G3 | ⛔ G3 |
-| E10 | Integrations | Remove unused custom integrations, without exposing keys | 🔍 |
+| E10 | Integrations | Remove unused custom integrations, without exposing keys | ✅ No custom integrations (§16.1) |
 | E11 | Staff | Only real people. Owner role on the doctor's or the business account. 2FA/"staff device verification" on, which **depends on working mail (M1, R34)** | 🔍 |
 | E12 | Settings → General settings → Meta data → **"Enable structured data for LLMs and AI search engines"** | **Off** before H1 (F11: otherwise every block is readable at `/blog/{slug}.md`; tested locally, off gives 404). Private mode covers it until then | ✋ O30 |
 
@@ -689,9 +690,9 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R23 | Restoring the database while Ghost runs shows stale settings | Medium | `ghost stop` before and `ghost start` after (rehearsed) | ✅ |
 | R24 | `mysqldump` PROCESS-privilege error goes unnoticed (exit code 0) | Medium | `--no-tablespaces`, run with `sudo`, and check `dump.err` is empty (C4) | ✅ |
 | R25 | Staff access token for `ghost backup` exposed | Medium | Typed only at the prompt on the server; never in chat, files or the repository | ✅ Rule |
-| R28 | Ghost 6.75's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch (Phase A F11, measured locally: 23 of 23) | **High** | E12 off before H1 (tested: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ✋ O30 |
+| R28 | Ghost 6.75's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch (Phase A F11, measured locally: 23 of 23) | **High** | E12 off before H1 (tested: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ✋ O30. **Confirmed ON** in Admin (19 Nov, §16.1); not changed |
 | R29 | `www.himandme.my`: certificate error over HTTPS; over HTTP the Nginx welcome page (I11, I13) | Medium | M4 steps N1–N3 (separate www certificate + 301 to apex), or O31 option C | ✅ Mitigated 18 Nov (M4 N1–N3; §15.5) |
-| R30 | Member sign-up open on the live site; possible existing members' personal data | Medium | Count in I29; O18 decision before E2 ("Nobody") | 🔍 / ✋ |
+| R30 | Member sign-up open on the live site; possible existing members' personal data | Medium | Count in I29; O18 decision before E2 ("Nobody") | ✅ Currently mitigated (19 Nov: 0 members, subscriptions Nobody; §16.1); O18 to confirm |
 | R32 | SSH: root and password logins allowed; **no SSH key installed for any account**; **10,218 failed login attempts in 7 days**; port 22 open to all (I18, I20) | **High** | M2 (§14.4): break-glass VNC + key installed and proven first, then a drop-in disabling root and password login; fail2ban check (I32); owner confirms own logins (I34) | ✅ Mitigated 18 Nov (M2; §15.3) |
 | R33 | 23 security updates pending (kernel, glibc, MySQL, perl, ca-certificates…); restart pending since 5 Nov; running kernel 6.8.0-138 (I1, I21) | **High** | M3 (§14.3): snapshot → `apt upgrade` → one reboot → checks | ✅ Mitigated 18 Nov (M3; §15.4) |
 | R34 | Ghost mail `Direct` with outbound port 25 blocked, while staff device verification is on: **a login from any new browser or device cannot be completed**; resets and invites fail (I3, I26) | **High** | Keep the current Admin browser session; M1 SMTP via a provider before Phase D. Port 587 is only shown reachable; delivery and the second-browser verification must pass in M1 (§14.6) | ✅ Mitigated 18 Nov (M1, interim Gmail; see R37) |
@@ -699,6 +700,9 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R36 | Automatic updates enabled but limited to `noble`, so **security updates are never installed automatically** (I21) | Medium | Add the `-security` origin (O35); reboots stay manual | ✋ O35 (not reported as done in M3; §15.8) |
 | R37 | Ghost mail depends on an **interim Gmail SMTP** account (personal-account dependency, sending limits, no domain-aligned SPF/DKIM/DMARC for the site's sender identity) | Medium | Replacement provider as a future maintenance item; keep Gmail until every replacement test passes (§15.2) | ✋ O34 (long-term) |
 | R38 | An older HSTS policy (`max-age=63072000; includeSubDomains; preload`, previously in `ssl-params.conf`) **may be cached** in browsers that received it; preload-list status unchecked | Low–Medium | Keep `max-age=300` during the N6 observation; no `includeSubDomains`/`preload` without validating every subdomain; check the preload status read-only (§15.5, §15.8) | ⏳ N6 |
+| R39 | Staff-wide email 2FA setting in Ghost Admin is **off** (19 Nov). The config's `staffDeviceVerification: true` (new-device verification) is separate and was tested in M1 | Medium | Confirm how the two interact on Ghost 6.75, then decide; test with the original session open (§16.4) | ✋ O38 |
+| R40 | Nginx `ssl-params.conf` permits **TLS 1.0/1.1** and **legacy ciphers** (I33) | Medium | Possible M5: TLS 1.2/1.3 only with a modern cipher list; `nginx -t` + reload; rollback copy (§16.4) | ✋ O37 |
+| R41 | **Eight accepted password logins** (6 on 17 Nov, 2 on 18 Nov) **not all confirmed** by the owner (I34). Not a confirmed breach | **High until explained** | Password login has been off since M2; read-only correlation and persistence checks (§16.2) | ✋ O39 |
 | R31 | No HSTS, Referrer-Policy, Permissions-Policy; X-Frame-Options only on `/ghost/` (I10) | Low–Medium | M4 step N5–N6 (snippet included in each HTTPS location; HSTS 300 s → 1 year; no preload) | ◐ Partly: N5 done 18 Nov; **N6 pending** (§15.5) |
 
 ---
@@ -783,6 +787,8 @@ Both documents were re-read after the revision 3 edits. Checked and aligned:
 | Status | Phase A not started; nothing deployed | Header, section 10 |
 
 Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist.
+
+**Update 6.2 (19 Nov 2026), documentation only:** adds §16 (the completed Phase A checks I18, I27–I29, I31–I34, E10, the LLM setting and staff 2FA; a consolidated report). It updates status cells in §2 and §10, and adds R39–R41 and decisions O37–O39. Historical sections are unchanged.
 
 **Update 6.1 (18 Nov 2026), documentation only:** adds §15 (maintenance as executed), updates status cells in §2, §10 and §12, and adds R37, R38 and two notes in §14. Revision 6's text and decisions are otherwise unchanged; where the execution differed (www key EC-256 rather than RSA 2048), §15.6 records it.
 
@@ -1338,4 +1344,115 @@ On the old HSTS policy:
 2. **Around 25 Nov 2026**, run the N6 observation review in **§15.8 B** (read-only).
 3. Present the results so the owner can decide on N6, and separately on the other **§15.8 C** decisions and on Phase B.
 
+> **Update 6.2 (19 Nov 2026):** the §15.8 A items have since been checked. Results, open findings and the current next steps are in **§16.5**.
+
 The §15.8 C items are **decisions, not authorised work**. In particular, no mail-provider migration is authorised, and Gmail SMTP stays unchanged.
+
+---
+
+## 16. Phase A completion checks: Update 6.2 (19 Nov 2026), consolidated report
+
+> **What this section is:** a record of the read-only Phase A checks the owner carried out after Update 6.1: Ghost Admin views, the Tencent console and three read-only server commands. **Results are as reported by the owner.**
+> - **No production change was made during this audit:** no setting, toggle, file, firewall rule, DNS record or Nginx line was changed.
+> - **No command was run from this documentation session.**
+> - **Earlier evidence stands:** the 17 Nov audit (§14) and the 18 Nov maintenance record (§15) are unchanged history. Where a current observation differs from an earlier one, both are recorded.
+> - **Phase A is not closed:** it stays open until these findings, and the decisions below, have been presented to the owner and the A-gate is decided.
+
+### 16.1 Completed checks
+
+| ID | Check | Current observation (owner, 19 Nov 2026) | Assessment |
+|---|---|---|---|
+| **I18** | Tencent firewall (inbound) | TCP **443**, **22**, **80**: allow, all IPv4. **ICMP**: allow, all IPv4. **No** public inbound rule for MySQL **3306** or Ghost **2368** | ✅ Matches the plan. Together with I19 (3306 and 2368 bound to 127.0.0.1) and ufw (I18, 17 Nov), the database and Ghost are not reachable from the internet. ICMP (ping) allowed: informational, low. Port 22 open to all IPv4 is acceptable with key-only SSH and fail2ban; restricting it to known addresses stays optional |
+| **I27** (Admin part) | Drafts, scheduled, routes, redirects | **0** draft posts, **0** scheduled posts, **0** draft pages, **0** scheduled pages. `routes.yaml` is **Ghost's default** (`/{slug}/`, `/tag/{slug}/`, `/author/{slug}/`). `redirects.yaml` has **empty** 301 and 302 sections | ✅ Nothing unpublished to migrate or protect. Default routes are expected before the release (this theme's `routes.yaml` is only uploaded at D9). No existing redirects need preserving; O20's new entries start from empty |
+| **I28** | Ghost Network | **OFF** | ✅ The pre-import condition (R2) holds today. It must be **re-checked at D3**, immediately before any import |
+| **I29** | Membership | **0** members. Browsing: **Public**. Subscriptions: **Nobody**. New posts: **Public**. Comments: **Nobody** | ✅ No member personal data. E2 and E3 already look as planned. O18 stays for the owner to confirm formally. *Note: on 17 Nov the public site API reported `allow_external_signup: true` and loaded the Portal script (PHASE-A-FINDINGS F8). The Admin setting now reads "Nobody". When or why that changed was not established; both observations are kept* |
+| **I31** | Staff | **Dr Imran** is the **only** staff account, role **Owner**, slug **`dr`** | ✅ **§3.7 Case A applies:** the doctor's account is the Owner, so imported blocks will belong to the doctor, and no extra filtered channel is needed (R21). The slug `dr` equals the `routes.yaml` placeholder (O4). O28 and O4 can be confirmed by the owner on this basis |
+| **E10** | Custom integrations | **None** | ✅ Nothing to remove |
+| **LLM setting** | "Enable structured data for LLMs and AI search engines" | **ON** | ⚠️ **R28 stays High.** Must be **off before H1** (O30). It is covered by private mode until then (§3.6). **Not changed** in this audit |
+| **Staff 2FA** | Staff-wide email 2FA setting in Ghost Admin | **OFF** | ⚠️ **Security observation (R39), not a completed change.** Separately, the server config has `security.staffDeviceVerification: true` (I3), and its new-device email verification was tested working in M1. How that config value and the Admin setting interact on Ghost 6.75 should be confirmed before any change. **Not changed** in this audit |
+| **I32** | fail2ban | Active; **one** jail (`sshd`). Total failed **262**, currently failed **3**, total banned **6**, currently banned **0** | ✅ Working as a rate-limiter. With password login disabled (M2), failed attempts can no longer succeed by guessing |
+| **I33** | `ssl-params.conf` | Permits **TLS 1.0, 1.1, 1.2 and 1.3** and includes **legacy cipher suites** | ⚠️ **Finding (R40).** TLS 1.0 and 1.1 are deprecated. Remediation needs separate owner approval (O37); **nothing was changed** |
+| **I34** | Accepted password logins | **Six** on **17 Nov** from `60.50.85.64`, **two** on **18 Nov** from `124.82.77.26`. **The owner cannot confirm all eight** | ⚠️ **Unresolved (R41). Not classified as a confirmed breach** (16.2) |
+
+### 16.2 I34: unresolved, and why it is not called a breach
+
+**Facts:**
+- Eight password logins were accepted before password login was disabled in M2 (18 Nov):
+  - **six on 17 Nov** from `60.50.85.64`;
+  - **two on 18 Nov** from `124.82.77.26`.
+- The owner cannot confirm that all eight were theirs.
+
+**Context (not a conclusion):**
+- On 17 Nov the owner ran two read-only audit scripts over SSH. The reports are timed 13:06 and 13:32 UTC.
+- On 18 Nov the owner carried out M1–M4 over SSH, starting while password login was still enabled.
+- So owner logins are expected on both days. Whether they account for all eight has not been established.
+- The earlier figure, "5 accepted password logins in the 7 days to 17 Nov 13:32 UTC" (I20), covered a different time window, so the two counts are not directly comparable.
+
+**Why it stays open:** an unconfirmed login cannot be closed on assumption, and it cannot be called a breach without evidence.
+
+**Current protection:**
+- Password and root logins have been **disabled since M2**.
+- Only the owner's Ed25519 key is accepted.
+- fail2ban is active.
+
+**Suggested read-only next checks** (O39: the owner decides whether to run them; nothing changes):
+1. **Match times to the owner's own activity:** list the eight logins with their times, then compare them with the owner's own records (when the scripts were run, when M1–M4 work started), and with the owner's home and mobile public addresses on those days.
+2. **Session activity:**
+   - `sudo journalctl _COMM=sudo --since "2026-11-17" --until "2026-11-19" --no-pager`: the commands run with sudo;
+   - `last -F -i | head -30`: session start and end times.
+3. **Signs of persistence:**
+   - the keys in `~ubuntu/.ssh/authorized_keys` (fingerprints only; there should be exactly the owner's key);
+   - user accounts with a login shell;
+   - root's and the user's crontabs;
+   - `systemctl list-unit-files --state=enabled`;
+   - listening ports (compare with I19).
+
+**Outcomes:**
+- If every login and command is accounted for, I34 can be closed.
+- If anything is unexplained, escalate to an owner decision: credential rotation, a fuller review, or a rebuild from the pre-M3 snapshot or a clean image.
+
+**Privacy:** the two source addresses are recorded here because the owner supplied them for the audit. If they are the owner's own connection, they are personal data. Consider masking them (for example `60.50.x.x`) before this repository is shared beyond the owner.
+
+### 16.3 Outstanding checks and security findings
+
+| Item | Status | Next |
+|---|---|---|
+| **I34** unconfirmed logins | ⚠️ **Unresolved** | Read-only checks in 16.2 (O39) |
+| **I33 / R40** TLS 1.0/1.1 and legacy ciphers | ⚠️ Finding | Owner decision O37 (a new maintenance step; see 16.4) |
+| **R39** staff-wide email 2FA off | ⚠️ Observation | Owner decision O38 |
+| **R28** LLM setting on | ⚠️ High, unchanged | Owner decision O30 (off before H1) |
+| **M4 N6** HSTS | ⏳ Pending | Read-only review **around 25 Nov 2026**; `max-age=300` until then (§15.5) |
+| **R36 / O35** automatic security updates | Open | Owner decision |
+| **O34** long-term mail provider | Open | Owner decision; Gmail stays unchanged |
+| Phase A presentation | Pending | This report, for the owner's review |
+
+### 16.4 Risks requiring owner decisions
+
+| ID | Risk | Severity | Recommendation | Decision |
+|---|---|---|---|---|
+| **R41** | Eight password logins not all confirmed by the owner (I34) | **High until explained** | Run the read-only checks in 16.2; do not treat as a breach without evidence; escalate if anything is unexplained | **O39** |
+| **R40** | Nginx accepts TLS 1.0/1.1 and legacy ciphers (I33) | Medium | A new maintenance step **M5**, after approval: set `ssl_protocols TLSv1.2 TLSv1.3;` and a modern cipher list (for example Mozilla's "intermediate" profile) in `ssl-params.conf`, which the apex and www blocks share. Then `nginx -t`, reload, and test apex and www. Copy the file first for rollback. Very old clients (pre-2014) would lose access | **O37** |
+| **R39** | Staff-wide email 2FA off in Ghost Admin | Medium | First confirm how this setting relates to `staffDeviceVerification: true` on Ghost 6.75. If enabling it, test with the original session kept open (mail works since M1) | **O38** |
+| **R28** | LLM setting on: blocks readable as `.md` after launch | **High** | Turn off before H1 (tested locally) | **O30** |
+| R36 | Security updates not automatic | Medium | Add the `-security` origin | O35 |
+| R37 | Interim Gmail SMTP | Medium | Replacement provider later; keep Gmail until tested | O34 |
+
+### 16.5 Recommended next steps and approval gates
+
+1. **Owner review of this report**, which is the Phase A presentation.
+2. **I34 read-only checks** (16.2), if the owner approves O39. They change nothing.
+3. **N6 HSTS review around 25 Nov 2026** (read-only), then the owner decides whether to raise HSTS.
+4. **Owner decisions:**
+   - **A:** O37 (TLS, a new M5 step), O38 (2FA), O30 (LLM, before H1), O35, O34, O18, O28 and O4.
+   - **B:** the content inputs in the checklist, section 4.
+5. **🛑 A-gate:** the owner accepts the Phase A findings. **I34 is resolved or explicitly accepted with a decision.**
+6. **Only after a separate written approval:** Phase B (GitHub merge and release preparation). **Server changes** (M5 TLS, 2FA, LLM toggle, HSTS increase) each need **their own** approval, and none is authorised by this report.
+
+### 16.6 Authorisation (unchanged)
+
+- **Done:** M1–M3, and M4 N1–N5. **N6 pending**; HSTS stays `max-age=300`.
+- **Not authorised:**
+  - any server, Ghost, DNS, Nginx or firewall change;
+  - the LLM and 2FA toggles, which stay as they are;
+  - Phases B–H, and production theme deployment.
+- **Phase A:** open.

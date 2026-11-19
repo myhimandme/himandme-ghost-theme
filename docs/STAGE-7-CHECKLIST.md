@@ -1,6 +1,7 @@
 # Stage 7 checklist: production readiness
 
 > **Status: Revision 6 approved baseline (committed 17 Nov 2026) + Update 6.1 (18 Nov 2026).** Server maintenance recorded: **M1–M3 done; M4 N1–N5 done; N6 pending observation** (plan §15). Phase A (read-only) still in progress. **Phases B–H are not authorised.** No further server changes are authorised.
+> **Update 6.2 (19 Nov 2026):** remaining Phase A checks recorded (plan §16). **Phase A stays open:** I34 is unresolved, and the findings await the owner's review. No production change was made.
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -17,8 +18,8 @@
 | Area | ✅ | 🔍 | ✋ | ⛔ |
 |---|---|---|---|---|
 | G: GitHub and release (§1) | 9 | 0 | 2 | 3 |
-| I: Infrastructure (§2) | 26 answered (incl. ⚠️ findings) | 8 | 0 | 0 |
-| O: Owner inputs (section 4 below) | 0 | 0 | 36 | 0 |
+| I: Infrastructure (§2) | 33 answered (incl. ⚠️ findings) | 1 (I34 unresolved) | 0 | 0 |
+| O: Owner inputs (section 4 below) | see rows | 0 | 39 items (some ✅ decided) | 0 |
 | V: Revision 2–4 verifications (section 1a) | 8 | 0 | 0 | 0 |
 | E: Production config (§5) | 2 | 3 | 6 | 1 |
 | S: SEO (§6) | 1 | 6 | 7 | 0 |
@@ -97,7 +98,7 @@
 | I15 | Ghost ↔ DB connectivity | ✅ | [x] |
 | I16 | Disk space for backups | ✅ 49 GB free | [x] |
 | I17 | Memory and swap | ✅ | [x] |
-| I18 | UFW and Tencent security group: only SSH/80/443 | 🔍 ufw ✅; Tencent security group pending | [ ] |
+| I18 | UFW and Tencent security group: only SSH/80/443 | ✅ Tencent firewall: TCP 443/22/80 + ICMP allowed (all IPv4); no 3306 or 2368 (19 Nov) | [x] |
 | I19 | 2368 and 3306 bound to localhost | ✅ | [x] |
 | I20 | SSH: keys only, no root password login | ✅ resolved 18 Nov (M2: key-only, root off) | [x] |
 | I21 | Security updates | ✅ applied 18 Nov (M3); auto-security O35 open | [x] |
@@ -106,14 +107,14 @@
 | I24 | Always HTTPS on; Rocket Loader off; no Cache Everything or edge TTL on HTML, `/ghost/`, `/members/`, `/p/`; **Always Online off**; Cache Reserve noted | ✅ n/a | [x] |
 | I25 | WAF not blocking Admin | ✅ n/a | [x] |
 | I26 | Ghost mail for staff | ✅ resolved 18 Nov (M1, interim Gmail) | [x] |
-| I27 | Inventory of current live content, theme, routes and redirects. **Phase A (public part done):** Ghost 6.75, theme Source, starter post `/coming-soon/`, page `/about/`, tag `news`, author `dr`; LLM features on; sign-up open. Drafts, routes and redirects need an Admin view | 🔍 | [ ] |
-| I28 | Network status (must be off before import). **Phase A:** ActivityPub endpoints 403, so it looks inactive; confirm the toggle | 🔍 | [ ] |
-| I29 | Membership access status. **Phase A:** sign-up **open** (F8, R30); member count needed | 🔍 | [ ] |
+| I27 | Inventory of current live content, theme, routes and redirects. **Phase A (public part done):** Ghost 6.75, theme Source, starter post `/coming-soon/`, page `/about/`, tag `news`, author `dr`; LLM features on; sign-up open. Drafts, routes and redirects need an Admin view | ✅ Public inventory (17 Nov) + Admin (19 Nov): 0 draft/scheduled posts and pages; routes = Ghost default; redirects 301/302 empty | [x] |
+| I28 | Network status (must be off before import). **Phase A:** ActivityPub endpoints 403, so it looks inactive; confirm the toggle | ✅ Network **OFF** (Admin, 19 Nov); re-check at D3 | [x] |
+| I29 | Membership access status. **Phase A:** sign-up **open** (F8, R30); member count needed | ✅ 0 members; browsing Public; subscriptions Nobody; new posts Public; comments Nobody (19 Nov). *17 Nov public API showed sign-up open (F8); change not dated* | [x] |
 | I30 | MySQL root uses `auth_socket`; charset `utf8mb4`; database size (no secrets) | ✅ auth_socket, utf8mb4 | [x] |
-| I32 | fail2ban `sshd` jail status (read-only) | 🔍 **Outstanding Phase A audit item.** fail2ban is active (18 Nov), but the `sshd` jail details were not reported. Not an M2 completion criterion; its being open does **not** mean M2 failed | [ ] |
-| I33 | `/etc/nginx/snippets/ssl-params.conf` contents (read-only) | ◐ HSTS line known (plan §15.5); rest not reported | [ ] |
-| I34 | Owner confirms the 5 accepted SSH password logins were theirs | 🔍 **Outstanding Phase A audit item** (no confirmation yet). Not an M2 completion criterion; its being open does **not** mean M2 failed | [ ] |
-| I31 | Which staff account is **Owner**; all staff slugs; no unknown accounts | 🔍 | [ ] |
+| I32 | fail2ban `sshd` jail status (read-only) | ✅ fail2ban active, 1 jail (`sshd`): 262 total failed, 3 currently failed, 6 total banned, 0 currently banned (19 Nov) | [x] |
+| I33 | `/etc/nginx/snippets/ssl-params.conf` contents (read-only) | ⚠️ Read (19 Nov): permits **TLS 1.0, 1.1, 1.2, 1.3** and **legacy ciphers** → R40; remediation needs approval (O37) | [x] |
+| I34 | Owner confirms the 5 accepted SSH password logins were theirs | ⚠️ **Unresolved:** 6 accepted password logins on 17 Nov (`60.50.85.64`), 2 on 18 Nov (`124.82.77.26`); owner cannot confirm all 8 → R41. **Not a confirmed breach** (plan §16.2) | [ ] |
+| I31 | Which staff account is **Owner**; all staff slugs; no unknown accounts | ✅ Only **Dr Imran**, role **Owner**, slug `dr` (19 Nov) → §3.7 Case A | [x] |
 
 ## 4. Owner inputs (section O): nothing here will be invented
 
@@ -146,15 +147,18 @@
 | O25 | Launch window (date and time). Private mode is **mandatory** during it (R1, plan §3.6) | Phase D | ✋ | [ ] |
 | O26 | Merge option A or B (G0a), and the version number (G1) | Phase B | ✋ | [ ] |
 | O27 | Private mode protects the website but **not** Ghost's Content API. During the migration, anyone with the public Content API key can retrieve the published blocks (and the 3 imported pages, and any published article). Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (e.g. publish no article before H1) | Plan §3.6, R22 | ✋ | [ ] |
-| O28 | Block ownership: Case A (the doctor's account is the Owner), or Case B (extra filtered channel for the Owner's slug, or reassign the 23 blocks to the doctor) | Plan §3.7, R21 | ✋ (after I31) | [ ] |
+| O28 | Block ownership: Case A (the doctor's account is the Owner), or Case B (extra filtered channel for the Owner's slug, or reassign the 23 blocks to the doctor) | Plan §3.7, R21 | ◐ I31 shows **Case A** (Dr Imran is the only staff account and the Owner); owner to confirm | [ ] |
 | O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✋ | [ ] |
-| O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✋ | [ ] |
+| O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✋ LLM setting **currently ON** (19 Nov); must be off before H1 | [ ] |
 | O31 | `www.himandme.my`: **A (recommended):** separate www certificate + 301 to the apex (M4 N1–N3); B: one certificate covering both names; C: remove the www DNS record. (Cloudflare redirect not possible while the proxy is off) | R29 | ✅ Decided 18 Nov: **Option A**; executed (N1–N3) | [x] |
 | O32 | SSH key-only migration (M2): approve; confirm VNC break-glass, the key's device, and a second copy | R32 | ✅ Executed 18 Nov (M2) | [x] |
 | O33 | Maintenance window for 27 updates + one reboot (M3), after a Tencent snapshot | R33 | ✅ Executed 18 Nov (M3; snapshot `himandme-pre-m3-updates-2026-11-18`) | [x] |
 | O34 | Ghost mail provider (SMTP; port 587 is reachable, but delivery must be proven in M1) and its SPF/DKIM DNS records | R34 | ◐ Interim: Gmail SMTP working (18 Nov); long-term provider ✋ | [ ] |
 | O35 | Enable automatic security updates (add the `-security` origin); reboots stay manual | R36 | ✋ Not reported as done in M3 | [ ] |
 | O36 | Nginx catch-all and security headers (M4 N4–N6) | R31, R35 | ✅ Approved 18 Nov (subject to the HSTS review); N4–N5 done, N6 pending | [ ] |
+| O37 | TLS hardening (possible M5): TLS 1.2/1.3 only, modern ciphers in `ssl-params.conf` (I33, R40) | R40 | ✋ | [ ] |
+| O38 | Staff-wide email 2FA in Ghost Admin (currently **off**); first confirm its interaction with `staffDeviceVerification` (R39) | R39 | ✋ | [ ] |
+| O39 | I34 follow-up: approve the read-only correlation and persistence checks (plan §16.2), then close I34 or escalate | R41 | ✋ | [ ] |
 
 ## 5. Content and test-data exclusion (§3)
 
@@ -188,7 +192,7 @@
 | E7 | Navigation (primary + 7 categories) | ✅ defined | [ ] |
 | E8 | 14 theme settings confirmed | ✋ O3, O4, O9–O13, O24 | [ ] |
 | E9 | Routes uploaded | ⛔ G3 | [ ] |
-| E10 | Unused integrations removed | 🔍 | [ ] |
+| E10 | Unused integrations removed | ✅ No custom integrations (19 Nov) | [x] |
 | E11 | Staff: real people only, 2FA (device verification is on, but it **depends on working mail: M1**) | 🔍 | [ ] |
 | E12 | LLM setting off (Settings → General settings → Meta data) before H1 | ✋ O30 | [ ] |
 
@@ -271,7 +275,7 @@
 | Revision 3 | Owner approves the plan | ✅ 17 Nov 2026 | [x] |
 | Revision 4 | **Phase A authorised** (read-only: I1–I31, live-site inventory, owner inputs and decisions, review of findings and risk register). Excludes merges, releases, backups, database, DNS or Cloudflare changes, imports, publishing, theme activation and any production change | ✅ 17 Nov 2026 | [x] |
 | Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✋ | [ ] |
-| A. Preparation and audit | 🛑 A-gate | ▶ **in progress** (authorised 17 Nov 2026; server results reconciled; maintenance M1–M3 + M4 N1–N5 recorded 18 Nov; open: Admin/console views, I32–I34, N6 review) | [ ] |
+| A. Preparation and audit | 🛑 A-gate | ▶ **in progress**: all listed checks performed by 19 Nov 2026 (plan §16); **open** until the owner reviews the findings and I34 is resolved or decided (O39) | [ ] |
 | B. GitHub merge and release prep | 🛑 B-gate | ⛔ A-gate | [ ] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |

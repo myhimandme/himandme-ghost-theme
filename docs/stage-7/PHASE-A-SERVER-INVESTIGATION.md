@@ -1,5 +1,10 @@
 # Stage 7, Phase A: server investigation (read-only)
 
+> **Update 19 Nov 2026, read-only follow-ups (details in `docs/STAGE-7-PLAN.md` §16):**
+> - **I32:** fail2ban active, 1 `sshd` jail; 262 total failed, 6 total banned.
+> - **I33:** `ssl-params.conf` permits TLS 1.0/1.1 and legacy ciphers (R40, O37; not changed).
+> - **I34:** 8 accepted password logins on 17–18 Nov not all confirmed by the owner. **Unresolved, not a confirmed breach** (R41, O39). Password login has been off since M2.
+>
 > **Update 18 Nov 2026, maintenance executed by the owner (details in `docs/STAGE-7-PLAN.md` §15):**
 >
 > | Finding | Outcome |

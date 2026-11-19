@@ -30,7 +30,7 @@
 | New risks added | R28–R31 |
 | New owner decisions | O30, O31 |
 
-**Current status (18 Nov 2026):**
+**Current status (18 Nov 2026), superseded in part by the 19 Nov update below:**
 
 | | Status |
 |---|---|
@@ -41,6 +41,20 @@
 | **Outstanding: server follow-ups** | I32 (fail2ban `sshd` jail details), I33 (the rest of `ssl-params.conf`; its HSTS line is known), I34 (confirming the 5 historical logins) |
 | **Tracked separately: N6** | A read-only HSTS observation review around **25 Nov 2026** (plan §15.5, §15.8 B); HSTS stays `max-age=300` |
 | Phase A | **Open** until the outstanding items above are done; **Phases B–H unauthorised** |
+
+**Update 19 Nov 2026 (owner's read-only checks; consolidated in `docs/STAGE-7-PLAN.md` §16):**
+
+| Item | Result |
+|---|---|
+| Ghost Admin (I27, I28, I29, I31, integrations) | ✅ **Done:** 0 drafts or scheduled posts/pages; default routes; empty redirects; Network **OFF**; 0 members, subscriptions Nobody, comments Nobody; only staff = Dr Imran (Owner, `dr`); no custom integrations |
+| LLM setting | ⚠️ **ON** (R28; O30), not changed |
+| Staff-wide email 2FA | ⚠️ **OFF**, a security observation (R39; O38), not changed |
+| Tencent firewall (I18) | ✅ **Done:** TCP 443/22/80 + ICMP allowed (IPv4); no 3306 or 2368 |
+| I32 | ✅ **Done:** fail2ban active, 1 jail; 262 total failed, 6 total banned |
+| I33 | ⚠️ **Done, finding:** TLS 1.0/1.1 and legacy ciphers permitted (R40; O37), not changed |
+| I34 | ⚠️ **Unresolved:** 8 accepted password logins (17–18 Nov) not all confirmed; **not a confirmed breach** (R41; O39) |
+| N6 | ⏳ Read-only review around 25 Nov 2026; HSTS `max-age=300` |
+| Phase A | **Open** until the owner reviews these findings and I34 is resolved or decided; **Phases B–H unauthorised** |
 
 ## 1. What the live site is today (inventory, I27)
 
@@ -202,3 +216,9 @@ bash phase-a-server-checks.sh
 - **I32–I34:** fail2ban `sshd` jail details, the rest of `ssl-params.conf`, and confirmation of the 5 historical logins.
 
 The **N6 observation** is a **separate** pending read-only review, around 25 Nov 2026. **Phase B remains unauthorised** and requires separate written approval.
+
+**Phase A status (19 Nov 2026):** the Ghost Admin, Tencent and I32–I34 checks above have been performed (see the 19 Nov update table near the top and plan §16). Phase A **remains open**:
+- **I34** is unresolved;
+- the new findings (R39 2FA, R40 TLS, R41 logins) and decisions O30 and O37–O39 await the owner's review.
+
+No production change was made during these checks.
