@@ -5,6 +5,7 @@
 > **Update 6.3 (19 Nov 2026):** **I34 resolved** (plan §16.7). Phase A **stays open** for the owner's review and the A-gate. No production change was made.
 > **Update 6.4 (19 Nov 2026):** O28 decided (blocks belong only to `dr`); G6 extended; G12 added; FE1 (multi-author attribution) noted as a future enhancement (plan §16.8). Documentation only.
 > **Update 6.5 (19 Nov 2026):** the owner's Phase A decisions are recorded (plan §16.9). Findings accepted. **The A-gate is ready for sign-off once this update is approved.** Decisions are not executed automatically. **Phase B is not authorised.**
+> **Update 6.6 (19 Nov 2026):** **O30 done** (LLM setting off; step 1 verified) and **Phase A signed off by the owner** (plan §16.10). **Phase B is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -26,7 +27,7 @@
 | V: Revision 2–4 verifications (section 1a) | 8 | 0 | 0 | 0 |
 | E: Production config (§5) | 2 | 3 | 6 | 1 |
 | S: SEO (§6) | 1 | 6 | 7 | 0 |
-| Phases A–H | A in progress | 0 | 0 | 7 (B–H; each waits for the gate before it) |
+| Phases A–H | **A signed off (19 Nov)** | 0 | 0 | 7 (B–H; each waits for the gate before it) |
 | M: Server maintenance (section 8a) | M1, M2, M3 done; M4 N1–N5 done | N6 observation | M5, M6 approved, not executed; O34 deferred | 0 |
 
 ---
@@ -153,7 +154,7 @@
 | O27 | Private mode protects the website but **not** Ghost's Content API. During the migration, anyone with the public Content API key can retrieve the published blocks (and the 3 imported pages, and any published article). Accept this residual exposure of approved public copy (recommended), or state a stricter requirement (e.g. publish no article before H1) | Plan §3.6, R22 | ✅ **Accepted (conditional)** 19 Nov: blocks stay out of public listings and are protected by private mode, routes filtering, O28, O30, G6, G11, G12 | [x] |
 | O28 | Block ownership | Plan §3.7, §16.8, R21 | ✅ **Decided 19 Nov (Update 6.4): every `#blok` post has `dr` as its only author.** Additional authors of any role need no route or theme change. Safeguards G6 + G12. **Confirmed by the owner 19 Nov (Update 6.5).** If broken: **reassign the block to `dr` only** (primary recovery). A filtered route (N2c) is only temporary containment; O28 stays unresolved, and G6 fails, until the block belongs exclusively to `dr` | [x] |
 | O29 | Confirm the architecture record is corrected to 23 blocks (12 + 8 + 3) | V1 | ✅ **Confirmed** 23 blocks (19 Nov) | [x] |
-| O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✅ **Approved** 19 Nov: turn OFF **now**. **Not yet executed.** Verify afterwards: `/llms.txt` and an existing post's `.md` stop working; after import, all 23 `/blog/{block-slug}.md` return 404 (G11, Phase F and H3) | [ ] |
+| O30 | Turn off "Enable structured data for LLMs and AI search engines" before launch (recommended; required to keep blocks unreachable at `/blog/{slug}.md`). The cost is losing `llms.txt` and the article `.md` copies | E12, R28 | ✅ **Done 19 Nov** (owner). Step 1 verified: `/llms.txt` and `/llms-full.txt` → 302 `/`; `.md` → 302 to HTML; no LLM headers. Step 2 (all 23 block `.md` URLs → 404) after import (G11, Phase F and H3) | [x] |
 | O31 | `www.himandme.my`: **A (recommended):** separate www certificate + 301 to the apex (M4 N1–N3); B: one certificate covering both names; C: remove the www DNS record. (Cloudflare redirect not possible while the proxy is off) | R29 | ✅ Decided 18 Nov: **Option A**; executed (N1–N3) | [x] |
 | O32 | SSH key-only migration (M2): approve; confirm VNC break-glass, the key's device, and a second copy | R32 | ✅ Executed 18 Nov (M2) | [x] |
 | O33 | Maintenance window for 27 updates + one reboot (M3), after a Tencent snapshot | R33 | ✅ Executed 18 Nov (M3; snapshot `himandme-pre-m3-updates-2026-11-18`) | [x] |
@@ -204,7 +205,7 @@
 | E9 | Routes uploaded | ⛔ G3 | [ ] |
 | E10 | Unused integrations removed | ✅ No custom integrations (19 Nov) | [x] |
 | E11 | Staff: real people only, 2FA (device verification is on, but it **depends on working mail: M1**) | 🔍 | [ ] |
-| E12 | LLM setting off (Settings → General settings → Meta data) before H1 | ✅ O30 approved: turn off now (owner action); not yet executed | [ ] |
+| E12 | LLM setting off (Settings → General settings → Meta data) before H1 | ✅ Done 19 Nov (owner); step 1 verified; step 2 after import | [x] |
 
 ## 7. SEO (§6)
 
@@ -286,8 +287,8 @@
 | Plan | Owner approves the plan's direction | ✅ 16 Nov 2026 | [x] |
 | Revision 3 | Owner approves the plan | ✅ 17 Nov 2026 | [x] |
 | Revision 4 | **Phase A authorised** (read-only: I1–I31, live-site inventory, owner inputs and decisions, review of findings and risk register). Excludes merges, releases, backups, database, DNS or Cloudflare changes, imports, publishing, theme activation and any production change | ✅ 17 Nov 2026 | [x] |
-| Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✋ | [ ] |
-| A. Preparation and audit | 🛑 A-gate | ▶ All checks done; **owner accepted the findings and recorded decisions (19 Nov, plan §16.9)**. **A-gate ready for owner sign-off once Update 6.5 is approved.** Phase B needs separate written approval | [ ] |
+| Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✅ Presented and accepted (19 Nov); decisions recorded (plan §16.9) | [x] |
+| A. Preparation and audit | 🛑 A-gate | ✅ **Signed off by the owner 19 Nov 2026** (plan §16.10). Carried forward: N6, M5, M6, O19, O20, O22, O30 step 2, deferred O34/O38/content inputs. **Phase B needs separate written approval** | [x] |
 | B. GitHub merge and release prep | 🛑 B-gate | ⛔ A-gate | [ ] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |

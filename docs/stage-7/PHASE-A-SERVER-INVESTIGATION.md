@@ -1,5 +1,7 @@
 # Stage 7, Phase A: server investigation (read-only)
 
+> **Phase A signed off by the owner, 19 Nov 2026** (`docs/STAGE-7-PLAN.md` §16.10).
+>
 > **Update 19 Nov 2026, read-only follow-ups (details in `docs/STAGE-7-PLAN.md` §16):**
 > - **I32:** fail2ban active, 1 `sshd` jail; 262 total failed, 6 total banned.
 > - **I33:** `ssl-params.conf` permits TLS 1.0/1.1 and legacy ciphers (R40, O37; not changed).

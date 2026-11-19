@@ -1,6 +1,8 @@
 # Stage 7, Phase A findings (read-only audit)
 
-> **Current status (18 Nov 2026):** Phase A is **still open** (outstanding work in the summary below).
+> **Phase A was signed off by the owner on 19 Nov 2026** (`docs/STAGE-7-PLAN.md` §16.10). The O30 LLM setting is off (step 1 verified). Phases B–H remain unauthorised.
+>
+> **Current status (18 Nov 2026), historical:** Phase A is **still open** (outstanding work in the summary below).
 > - Phases B–H remain **unauthorised**, and Phase B needs separate written approval.
 > - No further production changes are authorised.
 >
@@ -54,7 +56,7 @@
 | I33 | ⚠️ **Done, finding:** TLS 1.0/1.1 and legacy ciphers permitted (R40; O37), not changed |
 | I34 | ✅ **Resolved (Update 6.3):** all 8 accepted password logins (17–18 Nov) confirmed by the owner as their own. Read-only checks found no unexpected account, key, cron task or public listener; Tencent Stargate/TAT are standard Tencent components. R41 closed; O39 done (plan §16.7). *(The Update 6.2 state was “unresolved, not a confirmed breach”.)* |
 | N6 | ⏳ Read-only review around 25 Nov 2026; HSTS `max-age=300` |
-| Phase A | **Open** until the owner reviews these findings and decides the A-gate (I34 is now resolved); **Phases B–H unauthorised** |
+| Phase A | ✅ **Signed off 19 Nov 2026** (plan §16.10); **Phases B–H unauthorised** |
 
 ## 1. What the live site is today (inventory, I27)
 
@@ -208,17 +210,19 @@ bash phase-a-server-checks.sh
 | R26 | Cloudflare cached pages | **Low** (DNS-only confirmed) | D2b unchanged | ✅ |
 | R7, R8 | Cloudflare SSL, Rocket Loader, cache | **n/a** (DNS-only confirmed) | I22–I24 | ✅ |
 
-**Phase A status (18 Nov 2026):** the server investigation results have been **received and reconciled** into `docs/STAGE-7-PLAN.md` §14 (and the 18 Nov maintenance into §15).
+**Current status: ✅ Phase A signed off by the owner on 19 Nov 2026** (plan §16.10). The two status paragraphs below are **historical, pre-sign-off** records.
 
-**Phase A remains open** for:
+**Historical pre-sign-off status (18 Nov 2026):** the server investigation results have been **received and reconciled** into `docs/STAGE-7-PLAN.md` §14 (and the 18 Nov maintenance into §15).
+
+**At that time, Phase A remained open** for:
 - the outstanding **Ghost Admin** checks (Network, members, staff/Owner, integrations, the LLM setting);
 - the **Tencent security-group** review;
 - **I32–I34:** fail2ban `sshd` jail details, the rest of `ssl-params.conf`, and confirmation of the 5 historical logins.
 
 The **N6 observation** is a **separate** pending read-only review, around 25 Nov 2026. **Phase B remains unauthorised** and requires separate written approval.
 
-**Phase A status (19 Nov 2026):** the Ghost Admin, Tencent and I32–I34 checks above have been performed (see the 19 Nov update table near the top and plan §16). Phase A **remains open**:
-- the new findings (R39 2FA, R40 TLS) and decisions O30, O37 and O38 await the owner's review.
+**Historical pre-sign-off status (19 Nov 2026, before the sign-off):** the Ghost Admin, Tencent and I32–I34 checks above had been performed (see the 19 Nov update table near the top and plan §16). At that time, Phase A **remained open**:
+- the new findings (R39 2FA, R40 TLS) and decisions O30, O37 and O38 were awaiting the owner's review (all since decided, plan §16.9).
 
 *(Update 6.3, 19 Nov 2026: **I34 resolved**, R41 closed and O39 done; see plan §16.7. When this paragraph was first written, I34 was still unresolved.)*
 

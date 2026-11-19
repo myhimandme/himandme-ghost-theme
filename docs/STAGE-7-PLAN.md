@@ -5,6 +5,7 @@
 > **Update 6.3 (19 Nov 2026)** adds §16.7: **I34 resolved.** All eight password logins are the owner's own, and no unexpected account, key, cron task or public listener was found. **Phase A stays open** for the owner's review and the A-gate. **No production change was made.**
 > **Update 6.4 (19 Nov 2026)** adds §16.8: the **O28 block-ownership rule** (every `#blok` post belongs only to `dr`), safeguards **G6** (extended) and **G12**, and multi-author attribution as future enhancement **FE1**. Single-author attribution is unchanged. Documentation only.
 > **Update 6.5 (19 Nov 2026)** adds §16.9: the **owner's Phase A decision register**. The owner accepts the §16 findings. **The A-gate is ready for sign-off once this update is approved.** Recorded decisions are **not** executed automatically. **Phases B–H remain unauthorised** until the owner approves Phase B in writing.
+> **Update 6.6 (19 Nov 2026)** adds §16.10: **O30 executed** (LLM setting off; verification step 1 passed) and **Phase A signed off by the owner**. **Phases B–H remain unauthorised** until the owner approves Phase B in writing.
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -458,7 +459,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | E9 | Routes | `routes.yaml` after G3 | ⛔ G3 |
 | E10 | Integrations | Remove unused custom integrations, without exposing keys | ✅ No custom integrations (§16.1) |
 | E11 | Staff | Only real people. Owner role on the doctor's or the business account. 2FA/"staff device verification" on, which **depends on working mail (M1, R34)** | 🔍 |
-| E12 | Settings → General settings → Meta data → **"Enable structured data for LLMs and AI search engines"** | **Off** before H1 (F11: otherwise every block is readable at `/blog/{slug}.md`; tested locally, off gives 404). Private mode covers it until then | ✅ O30 approved 19 Nov: turn off **now** (owner action), then verify; not yet executed |
+| E12 | Settings → General settings → Meta data → **"Enable structured data for LLMs and AI search engines"** | **Off** before H1 (F11: otherwise every block is readable at `/blog/{slug}.md`; tested locally, off gives 404). Private mode covers it until then | ✅ **Done 19 Nov** (owner); step 1 verified; step 2 after import (§16.10) |
 
 **Theme settings (E8).** Repository defaults are shown. Every value needs your confirmation; none is assumed correct.
 
@@ -651,7 +652,7 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 
 | Phase | Work | Depends on | Who | Checkpoint |
 |---|---|---|---|---|
-| **A. Preparation and audit** (▶ in progress since 17 Nov 2026; findings in `docs/stage-7/PHASE-A-FINDINGS.md`; server script `docs/stage-7/phase-a-server-checks.sh`) | Run I1–I31 (read-only) and send the results. Inventory the live site (I27). Supply the inputs in the checklist, section 4 (O1–O29). Decide the merge option (1.3), analytics and the old-site plan | This plan approved | Owner (server checks); me (review results, update the risk register) | 🛑 **A-gate:** infrastructure audit accepted; owner inputs complete or explicitly deferred |
+| **A. Preparation and audit** (✅ **signed off by the owner 19 Nov 2026**, §16.10; was in progress since 17 Nov 2026; findings in `docs/stage-7/PHASE-A-FINDINGS.md`; server script `docs/stage-7/phase-a-server-checks.sh`) | Run I1–I31 (read-only) and send the results. Inventory the live site (I27). Supply the inputs in the checklist, section 4 (O1–O29). Decide the merge option (1.3), analytics and the old-site plan | This plan approved | Owner (server checks); me (review results, update the risk register) | 🛑 **A-gate:** infrastructure audit accepted; owner inputs complete or explicitly deferred |
 | **B. GitHub merge and release preparation** | Merge PRs per the chosen option. Open the missing Stage 4 and 6 PRs only if Option A. Release branch: G1–G7. Full local test run. Build the zip and the launch seed. Placeholder scan on both | A-gate | Me (code and PRs only after approval); owner (merges, or approves each merge) | 🛑 **B-gate:** `main` = approved Stage 6 plus release changes; tests green; zip and seed checksums recorded |
 | **C. Production backup** | C1–C10 | B-gate | Owner | 🛑 **C-gate:** backups exist, are copied off the server, the restore has been tested (C8), and the public URL list is saved (C10) |
 | **D. Theme and content deployment** | In a pre-announced window, **in mandatory private mode**: §3.6 steps D1–D10 (private ON → cache purge → **anonymous public-domain checks D2b** → Network off → Owner/slug check → import → tags/staff/nav → activate theme → settings → routes → redirects) | C-gate | Owner in Admin, following the step list; me guiding live | 🛑 **D-gate:** each step's check passes before the next |
@@ -697,7 +698,7 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R23 | Restoring the database while Ghost runs shows stale settings | Medium | `ghost stop` before and `ghost start` after (rehearsed) | ✅ |
 | R24 | `mysqldump` PROCESS-privilege error goes unnoticed (exit code 0) | Medium | `--no-tablespaces`, run with `sudo`, and check `dump.err` is empty (C4) | ✅ |
 | R25 | Staff access token for `ghost backup` exposed | Medium | Typed only at the prompt on the server; never in chat, files or the repository | ✅ Rule |
-| R28 | Ghost 6.75's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch (Phase A F11, measured locally: 23 of 23) | **High** | E12 off before H1 (tested: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ✅ O30 approved 19 Nov (turn off now); **open until switched off and verified** (§16.9) |
+| R28 | Ghost 6.75's LLM features serve every block as Markdown at `/blog/{slug}.md` after launch (Phase A F11, measured locally: 23 of 23) | **High** | E12 off before H1 (tested: blocks then 404); §7.2 checks; G11 test; private mode covers it until H1 | ◐ **Mitigated:** LLM setting off (owner, 19 Nov); step 1 verified. Closes when all 23 block `.md` URLs return 404 after import (G11; §16.10) |
 | R29 | `www.himandme.my`: certificate error over HTTPS; over HTTP the Nginx welcome page (I11, I13) | Medium | M4 steps N1–N3 (separate www certificate + 301 to apex), or O31 option C | ✅ Mitigated 18 Nov (M4 N1–N3; §15.5) |
 | R30 | Member sign-up open on the live site; possible existing members' personal data | Medium | Count in I29; O18 decision before E2 ("Nobody") | ✅ Currently mitigated (19 Nov: 0 members, subscriptions Nobody; §16.1); O18 to confirm |
 | R32 | SSH: root and password logins allowed; **no SSH key installed for any account**; **10,218 failed login attempts in 7 days**; port 22 open to all (I18, I20) | **High** | M2 (§14.4): break-glass VNC + key installed and proven first, then a drop-in disabling root and password login; fail2ban check (I32); owner confirms own logins (I34) | ✅ Mitigated 18 Nov (M2; §15.3) |
@@ -794,6 +795,8 @@ Both documents were re-read after the revision 3 edits. Checked and aligned:
 | Status | Phase A not started; nothing deployed | Header, section 10 |
 
 Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist.
+
+**Update 6.6 (19 Nov 2026), documentation only:** adds §16.10 (O30 executed by the owner and step 1 verified by read-only requests; Phase A signed off). Updates R28, E12, O30 and the Phase A row in §9.
 
 **Update 6.5 (19 Nov 2026), documentation only:** adds §16.9 (the owner's Phase A decision register, proposed O20 redirect mappings for verification, new maintenance steps M5/M6 approved in principle). Updates the status cells of R28, R36, R37, R39, R40 and E12. Nothing is executed.
 
@@ -1583,7 +1586,7 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 
 | ID | Decision (owner, 19 Nov 2026) | Type | Status / next step |
 |---|---|---|---|
-| **O30** | **Turn the LLM setting OFF now.** The hidden blocks must not be exposed through Markdown (`.md`) addresses | Ghost Admin change | ✅ **Approved; not yet executed.** The owner switches off Settings → General settings → Meta data → "Enable structured data for LLMs and AI search engines". **Read-only verification:** (1) **straight after the change:** `https://himandme.my/llms.txt` no longer returns the LLM index, and an existing post's `.md` address (for example `/coming-soon.md`, while that post is still published) no longer returns Markdown; (2) **after the blocks are imported (Phase F, and again at H3):** **every one of the 23 hidden-block addresses `/blog/{block-slug}.md` returns 404** (G11; tested locally: all 23 return 404 when the setting is off, §F11). R28 stays High until both checks pass |
+| **O30** | **Turn the LLM setting OFF now.** The hidden blocks must not be exposed through Markdown (`.md`) addresses | Ghost Admin change | ✅ **Executed by the owner 19 Nov 2026; step 1 verified (§16.10).** The owner switches off Settings → General settings → Meta data → "Enable structured data for LLMs and AI search engines". **Read-only verification:** (1) **straight after the change:** `https://himandme.my/llms.txt` no longer returns the LLM index, and an existing post's `.md` address (for example `/coming-soon.md`, while that post is still published) no longer returns Markdown; (2) **after the blocks are imported (Phase F, and again at H3):** **every one of the 23 hidden-block addresses `/blog/{block-slug}.md` returns 404** (G11; tested locally: all 23 return 404 when the setting is off, §F11). R28 stays High until both checks pass |
 | **O38** | **Staff-wide email 2FA: deferred pending a read-only investigation** of how it interacts with `security.staffDeviceVerification`. **Both settings stay unchanged** | Deferred (read-only investigation first) | ⏸ **Explicitly deferred.** Next: a read-only check of the Ghost 6.75 documentation (and, if needed, the local Ghost). The decision is taken after that. **No change** to the staff-wide 2FA setting or to `staffDeviceVerification` |
 | **O37** | **Approve M5: TLS 1.2/1.3 only**, scheduled alongside or after the N6 review, subject to the implementation procedure and backup | Server change (Nginx) | ✅ **Approved in principle; not yet executed.** Next: prepare the M5 procedure for the owner's review (backup of `ssl-params.conf`, exact directives, `nginx -t`, reload, apex and www tests, rollback). Run only after the owner approves that procedure |
 | **O35** | **Approve security-only automatic updates, reboots manual**; take a snapshot and verify the exact APT configuration before implementation | Server change (APT) | ✅ **Approved in principle; not yet executed** (new maintenance step **M6**). Next: (1) a read-only check of the current `/etc/apt/apt.conf.d/50unattended-upgrades` and `20auto-upgrades`; (2) the exact proposed change for review; (3) snapshot → change → verify (for example `unattended-upgrades --dry-run`). `Unattended-Upgrade::Automatic-Reboot` stays `false` |
@@ -1629,3 +1632,39 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 - **Approved, implemented later:** O20 redirects (prepared in Phase B, uploaded at D10).
 - **Scheduled:** N6 (read-only review around 25 Nov 2026).
 - **Deferred:** O34, plus the content inputs listed above.
+
+### 16.10 O30 executed and Phase A signed off: Update 6.6 (19 Nov 2026)
+
+**O30: the LLM setting is off.**
+- **Executed:** the owner switched off "Enable structured data for LLMs and AI search engines" in Ghost Admin on 19 Nov 2026.
+- **Verification step 1 ✅ passed** (19 Nov 2026), using anonymous read-only GET requests to the live site from this documentation session:
+
+| Request | Result | Meaning |
+|---|---|---|
+| `/llms.txt`, `/llms-full.txt` | **302 → `/`** (the homepage, HTML) | The LLM index is no longer served |
+| `/coming-soon.md`, `/about.md` | **302 →** the normal HTML page (`/coming-soon/`, `/about/`) | Posts and pages are no longer served as Markdown |
+| Homepage response headers | **No** `Link: </llms.txt>` and **no** `X-Llms-Txt` header | LLM discovery is off |
+
+- This matches the local Ghost 6.75 test of the setting switched off (§F11). There, a block's `.md` address redirected to `/404/`.
+- **Verification step 2 ⏳ pending:** after the blocks are imported (Phase F, and again at H3), **every one of the 23 `/blog/{block-slug}.md` addresses must return 404** (G11).
+- **R28** is mitigated by the setting. It closes only when step 2 passes.
+
+**Phase A sign-off (A-gate).**
+- **Signed off by the owner on 19 Nov 2026** ("go ahead phase A"), following the acceptance of the findings and the decision register (§16.9).
+- **Phase A is complete.**
+
+**Carried forward from Phase A** (none reopens it):
+
+| Status | Items |
+|---|---|
+| Scheduled | **N6** HSTS review (read-only, around 25 Nov 2026) |
+| Approved, procedure first | **M5** TLS 1.2/1.3 (O37); **M6** security-only automatic updates (O35) |
+| Approved, executed later | **O19** unpublish the starter content (by the D-window); **O20** redirects (prepared in Phase B, uploaded at D10) |
+| Pending a later phase | O30 verification step 2 (Phase F and H3) |
+| Conditional | **O22** Cloudflare Web Analytics (privacy and consent review first) |
+| Deferred | **O38** staff-wide 2FA (pending its read-only investigation; settings unchanged); **O34** long-term mail provider (Gmail kept); the launch-content inputs (until before Phase D) |
+
+**Authorisation:**
+- **Signing the A-gate does not authorise Phase B.**
+- **Phases B–H and production theme deployment remain unauthorised** until the owner approves Phase B in writing.
+- No further server or Ghost change is authorised except as each approved item's own procedure allows.
