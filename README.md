@@ -20,7 +20,7 @@ Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site
 | `npm run build` | Builds `assets/css/screen.css` and `assets/js/main.js` into `assets/built/` (minified, with source maps) |
 | `npm run dev` | Same build, rebuilding on every change |
 | `npm test` | Build, then the **content-block guard** (every `{{#get "posts"}}` must exclude `#blok` or target one specific block), then GScan with the Ghost 6 ruleset. Must pass before any release. |
-| `npm run zip` | Build, then package `dist/himandme-ghost-theme.zip` for upload (theme files only) |
+| `npm run zip` | Release build (no source maps), then package `dist/himandme-ghost-theme.zip` for upload: theme files only, files 0644, a fixed timestamp, so the same commit gives the same checksum |
 | `npm run gscan:zip` | GScan the packaged zip (exactly what Ghost Admin will check) |
 | `npm run test:stage1` | Routing and content-block verification suite against a **local** Ghost (see [`test/stage1/README.md`](test/stage1/README.md)) |
 | `npm run test:stage2` | Site-chrome checks (headers, footers, menus, settings, block fallback) against a local Ghost |
@@ -28,6 +28,11 @@ Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site
 | `npm run test:stage4` | Disfungsi Ereksi page checks (blocks + fallback, FAQ, settings, every CTA, WhatsApp form in a browser, overflow) against a local Ghost |
 | `npm run test:stage5` | Blog checks (features, Paling dibaca, topic tiles, Terkini + "Muatkan lagi", Panduan band, topic/author pages, feature images, search, overflow) against a local Ghost. It edits and restores test data |
 | `npm run test:stage6` | Article page checks (header, image, editor blocks, consultation, references, tags, author box, related lists, share, SEO, progress bar, search, phone layout, no-JS). Runs `test/stage6/prepare-demo.mjs` first |
+| `npm run test:stage7` | Stage 7 checks against a local Ghost: author archives, private mode, the LLM-feature test (block `.md` addresses 404 with the setting off, G11) and the approved `redirects.yaml` |
+| `npm run seed:launch` | Builds `dist/launch-seed.json`: only the 23 `#blok` blocks and 3 pages from `seed/blocks.mjs`, no authors, no test content (G4) |
+| `npm run placeholders` | Placeholder and test-content scan of the theme files and the launch seed (G5) |
+| `npm run release` | `npm test`, zip, GScan the zip, launch seed, placeholder scan, then `scripts/check-release.mjs` (routes, zip contents, `dist/SHA256SUMS`) |
+| `npm run smoke:prod` | Read-only (GET only) smoke test of the live site (G6). See "Production launch" below |
 | `npm run visual` | Side-by-side screenshots of the approved prototype vs the local theme (`PROTOTYPE_HTML=…`) |
 
 ## Ghost Admin setup checklist (paths verified on Ghost 6.75.0)
@@ -212,6 +217,32 @@ Nothing below may go to production. The live site gets only the doctor's real, r
 
 The test fixtures (`test/stage1/fixtures/`, `test/stage6/`) exist only to test the theme and are never imported to himandme.my.
 
+## Production launch (Stage 7)
+
+The launch follows [`docs/STAGE-7-PLAN.md`](docs/STAGE-7-PLAN.md) and the gated phases in [`docs/STAGE-7-CHECKLIST.md`](docs/STAGE-7-CHECKLIST.md). Each phase needs the owner's explicit approval; nothing in this repo deploys anything.
+
+1. **Release files (Phase B).** `npm run release` creates and checks:
+   - `dist/himandme-ghost-theme.zip`, the theme to upload in Ghost Admin;
+   - `dist/launch-seed.json`, the content blocks and pages to import (no authors: after import, every block is reassigned to the `dr` staff user, O28);
+   - `dist/SHA256SUMS`, the checksums of the zip, the seed, `routes.yaml` and `redirects.yaml`. Compare them with the values recorded in the Phase B report before uploading anything.
+2. **Routes and redirects.** `routes.yaml` (Settings → Labs → Routes) and `redirects.yaml` (Settings → Labs → Redirects) are uploaded as they are; neither needs editing (the author slug `dr` is the production slug, O4).
+3. **Checking the live site.** `test/prod/smoke.mjs` only sends GET requests and only to `himandme.my` / `www.himandme.my` (or `localhost` for testing the script):
+
+   ```bash
+   node test/prod/smoke.mjs --base https://himandme.my --expect-private
+   ```
+   While private mode is on (D2b): every page and feed redirects to `/private/`, nothing is served from cache, `robots.txt` says `Disallow: /`.
+
+   ```bash
+   SMOKE_COOKIE='ghost-private=…' node test/prod/smoke.mjs --base https://himandme.my --cookie
+   ```
+   Behind the private-site password (Phase F). The cookie comes from the owner's own browser; never commit it or paste it into documents.
+
+   ```bash
+   node test/prod/smoke.mjs --base https://himandme.my
+   ```
+   After launch (Phase H3): pages, no `#blok` block anywhere (sitemaps, RSS, topic and every author archive), every block owned only by `dr`, block `.md` addresses 404 and no `llms.txt` (G11), no placeholder or test content on rendered pages, security headers, `robots.txt`, http/www redirects. `--skip group,…` skips a check group and reports it.
+
 ## Repository layout (Stage 0–1)
 
 ```
@@ -223,4 +254,4 @@ test/stage1/                    routing / content-block verification suite (loca
 docs/                           Stage 1 report and verified Admin screenshots
 ```
 
-The live production site is never touched by any script in this repo. The test scripts refuse any host other than `localhost` / `127.0.0.1`.
+No script in this repo changes the live production site. The test scripts refuse any host other than `localhost` / `127.0.0.1`; the only exception is the read-only smoke test `test/prod/smoke.mjs` (GET requests to `himandme.my` / `www.himandme.my`).

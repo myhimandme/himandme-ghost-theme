@@ -1,7 +1,7 @@
 {
   "name": "himandme-ghost-theme",
   "description": "Custom Ghost theme for Him & Me (himandme.my): clinical-inspired main site and editorial blog.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "license": "UNLICENSED",
   "author": {
@@ -19,7 +19,7 @@
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs --watch",
     "gscan": "gscan . --v6",
-    "zip": "npm run build && node scripts/zip.mjs",
+    "zip": "node scripts/build.mjs --release && node scripts/zip.mjs",
     "gscan:zip": "gscan -z dist/himandme-ghost-theme.zip --v6",
     "test": "npm run build && npm run guard && npm run gscan",
     "test:stage1": "node test/stage1/run.mjs",
@@ -30,7 +30,11 @@
     "test:stage4": "node test/stage4/run.mjs",
     "test:stage5": "node test/stage5/run.mjs",
     "test:stage6": "node test/stage6/run.mjs",
-    "test:stage7": "node test/stage7/author-archive.mjs && node test/stage7/private-mode.mjs"
+    "test:stage7": "node test/stage7/author-archive.mjs && node test/stage7/private-mode.mjs && node test/stage7/llms-markdown.mjs && node test/stage7/redirects.mjs",
+    "seed:launch": "node scripts/build-launch-seed.mjs",
+    "placeholders": "node scripts/check-placeholders.mjs --theme --seed dist/launch-seed.json",
+    "release": "npm test && npm run zip && npm run gscan:zip && npm run seed:launch && npm run placeholders && node scripts/check-release.mjs",
+    "smoke:prod": "node test/prod/smoke.mjs"
   },
   "devDependencies": {
     "bestzip": "4.0.3",

@@ -7,6 +7,8 @@
 > **Update 6.5 (19 Nov 2026):** the owner's Phase A decisions are recorded (plan §16.9). Findings accepted. **The A-gate is ready for sign-off once this update is approved.** Decisions are not executed automatically. **Phase B is not authorised.**
 > **Update 6.6 (19 Nov 2026):** **O30 done** (LLM setting off; step 1 verified) and **Phase A signed off by the owner** (plan §16.10). **Phase B is not authorised.**
 > **Update 6.7 (21 Nov 2026):** **M6 and M5 done and verified** (plan §16.11). Monthly runbook: `docs/stage-7/MONTHLY-MAINTENANCE.md` (first run around 19 Dec 2026). N6 pending around 25 Nov. **Phase B is not authorised.**
+> **Update 6.8 (21 Nov 2026):** **Phase B approved by the owner and carried out** (plan §16.12, report [`stage-7/PHASE-B-REPORT.md`](stage-7/PHASE-B-REPORT.md)): PRs #1–#7 merged into `main` (Option A); release branch `stage-7-release` built and tested; checksums recorded (G9). **Awaiting the B-gate.** No production change. **Phase C is not authorised.**
+> **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed: the zip permission check now tells files (0644) from directory entries (0755); G12 recorded as **deferred** (an outstanding pre-launch item). Release rebuilt; checksums unchanged. **Awaiting final B-gate approval.** No production change. **Phase C is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -69,19 +71,19 @@
 |---|---|---|---|
 | G0 | Branch chain is linear (`main` → `stage-0-1` → … → `stage-6`); no conflicts; `stage-6` holds all approved work | ✅ Verified | [x] |
 | G0a | Merge option A (per-stage, recommended) or B (single release PR) chosen | ✅ **Option A** (separate PR per stage), decided 19 Nov (O26) | [x] |
-| G0b | Merges carried out with merge commits; `git diff stage-6 main` is empty afterwards | ⛔ needs G0a and approval | [ ] |
-| G1 | Version 1.0.0 and tag `v1.0.0` | ✅ Version **1.0.0** decided 19 Nov (O26); tag created in Phase B | [ ] |
-| G2 | Logo PNG permissions `0600` → `0644` | ✅ ready | [ ] |
-| G3 | `routes.yaml` author slug `dr` → real slug (3 places) | ⛔ O4 | [ ] |
-| G4 | Launch seed builder (`seed/blocks.mjs` only, allowlist + denylist) | ✅ ready to build | [ ] |
-| G5 | Placeholder scanner | ✅ ready to build | [ ] |
-| G6 | Read-only production smoke test (modes: `--expect-private` for D2b, private cookie for F, anonymous for H3). **Plus (Update 6.4):** every `#blok` post has exactly one author, `dr`, and G6 **fails if any block has any other author, even when a containment route hides it**; every author archive in `sitemap-authors.xml` inspected; re-run after any staff change | ✅ ready to build | [ ] |
-| G12 | Local test: an additional author (Author role) with only real articles. Their archive, pagination and RSS show no block; `dr` archive unchanged (plan §16.8) | ✅ ready to build (Phase B) | [ ] |
-| G7 | README "Production launch" section | ✅ ready | [ ] |
-| G11 | Test: every block `.md` URL is 404; no block in `llms.txt`/`llms-full.txt` (F11) | ✅ ready to build (Phase B) | [ ] |
-| G8 | Local Stage 1–6 suites + guard + GScan (zip) all green on the release build | ✅ last run green (32/23/12/39/21/16; GScan 0/0) | [ ] re-run on release |
-| G9 | Zip and seed SHA-256 recorded here | ⛔ G1–G5 | [ ] |
-| G10 | `npm run test:stage7` (author archive + private mode) green on the release build; the routes render step fails if any `dr` placeholder remains | ✅ test written, 15/15 + 12/12 | [ ] re-run on release |
+| G0b | Merges carried out with merge commits; `git diff stage-6 main` is empty afterwards | ✅ Done 21 Nov: PRs #1, #2, #3, #5, #4, #6, #7 merged (merge commits); `main` = `17ae322`, equal to `stage-7-plan` | [x] |
+| G1 | Version 1.0.0 and tag `v1.0.0` | ✅ Version **1.0.0** on `stage-7-release`. Tag `v1.0.0` proposed on the release merge commit after the B-gate | [ ] tag |
+| G2 | Logo PNG permissions `0600` → `0644` | ✅ Done: the zip stages files 0644 and folders 0755. `check-release.mjs` checks files 0644 and directory entries 0755, and fails on other entry types (B-gate correction; fixtures Z1–Z8 pass). Zip reproducible, checksum unchanged | [x] |
+| G3 | `routes.yaml` author slug `dr` → real slug (3 places) | ✅ No change needed: `dr` is the production slug (O4); channel verified by `check-release.mjs` | [x] |
+| G4 | Launch seed builder (`seed/blocks.mjs` only, allowlist + denylist) | ✅ Built: `npm run seed:launch` (23 blocks, 3 pages, no authors) | [x] |
+| G5 | Placeholder scanner | ✅ Built: `npm run placeholders`; theme and seed 0 hits outside the documented allowlist | [x] |
+| G6 | Read-only production smoke test (modes: `--expect-private` for D2b, private cookie for F, anonymous for H3). **Plus (Update 6.4):** every `#blok` post has exactly one author, `dr`, and G6 **fails if any block has any other author, even when a containment route hides it**; every author archive in `sitemap-authors.xml` inspected; re-run after any staff change | ✅ Built: `test/prod/smoke.mjs` (GET only); exercised on local Ghost only | [x] |
+| G12 | Local test: an additional author (Author role) with only real articles. Their archive, pagination and RSS show no block; `dr` archive unchanged (plan §16.8) | ⏸ **Deferred, not completed.** Outside the 21 Nov Phase B scope (G1–G7, G11). **Outstanding pre-launch item:** build and pass, or owner waiver, before the H-gate and before any second staff author is added; needs separate approval (Phase B report §8) | [ ] deferred |
+| G7 | README "Production launch" section | ✅ Done | [x] |
+| G11 | Test: every block `.md` URL is 404; no block in `llms.txt`/`llms-full.txt` (F11) | ✅ Built: `test/stage7/llms-markdown.mjs` (5/5 locally) + smoke test group `llms` | [x] |
+| G8 | Local Stage 1–6 suites + guard + GScan (zip) all green on the release build | ✅ Green on the release zip (21 Nov): 32/23/12/39/21/16; GScan compatible, upload 0/0 | [x] |
+| G9 | Zip and seed SHA-256 recorded here | ✅ zip `cb3d6f7441455cf2074ac5b55a9e9c801b6670dfa04eb249e255ba8f637835e1`; seed `db898cda59405955d1ad720f4f566ff3d50cb12486fcc7cdbbbf9c7aa8032eba`; routes `2f178dcb…`, redirects `aacd2f9c…` (full list in the Phase B report) | [x] |
+| G10 | `npm run test:stage7` (author archive + private mode) green on the release build; the routes render step fails if any `dr` placeholder remains | ✅ Green on the release zip: 15/15, 12/12, plus LLM 5/5 and redirects 5/5 | [x] |
 
 ## 3. Infrastructure (§2): all 🔍, read-only, run by the owner
 
@@ -107,7 +109,7 @@
 | I18 | UFW and Tencent security group: only SSH/80/443 | ✅ Tencent firewall: TCP 443/22/80 + ICMP allowed (all IPv4); no 3306 or 2368 (19 Nov) | [x] |
 | I19 | 2368 and 3306 bound to localhost | ✅ | [x] |
 | I20 | SSH: keys only, no root password login | ✅ resolved 18 Nov (M2: key-only, root off) | [x] |
-| I21 | Security updates | ✅ applied 18 Nov (M3); auto-security O35 open | [x] |
+| I21 | Security updates | ✅ applied 18 Nov (M3); automatic security updates enabled 20 Nov (M6, O35 done, MySQL excluded) | [x] |
 | I22 | Cloudflare DNS records (view only). **Phase A:** no Cloudflare headers, and both names resolve to the server's own address: **DNS-only confirmed** (F4) | ✅ DNS-only (proxy off) | [x] |
 | I23 | Cloudflare SSL Full (strict) | ✅ n/a | [x] |
 | I24 | Always HTTPS on; Rocket Loader off; no Cache Everything or edge TTL on HTML, `/ghost/`, `/members/`, `/p/`; **Always Online off**; Cache Reserve noted | ✅ n/a | [x] |
@@ -292,7 +294,7 @@
 | Revision 4 | **Phase A authorised** (read-only: I1–I31, live-site inventory, owner inputs and decisions, review of findings and risk register). Excludes merges, releases, backups, database, DNS or Cloudflare changes, imports, publishing, theme activation and any production change | ✅ 17 Nov 2026 | [x] |
 | Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✅ Presented and accepted (19 Nov); decisions recorded (plan §16.9) | [x] |
 | A. Preparation and audit | 🛑 A-gate | ✅ **Signed off by the owner 19 Nov 2026** (plan §16.10). Carried forward: N6, M5, M6, O19, O20, O22, O30 step 2, deferred O34/O38/content inputs. **Phase B needs separate written approval** | [x] |
-| B. GitHub merge and release prep | 🛑 B-gate | ⛔ A-gate | [ ] |
+| B. GitHub merge and release prep | 🛑 B-gate | ✅ Approved 21 Nov and carried out (plan §16.12). **Awaiting the owner's B-gate review**; PR `stage-7-release` open, not merged | [ ] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |
 | E. Production configuration | (with D) | ⛔ D | [ ] |

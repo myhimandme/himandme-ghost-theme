@@ -7,6 +7,8 @@
 > **Update 6.5 (19 Nov 2026)** adds §16.9: the **owner's Phase A decision register**. The owner accepts the §16 findings. **The A-gate is ready for sign-off once this update is approved.** Recorded decisions are **not** executed automatically. **Phases B–H remain unauthorised** until the owner approves Phase B in writing.
 > **Update 6.6 (19 Nov 2026)** adds §16.10: **O30 executed** (LLM setting off; verification step 1 passed) and **Phase A signed off by the owner**. **Phases B–H remain unauthorised** until the owner approves Phase B in writing.
 > **Update 6.7 (21 Nov 2026)** adds §16.11: **M6** (security-only automatic updates, MySQL excluded) and **M5** (TLS 1.2/1.3 only) **executed and verified**; monthly maintenance runbook in [`stage-7/MONTHLY-MAINTENANCE.md`](stage-7/MONTHLY-MAINTENANCE.md). N6 stays pending (around 25 Nov; HSTS `max-age=300`). **Phases B–H remain unauthorised.**
+> **Update 6.8 (21 Nov 2026)** adds §16.12: **Phase B approved by the owner and carried out.** PRs #1–#7 merged into `main` (Option A, merge commits); release branch `stage-7-release` built and tested on local Ghost; checksums recorded. **Awaiting the B-gate.** No production change. **Phases C–H remain unauthorised.** Report: [`stage-7/PHASE-B-REPORT.md`](stage-7/PHASE-B-REPORT.md).
+> **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed (zip permission check for directory entries; G12 recorded as deferred). Checksums unchanged. **Awaiting final B-gate approval.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -1728,3 +1730,20 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 - deferred O34, O38 and the content inputs.
 
 **Phases B–H remain unauthorised.**
+
+### 16.12 Phase B carried out: Update 6.8 (21 Nov 2026)
+
+> **What this section records:** the owner approved Phase B in writing on 21 Nov 2026 (Option A, separate PRs per stage; scope G1–G7 and G11). The full record is [`stage-7/PHASE-B-REPORT.md`](stage-7/PHASE-B-REPORT.md).
+> - **Unchanged:** no production server change, nothing uploaded to or activated in Ghost Admin on himandme.my, no command run on the server. The smoke test ran only against local Ghost.
+
+| Item | Result |
+|---|---|
+| Merges (G0b) | PRs #1, #2, #3, #5 (new, Stage 4), #4, #6 (new, Stage 6), #7 (new, this plan) merged with merge commits in that order. `main` = `17ae322` |
+| Release branch | `stage-7-release` from `main`: version 1.0.0, reproducible zip, launch seed, placeholder scanner, read-only smoke test, LLM and redirect tests, `npm run release` |
+| Tests | Stage 1–6: 32/23/12/39/21/16 passed; Stage 7: 15 + 12 + 5 + 5 passed; GScan compatible; all on the release zip |
+| Checksums (G9) | zip `cb3d6f7441455cf2074ac5b55a9e9c801b6670dfa04eb249e255ba8f637835e1`; seed `db898cda59405955d1ad720f4f566ff3d50cb12486fcc7cdbbbf9c7aa8032eba` |
+| Open for the B-gate | merge of PR `stage-7-release`; tag `v1.0.0` on that merge commit |
+| B-gate correction (Revision 2) | `check-release.mjs` checks files 0644 and directory entries 0755, rejects other entry types, and requires every `zipinfo` entry to be parsed; fixtures `test/release/zip-modes.mjs` pass 8/8. Release rebuilt from a clean `dist/`: byte-identical, **checksums unchanged** |
+| G12 | **Deferred, not completed**: outside the approved Phase B scope. Outstanding pre-launch item: build and pass, or owner waiver, before the H-gate and before any second staff author is added (report §8) |
+
+**Phase C is not authorised** and needs separate written approval.

@@ -1,0 +1,10 @@
+# Him & Me: redirects for the launch (O20, approved by the owner on 19 Nov 2026).
+# Ghost Admin: Settings → Advanced → Labs → Open → Beta features → Redirects → Upload (plan step D10).
+# Old starter-site addresses (public inventory of 17 Nov 2026) → new addresses. Re-check against the
+# C10 URL list before uploading.
+301:
+  /about/: /
+  /coming-soon/: /
+  /tag/news/: /blog/
+  /author/dr/: /blog/penulis/dr/
+302: {}
