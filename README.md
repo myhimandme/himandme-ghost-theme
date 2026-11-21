@@ -2,7 +2,7 @@
 
 Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site (Utama, Disfungsi Ereksi) and a separate editorial blog (/blog/). The approved HTML prototype is the master visual reference.
 
-> **Status: Stage 5 (blog home, topic pages, author page, blog search), awaiting approval.** Site chrome, the homepage, the ED page and the blog listing pages match the approved prototype. Articles (`post.hbs`) are still *verification scaffolding* until Stage 6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md) · [`STAGE-2`](docs/STAGE-2-REPORT.md) · [`STAGE-3`](docs/STAGE-3-REPORT.md) · [`STAGE-4`](docs/STAGE-4-REPORT.md) · [`STAGE-5`](docs/STAGE-5-REPORT.md). **Clinical content checklist: [`docs/CLINICAL-REVIEW.md`](docs/CLINICAL-REVIEW.md).**
+> **Status: Stage 6 (article pages), awaiting approval.** Every public template now follows the approved prototype: site chrome, homepage, Disfungsi Ereksi page, blog home, topic and author pages, articles and plain pages. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md) · [`STAGE-2`](docs/STAGE-2-REPORT.md) · [`STAGE-3`](docs/STAGE-3-REPORT.md) · [`STAGE-4`](docs/STAGE-4-REPORT.md) · [`STAGE-5`](docs/STAGE-5-REPORT.md) · [`STAGE-6`](docs/STAGE-6-REPORT.md). **Clinical content checklist: [`docs/CLINICAL-REVIEW.md`](docs/CLINICAL-REVIEW.md).**
 
 ## Requirements
 
@@ -27,6 +27,7 @@ Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site
 | `npm run test:stage3` | Homepage checks (every block + fallback, article teaser, images, doctor card, accessibility basics) against a local Ghost |
 | `npm run test:stage4` | Disfungsi Ereksi page checks (blocks + fallback, FAQ, settings, every CTA, WhatsApp form in a browser, overflow) against a local Ghost |
 | `npm run test:stage5` | Blog checks (features, Paling dibaca, topic tiles, Terkini + "Muatkan lagi", Panduan band, topic/author pages, feature images, search, overflow) against a local Ghost. It edits and restores test data |
+| `npm run test:stage6` | Article page checks (header, image, editor blocks, consultation, references, tags, author box, related lists, share, SEO, progress bar, search, phone layout, no-JS). Runs `test/stage6/prepare-demo.mjs` first |
 | `npm run visual` | Side-by-side screenshots of the approved prototype vs the local theme (`PROTOTYPE_HTML=…`) |
 
 ## Ghost Admin setup checklist (paths verified on Ghost 6.75.0)
@@ -164,6 +165,52 @@ Everything on the blog pages comes from Ghost Admin and updates when you publish
 1. **Tags (Ghost Admin → Tags):** create the 7 categories with these slugs: `disfungsi-ereksi`, `hormon-testosteron`, `kesihatan-pelvis`, `seks-hubungan`, `gaya-hidup`, `kesihatan-mental`, `panduan`. Give `gaya-hidup` the **name "Gaya Hidup & Minda"** (approved Stage 5). Keep the slug `gaya-hidup`; the theme's topic tiles and short labels use the slug. Add descriptions; they appear on the topic tiles and topic pages.
 2. **Secondary navigation (Settings → Site → Navigation):** one item per category, in the order above, with the full name as the label (e.g. "Gaya Hidup & Minda" → `/blog/topik/gaya-hidup/`).
 3. **Doctor profile (Settings → Staff → your profile):** your real name (with "Dr."), photo, biography and slug. Then the theme setting **`doctor_credentials`** (verified credentials) and the slug in `routes.yaml` (3 places). Open `/blog/penulis/{slug}/` and check that no test data appears. The local test profile ("Dr. Ujian Tempatan") exists only on the development install and is never imported.
+
+### Writing an article (Stage 6): how the editor maps to the design
+
+Everything on an article page comes from the post in Ghost Admin. The address is always `/blog/{slug}/`.
+
+| In Ghost Admin | Shows on the article as |
+|---|---|
+| **Title** | The large serif headline |
+| **Excerpt** (Post settings) | The italic standfirst under the title, and the summary on cards (150–200 characters) |
+| **Feature image** (≥1600px wide, roughly 16:7) + its **alt text** and **caption** | The wide image under the header (16:7 on desktop, full width on phones), the caption under it, and the cards and social preview. No image: no image area (cards show the patterned placeholder) |
+| **First tag** | The category (red label, breadcrumb, "Baca seterusnya" topic). Put the topic first, e.g. Disfungsi Ereksi |
+| **Other public tags** | The outlined tag buttons at the end |
+| Internal tag **`#tanpa-cta`** | Hides the consultation card (side) and the red "Bincang secara sulit dengan doktor" band for educational pieces |
+| Internal tag **`#popular`** / tag **`panduan`** | Paling dibaca on the blog home / Panduan lengkap band and "Panduan berkaitan" |
+| **Author** (your staff profile) | "Ditulis dan disemak oleh {name}", the photo, the "Tentang penulis" box with bio; credentials from the theme setting `doctor_credentials` |
+| Publish date / last update | "5 November 2026 · 7 min bacaan" and "Kemas kini terakhir …" (Malay month names) |
+
+**Body (editor blocks):**
+
+| Editor block | Becomes |
+|---|---|
+| **Heading 2** | A section; listed in "Dalam artikel ini" (shown when there are at least 2). Use Heading 3 for subsections |
+| First paragraph | Starts with a red drop cap (desktop) |
+| **Callout, grey** | The charcoal "POIN UTAMA" box. Put each point on its own line (Shift+Enter); each line becomes a point |
+| **Callout, white** | The bordered box with the red info icon. Start with a **bold** first phrase, e.g. "**Pertimbangkan konsultasi jika:**" |
+| **Quote**: click the quote button twice (alternate style) | The red-ruled serif pull quote. The first style is a plain quote |
+| Bulleted / numbered list | Red "/" bullets / red numbers |
+| **Image** (+ caption) | Full width of the text column with the caption under it |
+| **Toggle** | An FAQ row, same style as the site FAQs |
+| **Bookmark** | A bordered link card |
+| Heading **"Rujukan"** + a list | The references block, placed after the red band in small grey type. Keep it as the last section |
+
+### Before launch: replace all test content (owner requirement, Stage 6 approval)
+
+Nothing below may go to production. The live site gets only the doctor's real, reviewed content.
+
+| Test content on the local site | Replace with |
+|---|---|
+| Reference placeholders `[Rujukan]`, `[Rujukan — sumber perubatan yang disahkan…]` | The real, verified sources for each article |
+| Placeholder captions and credits: `[Kapsyen gambar & kredit]`, `[Gambar sokongan / ilustrasi ringkas — kapsyen]` | Real captions and photo credits |
+| Generic test images labelled "GAMBAR UJIAN" (`test/stage6/fixtures/`) | Real photographs (main photo ≥1600px wide, about 16:7), with alt text |
+| Test articles: "Artikel ujian 1–12", the 13 demo articles from the prototype (titles, summaries, "Teks contoh untuk ujian…" bodies, the sample ED article text) and the FAQ placeholder `[Contoh soalan lazim…]` | The doctor's own articles, written and reviewed in Ghost Admin |
+| Placeholder author image (the patterned circle) and the local test account | The doctor's real staff profile: photo, name, biography, slug; theme setting `doctor_credentials` |
+| Site-wide placeholders still listed in `docs/CLINICAL-REVIEW.md` (open items) | The verified details |
+
+The test fixtures (`test/stage1/fixtures/`, `test/stage6/`) exist only to test the theme and are never imported to himandme.my.
 
 ## Repository layout (Stage 0–1)
 

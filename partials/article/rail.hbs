@@ -1,0 +1,13 @@
+{{!-- Left rail (desktop) / top of the text (tablet, phone): "Dalam artikel ini" from the H2 headings, built by
+      main.js (shown when there are at least 2), and share buttons (WhatsApp, copy link). --}}
+<div class="hm-art__rail">
+    <details class="hm-doc__toc hm-art__toc" data-hm-toc data-hm-toc-scope=".hm-art__content" data-hm-toc-min="2" hidden>
+        <summary>{{t "DALAM ARTIKEL INI"}}<span aria-hidden="true">+</span></summary>
+        <ol class="hm-doc__toc-list"></ol>
+    </details>
+    <div class="hm-art__share">
+        <a class="hm-art__share-btn" href="https://wa.me/?text={{encode (concat title " " (url absolute="true"))}}" target="_blank" rel="noopener" aria-label="{{t "Kongsi ke WhatsApp"}}">{{> "icons/whatsapp" size="18"}}</a>
+        <button class="hm-art__share-btn" type="button" data-hm-copy-link aria-label="{{t "Salin pautan"}}">{{> "icons/link"}}</button>
+        <span class="hm-art__copied" role="status" aria-live="polite" data-hm-copied></span>
+    </div>
+</div>
