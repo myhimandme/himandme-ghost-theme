@@ -1,0 +1,21 @@
+{{!-- 02 Punca. Block "blok-ed-punca": title = H2, excerpt = description, body = charcoal callout text.
+      The six cause cards are fixed theme text (shorter versions on phones, as on the mobile board). --}}
+<section class="hm-edpunca hm-anchor" id="punca" aria-labelledby="hm-punca-title">
+    <div class="hm-container hm-edpunca__inner">
+        {{#get "posts" filter="slug:blok-ed-punca" limit="1"}}
+            {{#foreach posts}}{{> "ed/punca-head" title=title text=custom_excerpt}}
+            {{else}}{{> "ed/punca-head" title=(t "Selalunya lebih daripada satu faktor") text=(t "Faktor fizikal dan psikologi sering saling mempengaruhi. Penilaian membantu mengenal pasti yang mana berkaitan dengan anda.")}}{{/foreach}}
+        {{/get}}
+        <div class="hm-causes">
+            <div class="hm-cause"><strong>{{t "Salur darah (vaskular)"}}</strong><span class="hm-hide-mobile">{{t "Aliran darah yang terjejas — sering berkait dengan darah tinggi, kolesterol tinggi dan penyakit jantung."}}</span><span class="hm-show-mobile">{{t "Darah tinggi, kolesterol, penyakit jantung."}}</span></div>
+            <div class="hm-cause"><strong><span class="hm-hide-mobile">{{t "Kencing manis (diabetes)"}}</span><span class="hm-show-mobile">{{t "Kencing manis"}}</span></strong><span class="hm-hide-mobile">{{t "Paras gula yang tinggi dalam jangka panjang boleh menjejaskan salur darah dan saraf."}}</span><span class="hm-show-mobile">{{t "Menjejaskan salur darah dan saraf."}}</span></div>
+            <div class="hm-cause"><strong>{{t "Hormon"}}</strong><span class="hm-hide-mobile">{{t "Paras testosteron yang rendah atau ketidakseimbangan hormon lain boleh menjejaskan keinginan dan fungsi."}}</span><span class="hm-show-mobile">{{t "Testosteron rendah atau ketidakseimbangan lain."}}</span></div>
+            <div class="hm-cause"><strong>{{t "Psikologi & emosi"}}</strong><span class="hm-hide-mobile">{{t "Tekanan kerja, kebimbangan prestasi, kemurungan atau masalah hubungan."}}</span><span class="hm-show-mobile">{{t "Tekanan, kebimbangan prestasi, kemurungan."}}</span></div>
+            <div class="hm-cause"><strong>{{t "Gaya hidup"}}</strong><span class="hm-hide-mobile">{{t "Merokok, alkohol berlebihan, kurang bersenam, berat badan berlebihan dan kurang tidur."}}</span><span class="hm-show-mobile">{{t "Merokok, alkohol, kurang bersenam, kurang tidur."}}</span></div>
+            <div class="hm-cause"><strong>{{t "Ubat-ubatan & pembedahan"}}</strong><span class="hm-hide-mobile">{{t "Sesetengah ubat, atau pembedahan di kawasan pelvis, boleh memberi kesan sampingan pada ereksi."}}</span><span class="hm-show-mobile">{{t "Kesan sampingan ubat atau pembedahan pelvis."}}</span></div>
+        </div>
+        {{#get "posts" filter="slug:blok-ed-punca" limit="1"}}
+            {{#foreach posts}}{{> "ed/punca-callout" html=html}}{{else}}{{> "ed/punca-callout" fallback=true}}{{/foreach}}
+        {{/get}}
+    </div>
+</section>

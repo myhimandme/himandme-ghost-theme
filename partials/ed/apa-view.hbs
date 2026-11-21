@@ -1,0 +1,19 @@
+<section class="hm-container hm-edapa hm-anchor" id="apa" aria-labelledby="hm-apa-title">
+    <div class="hm-edapa__text">
+        <span class="hm-label"><span class="hm-label__slash">01/</span> <span class="hm-hide-mobile">{{t "APA ITU DISFUNGSI EREKSI"}}</span><span class="hm-show-mobile">{{t "APA ITU ED"}}</span></span>
+        <h2 class="hm-edh2" id="hm-apa-title">{{title}}</h2>
+        <div class="hm-edapa__body hm-only-p">{{#if fallback}}{{> "ed/fallback/apa"}}{{else}}{{{html}}}{{/if}}</div>
+    </div>
+    <div class="hm-edapa__side">
+        <div class="hm-signs">
+            <strong class="hm-signs__title"><span class="hm-hide-mobile">{{t "Tanda-tanda yang biasa dilaporkan"}}</span><span class="hm-show-mobile">{{t "Tanda-tanda biasa"}}</span></strong>
+            <div class="hm-signs__list hm-only-list">{{#if fallback}}{{> "ed/fallback/apa"}}{{else}}{{{html}}}{{/if}}</div>
+        </div>
+        {{#if note}}
+        <div class="hm-doctor-note">
+            <span class="hm-doctor-note__icon hm-hide-mobile">{{> "icons/info" size="26"}}</span>
+            <div class="hm-doctor-note__text"><strong>{{t "Bila perlu berjumpa doktor?"}}</strong><span>{{note}}</span></div>
+        </div>
+        {{/if}}
+    </div>
+</section>

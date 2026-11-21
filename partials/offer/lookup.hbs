@@ -1,0 +1,17 @@
+{{!-- Renders offer view partial "view" with the First Trial block (blok-tawaran), or the approved
+      copy when the block is missing. Hidden entirely when theme setting offer_price is empty.
+      Block: title = offer name, excerpt = CTA text, body = description + included list + small print.
+      Price: ONLY theme setting offer_price. --}}
+{{#if @custom.offer_price}}
+    {{#get "posts" filter="slug:blok-tawaran" limit="1"}}
+        {{#foreach posts}}
+            {{#match ../../view "bar"}}{{> "offer/bar-view" name=title cta=custom_excerpt html=html}}{{/match}}
+            {{#match ../../view "card"}}{{> "offer/card-view" name=title cta=custom_excerpt html=html variant=../../variant}}{{/match}}
+            {{#match ../../view "option"}}<option value="{{title}} {{@custom.offer_price}}" selected>{{title}} {{@custom.offer_price}}</option>{{/match}}
+        {{else}}
+            {{#match ../view "bar"}}{{> "offer/bar-view" name=(t "First Trial") cta=(t "Tempah First Trial") fallback=true}}{{/match}}
+            {{#match ../view "card"}}{{> "offer/card-view" name=(t "First Trial") cta=(t "Tempah First Trial") fallback=true variant=../variant}}{{/match}}
+            {{#match ../view "option"}}<option value="{{t "First Trial"}} {{@custom.offer_price}}" selected>{{t "First Trial"}} {{@custom.offer_price}}</option>{{/match}}
+        {{/foreach}}
+    {{/get}}
+{{/if}}

@@ -1,0 +1,46 @@
+{{!-- First Trial card. variant omitted = homepage (after the hero); variant="ed" = ED page section
+      "Apa yang termasuk" (numbered items with links to each section). --}}
+<section class="hm-container hm-offer{{#match variant "ed"}} hm-offer--ed hm-anchor{{/match}}"{{#match variant "ed"}} id="first-trial"{{/match}} aria-labelledby="hm-offer-title{{#match variant "ed"}}-ed{{/match}}">
+    {{#match variant "ed"}}
+    <div class="hm-offer__head">
+        <div class="hm-offer__head-main">
+            <span class="hm-label"><span class="hm-label__slash">/</span> {{t "SESI PERCUBAAN PERTAMA"}}</span>
+            <h2 class="hm-edh2" id="hm-offer-title-ed">{{t "Apa yang termasuk dalam"}} {{name}}</h2>
+        </div>
+        <div class="hm-offer__head-text hm-only-first">{{> "offer/body" fallback=fallback html=html}}</div>
+    </div>
+    {{/match}}
+    <div class="hm-offer__card">
+        <div class="hm-offer__price">
+            <div class="hm-offer__deco" aria-hidden="true"></div>
+            {{#match variant "ed"}}{{else}}<span class="hm-offer__label">{{t "/ SESI PERCUBAAN PERTAMA"}}</span>{{/match}}
+            {{#match variant "ed"}}<strong class="hm-offer__name">{{name}}</strong>{{else}}<h2 class="hm-offer__name" id="hm-offer-title">{{name}}</h2>{{/match}}
+            {{#match variant "ed"}}{{else}}<div class="hm-offer__desc hm-only-first">{{> "offer/body" fallback=fallback html=html}}</div>{{/match}}
+            <span class="hm-offer__amount">{{@custom.offer_price}}</span>
+            {{#match variant "ed"}}
+                <div class="hm-offer__note hm-offer__note--dark hm-only-after-list hm-hide-mobile">{{> "offer/body" fallback=fallback html=html}}</div>
+                <div class="hm-offer__ctas hm-offer__ctas--dark hm-hide-mobile">
+                    <a class="hm-btn hm-btn--primary hm-btn--md" href="{{> "offer/wa-href" name=name}}" target="_blank" rel="noopener" data-hm-offer-cta>{{cta}}</a>
+                    <a class="hm-btn hm-btn--md hm-offer__wa-light" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">WhatsApp</a>
+                </div>
+            {{/match}}
+        </div>
+        <div class="hm-offer__list-panel">
+            {{#match variant "ed"}}{{else}}<span class="hm-offer__list-label">{{t "TERMASUK DALAM SESI ANDA"}}</span>{{/match}}
+            <div class="hm-offer__list hm-only-list"{{#match variant "ed"}} data-hm-offer-links="penilaian,shockwave,ems"{{/match}}>{{> "offer/body" fallback=fallback html=html}}</div>
+            {{#match variant "ed"}}
+                <div class="hm-offer__ctas hm-show-mobile">
+                    <a class="hm-btn hm-btn--primary hm-btn--lg" href="{{> "offer/wa-href" name=name}}" target="_blank" rel="noopener" data-hm-offer-cta>{{cta}}</a>
+                    <a class="hm-btn hm-offer__wa" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{t "atau tanya melalui WhatsApp →"}}</a>
+                </div>
+                <div class="hm-offer__note hm-only-after-list hm-show-mobile">{{> "offer/body" fallback=fallback html=html}}</div>
+            {{else}}
+                <div class="hm-offer__ctas">
+                    <a class="hm-btn hm-btn--primary hm-btn--lg" href="{{> "offer/wa-href" name=name}}" target="_blank" rel="noopener" data-hm-offer-cta>{{> "icons/calendar" size="20"}}{{cta}}</a>
+                    <a class="hm-btn hm-btn--whatsapp hm-btn--lg hm-offer__wa" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="20"}}<span class="hm-hide-mobile">{{t "Tanya melalui WhatsApp"}}</span><span class="hm-show-mobile">{{t "atau tanya melalui WhatsApp →"}}</span></a>
+                </div>
+                <div class="hm-offer__note hm-only-after-list">{{> "offer/body" fallback=fallback html=html}}</div>
+            {{/match}}
+        </div>
+    </div>
+</section>

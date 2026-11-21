@@ -1,0 +1,277 @@
+// Stage 4 checks: Disfungsi Ereksi page. Section order, page fields, every #blok-ed block (edit →
+// visible, unpublish → approved fallback, restore), body splitting, FAQ from the page body,
+// settings-driven tiles, every appointment/WhatsApp CTA, the WhatsApp enquiry form (real browser),
+// accessibility basics and no horizontal overflow. LOCAL Ghost only.
+//
+//   GHOST_ADMIN_EMAIL=… GHOST_ADMIN_PASSWORD=… node test/stage4/run.mjs
+import { createRequire } from 'node:module';
+import { BLOCKS } from '../../seed/blocks.mjs';
+
+const BASE = (process.env.GHOST_URL || 'http://localhost:2368').replace(/\/$/, '');
+if (!['localhost', '127.0.0.1'].includes(new URL(BASE).hostname)) { console.error('Local Ghost only.'); process.exit(2); }
+const { GHOST_ADMIN_EMAIL: EMAIL, GHOST_ADMIN_PASSWORD: PASSWORD } = process.env;
+if (!EMAIL || !PASSWORD) { console.error('Set GHOST_ADMIN_EMAIL and GHOST_ADMIN_PASSWORD.'); process.exit(2); }
+const PATH = '/disfungsi-ereksi/';
+
+let cookie = '';
+async function admin(path, { method = 'GET', json } = {}) {
+  const r = await fetch(`${BASE}/ghost/api/admin${path}`, { method, headers: { Origin: BASE, 'Content-Type': 'application/json', ...(cookie ? { Cookie: cookie } : {}) }, body: json ? JSON.stringify(json) : undefined });
+  const sc = r.headers.get('set-cookie'); if (sc) cookie = sc.split(';')[0];
+  const t = await r.text(); if (!r.ok) throw new Error(`${method} ${path} -> ${r.status} ${t.slice(0, 300)}`);
+  try { return t ? JSON.parse(t) : {}; } catch { return {}; }
+}
+const page = async (p = PATH) => (await fetch(BASE + p)).text();
+const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+const results = [];
+const check = (id, what, pass, detail = '') => { results.push({ id, pass }); console.log(`${pass ? 'PASS' : 'FAIL'}  ${id.padEnd(4)} ${what}${detail ? ` — ${detail}` : ''}`); };
+const edit = async (type, id, fields) => {
+  const cur = (await admin(`/${type}/${id}/`)).posts?.[0] || (await admin(`/${type}/${id}/`)).pages[0];
+  return admin(`/${type}/${id}/?source=html`, { method: 'PUT', json: { [type]: [{ ...fields, updated_at: cur.updated_at }] } });
+};
+
+await admin('/session/', { method: 'POST', json: { username: EMAIL, password: PASSWORD } });
+const blocks = Object.fromEntries((await admin('/posts/?limit=all&filter=tag:hash-blok-ed')).posts.map((p) => [p.slug, p]));
+const edPage = (await admin('/pages/slug/disfungsi-ereksi/?formats=html')).pages[0];
+let h = await page();
+
+// E1 — section order matches the prototype
+const order = ['apa', 'punca', 'penilaian', 'shockwave', 'ems', 'hm-cmp-title', 'first-trial', 'soalan', 'temujanji'].map((id) => h.indexOf(`id="${id}"`));
+check('E1', 'Sections in the prototype order: 01 Apa → 02 Punca → 03 Penilaian → 04 Shockwave → 05 Kegel EMS → comparison → First Trial → 06 FAQ → booking',
+  order.every((v, i) => v > 0 && (i === 0 || v > order[i - 1])), order.join(' < '));
+
+// E2 — hero from the Ghost page itself
+check('E2', 'H1 = page title, intro = page excerpt (Pages → Disfungsi Ereksi)', h.includes(`<h1 class="hm-edhero__title">${esc(edPage.title)}</h1>`) && h.includes(esc(edPage.custom_excerpt)));
+await edit('pages', edPage.id, { title: `${edPage.title} (diedit)` });
+const h2edit = await page();
+await edit('pages', edPage.id, { title: edPage.title });
+check('E3', 'Editing the page title in Ghost Admin changes the H1', h2edit.includes(`${esc(edPage.title)} (diedit)</h1>`));
+
+// E4 — every ED block drives its section and falls back when unpublished
+const edBlocks = BLOCKS.filter((b) => b.slug.startsWith('blok-ed-'));
+const bad = [];
+for (const b of edBlocks) {
+  const post = blocks[b.slug]; if (!post) { bad.push(`${b.slug} missing`); continue; }
+  const marker = `${post.title} (diedit)`;
+  await edit('posts', post.id, { title: marker }); const e = await page();
+  await edit('posts', post.id, { status: 'draft' }); const f = await page();
+  await edit('posts', post.id, { status: 'published', title: post.title });
+  if (!e.includes(esc(marker)) || f.includes(esc(marker)) || !f.includes(esc(b.title))) bad.push(`${b.slug}: block ${e.includes(esc(marker)) ? 'ok' : 'NOT used'}, fallback ${!f.includes(esc(marker)) && f.includes(esc(b.title)) ? 'ok' : 'MISSING'}`);
+}
+check('E4', `All ${edBlocks.length} ED blocks drive their section and fall back to approved copy when unpublished`, bad.length === 0, bad.join('; ') || 'edit → visible; unpublish → approved copy; restored');
+
+// E5 — FAQ comes from the page body
+h = await page();
+const faqCount = (h.match(/<section class="hm-faq hm-faq--ed[\s\S]*?<\/section>/)?.[0].match(/kg-toggle-card"/g) || []).length;
+const pageToggles = (edPage.html.match(/kg-toggle-card"/g) || []).length;
+check('E5', 'FAQ questions are the toggle cards in the page body', faqCount === pageToggles && faqCount > 0, `${faqCount} questions`);
+
+// E6 — settings drive the tiles; show_prices hides fee/price tiles; city label fallback
+const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
+const csCur = {}; // test values accumulate across steps (the real values are restored afterwards)
+const setCS = (vals) => { Object.assign(csCur, vals); return admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key in csCur ? csCur[s.key] : s.value })) } }); };
+await setCS({ consultation_fee: 'RM 99', shockwave_price: 'RM 999 / pakej', kegel_ems_price: 'RM 555 / sesi', show_prices: true, city: 'Kuala Lumpur' });
+const withP = await page(); const homeCity = await page('/');
+await setCS({ consultation_fee: '', kegel_ems_price: '' });
+const emptyTiles = await page();
+await setCS({ show_prices: false, city: '' });
+const noP = await page(); const homeNoCity = await page('/');
+await admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.value })) } });
+const tile = (html, v) => html.includes(`hm-tile__value">${esc(v)}</strong>`);
+check('E6', 'Fee/price tiles show the theme settings; no duration or session-count tiles', ['RM 99', 'RM 999 / pakej', 'RM 555 / sesi'].every((v) => tile(withP, v)) && !/>(TEMPOH|TEMPOH SESI|BILANGAN SESI)</.test(withP));
+check('E7', 'show_prices off hides the fee and price tiles (and only those)', !tile(noP, 'RM 99') && !noP.includes('>KOS<') && !noP.includes('>YURAN<') && noP.includes('>PEMBEDAHAN<') && noP.includes('>BERPAKAIAN<'));
+check('E7b', 'An empty setting hides its own tile (e.g. consultation fee) even with prices shown', !emptyTiles.includes('>YURAN<') && (emptyTiles.match(/>KOS</g) || []).length === 1 && tile(emptyTiles, 'RM 999 / pakej'));
+const label = (html) => (html.match(/<span class="hm-label"><span class="hm-label__slash">\/<\/span> KESIHATAN LELAKI([\s\S]*?)<\/span>\s*<h1/) || [])[1] ?? 'not found';
+check('E8', 'City setting: shown in the hero label when set; empty → label without any city or placeholder',
+  /· Kuala Lumpur/.test(label(homeCity)) && label(homeNoCity).trim() === '' && !homeNoCity.includes('[BANDAR]'), `set: "${label(homeCity).replace(/<[^>]+>/g, '')}" · empty: "${label(homeNoCity)}"`);
+
+// E9 — CTAs
+const wa = cs.find((s) => s.key === 'whatsapp_number').value;
+const waLinks = [...h.matchAll(/href="(https:\/\/wa\.me\/[^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, '&'));
+const msgs = waLinks.map((u) => decodeURIComponent(new URL(u).searchParams.get('text') || ''));
+check('E9', 'Every WhatsApp link uses the configured number', waLinks.length >= 5 && waLinks.every((u) => u.startsWith(`https://wa.me/${wa}?`)), `${waLinks.length} WhatsApp links`);
+check('E10', 'Treatment CTAs prefill a service-specific WhatsApp message', msgs.some((m) => m.includes('Shockwave therapy')) && msgs.some((m) => m.includes('Kegel EMS')));
+const anchors = [...h.matchAll(/href="#([a-z]+)"/g)].map((m) => m[1]);
+check('E11', 'All in-page CTAs/tabs/contents links point to sections that exist', anchors.length > 10 && anchors.every((a) => h.includes(`id="${a}"`)), `${new Set(anchors).size} distinct anchors`);
+check('E12', 'Mobile bar and header booking buttons go to the booking form (#temujanji)', (h.match(/\/disfungsi-ereksi\/#temujanji"/g) || []).length >= 2 && h.includes('id="temujanji"'));
+check('E13', 'Without JavaScript the form still opens WhatsApp (GET wa.me, message field named "text")', h.includes(`action="https://wa.me/${wa}"`) && /<textarea name="text"/.test(h));
+
+// E14 — accessibility basics (server HTML)
+const h1s = (h.match(/<h1[\s>]/g) || []).length;
+const inputs = [...(h.match(/<form class="hm-form"[\s\S]*?<\/form>/)?.[0] || '').matchAll(/<(input|select|textarea)\b/g)].length;
+const labelled = [...(h.match(/<form class="hm-form"[\s\S]*?<\/form>/)?.[0] || '').matchAll(/<label[^>]*>(?:(?!<\/label>)[\s\S])*?<(input|select|textarea)\b/g)].length;
+check('E14', 'One <h1>; every form control sits inside a <label>; table headers have scope', h1s === 1 && inputs === labelled && /<th scope="row">/.test(h) && /<th scope="col">/.test(h), `${h1s} h1, ${labelled}/${inputs} controls labelled`);
+
+
+// ---------- First Trial offer ----------
+const home = await page('/');
+const offerBlk = (await admin('/posts/slug/blok-tawaran/?formats=html')).posts[0];
+const priceNow = cs.find((s) => s.key === 'offer_price').value;
+const offerMsg = (name, price) => `Salam Him & Me, saya berminat untuk menempah ${name} ${price}.`;
+const offerCtas = (html) => [...html.matchAll(/<a [^>]*href="(https:\/\/wa\.me\/[^"]+)"[^>]*data-hm-offer-cta/g)].map((m) => decodeURIComponent(new URL(m[1].replace(/&amp;/g, '&')).searchParams.get('text')));
+const heroEnd = home.indexOf('</section>', home.indexOf('class="hm-container hm-hero"'));
+check('F1', 'Placement: homepage card directly after the hero (before the trust strip); ED bar in the hero, "Apa yang termasuk" after the comparison, form option',
+  home.indexOf('class="hm-container hm-offer"') > heroEnd && home.indexOf('class="hm-container hm-offer"') < home.indexOf('class="hm-trust"')
+  && h.indexOf('class="hm-offerbar"') > h.indexOf('class="hm-edhero"') && h.indexOf('class="hm-offerbar"') < h.indexOf('data-hm-tabs')
+  && /<option value="First Trial RM288" selected>First Trial RM288<\/option>/.test(h));
+check('F2', 'Every First Trial button opens WhatsApp with the simple enquiry built from the offer name + price',
+  [...offerCtas(home), ...offerCtas(h)].length === 4 && [...offerCtas(home), ...offerCtas(h)].every((m) => m === offerMsg(offerBlk.title, priceNow)), offerMsg(offerBlk.title, priceNow));
+check('F3', 'The price is not stored in the block (title, CTA text and body contain no price)', !/RM\s?\d/.test(`${offerBlk.title} ${offerBlk.custom_excerpt} ${offerBlk.html}`));
+check('F4', 'No comparative pricing ("Nilai biasa", "Biasa RM…") on the homepage or ED page', ![home, h].some((x) => /Nilai biasa|Biasa RM/i.test(x)));
+check('F5', 'Confirmed package contents shown: 1 × consultation, 1 × Shockwave Therapy, 1 × Kegel EMS', ['1 × Konsultasi doktor', '1 × Shockwave Therapy', '1 × Kegel EMS'].every((t) => home.includes(t) && h.includes(t)));
+
+// Price changed once in Ghost Admin → every location updates (incl. WhatsApp message and form option)
+await setCS({ offer_price: 'RM299' });
+const homeP = await page('/'); const edP = await page();
+const where = (html) => (html.match(/RM299/g) || []).length;
+const msgsP = [...offerCtas(homeP), ...offerCtas(edP)];
+check('F6', 'Changing offer_price once updates the homepage card, ED bar, ED section, booking option and every WhatsApp message',
+  homeP.includes('hm-offer__amount">RM299<') && edP.includes('hm-offerbar__amount">RM299<') && (edP.match(/hm-offer__amount">RM299</g) || []).length === 1
+  && edP.includes('<option value="First Trial RM299" selected>') && msgsP.length === 4 && msgsP.every((m) => m === offerMsg(offerBlk.title, 'RM299'))
+  && !homeP.includes('RM288') && !edP.includes('RM288'), `RM299 ×${where(homeP)} on Utama, ×${where(edP)} on ED; RM288 left: ${(homeP + edP).includes('RM288')}`);
+await setCS({ offer_price: '' });
+const homeOff = await page('/'); const edOff = await page();
+check('F7', 'Emptying offer_price switches the offer off everywhere (cards, bar, tab, form option)',
+  ![homeOff, edOff].some((x) => /class="hm-container hm-offer|class="hm-offerbar"|href="#first-trial"|First Trial RM/.test(x)));
+await admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.value })) } });
+
+// Offer copy comes from the block; fallback when unpublished
+await edit('posts', offerBlk.id, { title: 'First Trial (diedit)' });
+const homeE = await page('/'); const edE = await page();
+await edit('posts', offerBlk.id, { status: 'draft' });
+const homeF = await page('/');
+await edit('posts', offerBlk.id, { status: 'published', title: offerBlk.title });
+check('F8', 'Offer name/CTA/contents come from block "blok-tawaran" (edit → visible incl. WhatsApp message); unpublished → approved copy',
+  homeE.includes('id="hm-offer-title">First Trial (diedit)</h2>') && edE.includes('Apa yang termasuk dalam First Trial (diedit)') && offerCtas(edE).every((m) => m.includes('First Trial (diedit) '))
+  && homeF.includes('id="hm-offer-title">First Trial</h2>') && homeF.includes('1 × Shockwave Therapy'));
+
+// Combined treatment programme
+const sevenTen = (x) => (x.match(/7–10/g) || []).length;
+check('F9', 'Combined programme: one estimate ("Anggaran 7–10 sesi rawatan … Shockwave Therapy dan Kegel EMS …"); no separate per-treatment estimates',
+  h.includes('Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu.')
+  && sevenTen(h) === 1 && sevenTen(home) === 0 && !h.includes('BILANGAN SESI'), `"7–10" on ED: ${sevenTen(h)}, on Utama: ${sevenTen(home)}`);
+const csNow = (await admin('/custom_theme_settings/')).custom_theme_settings;
+check('F10', 'Theme settings: 14 registered (6 removed: email + durations + session counts), offer_price among them', csNow.length === 14 && csNow.some((s) => s.key === 'offer_price')
+  && !csNow.some((s) => /contact_email|_duration|_session_count/.test(s.key)), `${csNow.length} settings`);
+
+// Browser checks
+
+// G1 — Notis Privasi: article-style page, main-site header, footer keeps the Notis Privasi link
+const np = await page('/notis-privasi/');
+const npH2 = (np.match(/<h2 id="[^"]+">/g) || []).length;
+check('G1', 'Notis Privasi: article-style page with main-site header and footer link, owner text in BM + English, no placeholders',
+  np.includes('class="hm-doc"') && (np.match(/<h1/g) || []).length === 1 && np.includes('hm-header') && /hm-footer[\s\S]*href="[^"]*\/notis-privasi\/"/.test(np)
+  && npH2 === 14 && np.includes('Him &amp; Me Wellness PLT') && np.includes('href="#privacy-notice"') && np.includes('id="privacy-notice"') && !/\[(Kandungan|Alamat|E-mel)/.test(np),
+  `${npH2} section headings (13 BM + "Privacy Notice")`);
+
+
+// H1 — email out of the HTML: no address text or mailto: link on any page; footer has no email at all
+const EMAIL_RX = /myhimandme(@|&#x40;|&#64;|%40)|mailto:/i;
+const emailPages = {};
+for (const u of ['/', '/disfungsi-ereksi/', '/notis-privasi/', '/blog/']) emailPages[u] = await page(u);
+const footers = Object.values(emailPages).map((x) => (x.match(/<footer[\s\S]*?<\/footer>/) || [''])[0]);
+check('H1', 'Email address not in any page HTML (no text, no mailto:); footers have no email line (desktop + mobile markup)',
+  Object.values(emailPages).every((x) => !EMAIL_RX.test(x)) && footers.every((f) => f && !/e-?mel|email|hm-contact-img/i.test(f)),
+  Object.keys(emailPages).join(' '));
+// H4 — the words "e-mel" / "email" are not served anywhere: pages, RSS, sitemaps, theme CSS/JS
+// (the notice's data list says "alamat mel elektronik" / "electronic mail address" instead).
+const served = { ...emailPages, '/blog/rss/': await page('/blog/rss/'), '/sitemap-pages.xml': await page('/sitemap-pages.xml'), '/sitemap-posts.xml': await page('/sitemap-posts.xml') };
+for (const a of ['built/screen.css', 'built/main.js']) served[a] = await page('/assets/' + a);
+const wordHits = Object.entries(served).flatMap(([u, x]) => (x.match(/e-?mel|e-?mail/gi) || []).map((w) => `${u}: ${w}`));
+check('H4', 'No "e-mel"/"email" anywhere in the served HTML, RSS, sitemaps, CSS or JS; data list uses "alamat mel elektronik" / "electronic mail address"',
+  wordHits.length === 0 && emailPages['/notis-privasi/'].includes('Alamat mel elektronik, jika diberikan.') && emailPages['/notis-privasi/'].includes('Electronic mail address, if provided.'),
+  wordHits.slice(0, 6).join('; ') || `${Object.keys(served).length} files scanned`);
+// H5 — the Dasar Editorial page is dropped: no /dasar-editorial/ link anywhere; the page itself is gone (404)
+const articleUrl = ((served['/sitemap-posts.xml'].match(/<loc>([^<]+)<\/loc>/) || [])[1] || '').replace(BASE, '');
+const linkScan = { ...served, [articleUrl || '/']: await page(articleUrl || '/') };
+const deHits = Object.entries(linkScan).filter(([, x]) => /dasar-editorial|dasar editorial/i.test(x)).map(([u]) => u);
+const deStatus = (await fetch(BASE + '/dasar-editorial/')).status;
+check('H5', 'No /dasar-editorial/ link on any page (main site, blog home, article, RSS, sitemaps, CSS/JS); the page returns 404',
+  deHits.length === 0 && deStatus === 404, deHits.join(', ') || `${Object.keys(linkScan).length} files scanned · /dasar-editorial/ → ${deStatus}`);
+// H2 — Notis Privasi shows the email as one local image asset, in both language versions, with alt text
+const imgs = [...np.matchAll(/<img class="hm-contact-img"[^>]*>/g)].map((m) => m[0]);
+const srcs = new Set(imgs.map((t) => (t.match(/src="([^"]+)"/) || [])[1]));
+check('H2', 'Notis Privasi: contact address shown as an image (same local theme asset for BM + English) with alt text; address and phone stay text',
+  imgs.length === 2 && srcs.size === 1 && /^(https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?)?\/assets\/images\/hubungi-himandme\.png/.test([...srcs][0])
+  && imgs.some((t) => t.includes('alt="Hubungi Him &amp; Me untuk pertanyaan privasi"')) && imgs.some((t) => t.includes('alt="Contact Him &amp; Me for privacy enquiries"'))
+  && np.includes('Alamat: 1-3, Eight Setiawangsa') && np.includes('Telefon / WhatsApp: 011-5791 2606'), [...srcs].join(', '));
+
+let chromium; try { ({ chromium } = createRequire(import.meta.url)('playwright')); } catch { console.log('SKIP  browser checks — Playwright not available'); }
+if (chromium) {
+  const b = await chromium.launch();
+  // E15 — no horizontal overflow
+  const widths = [];
+  for (const w of [390, 768, 1024, 1440]) { const p = await b.newPage({ viewport: { width: w, height: 900 } }); await p.goto(BASE + PATH); widths.push([w, await p.evaluate(() => document.documentElement.scrollWidth)]); await p.close(); }
+  check('E15', 'No horizontal page overflow at 390 / 768 / 1024 / 1440px', widths.every(([w, s]) => s === w), widths.map(([w, s]) => `${w}:${s}`).join(' '));
+
+  const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
+  await p.addInitScript(() => { window.__opened = []; window.open = (u) => { window.__opened.push(u); return {}; }; });
+  await p.goto(BASE + PATH); await p.waitForTimeout(500);
+  // E16 — body splitting: left column shows paragraphs only, card shows the list only; lead/rest around the tiles
+  const split = await p.evaluate(() => {
+    const vis = (sel) => [...document.querySelectorAll(sel + ' > *')].filter((e) => getComputedStyle(e).display !== 'none').map((e) => e.tagName);
+    return { left: vis('.hm-edapa__body'), card: vis('.hm-signs__list'), lead: vis('#shockwave .hm-edsvc__lead'), rest: vis('#shockwave .hm-edsvc__rest') };
+  });
+  check('E16', 'One block body, two places: paragraphs left + list in the card; description above the tiles, list + note below',
+    split.left.every((t) => t === 'P') && split.left.length >= 1 && split.card.join() === 'UL' && split.lead.join() === 'P' && split.rest.includes('UL'), JSON.stringify(split));
+  // E17 — active tab follows scrolling
+  await p.evaluate(() => document.getElementById('punca').scrollIntoView()); await p.waitForTimeout(700);
+  const active = await p.evaluate(() => document.querySelector('.hm-tabs__link.is-active')?.textContent.trim());
+  check('E17', 'Sticky tab bar marks the section in view', active === 'Punca', `active: ${active}`);
+  // E18 — form validation, service preselect, WhatsApp message
+  await p.click('#temujanji button[type="submit"]');
+  const errShown = await p.evaluate(() => !document.querySelector('[data-hm-form-error]').hidden && window.__opened.length === 0);
+  await p.click('#ems .hm-svc-cta__link'); await p.waitForTimeout(300);
+  const pre = await p.$eval('select[name="hm_perkhidmatan"]', (s) => s.value);
+  await p.fill('input[name="hm_nama"]', 'Ahmad'); await p.fill('input[name="hm_telefon"]', '012-345 6789');
+  await p.fill('input[name="hm_tarikh"]', '2027-01-15'); await p.check('input[name="hm_masa"][value="Petang"]');
+  await p.fill('textarea[name="text"]', 'Soalan ringkas.'); await p.check('input[name="hm_consent"]');
+  await p.click('#temujanji button[type="submit"]'); await p.waitForTimeout(300);
+  const opened = await p.evaluate(() => window.__opened[0] || '');
+  const minDate = await p.$eval('input[name="hm_tarikh"]', (i) => i.min);
+  const msg = opened ? decodeURIComponent(new URL(opened).searchParams.get('text')) : '';
+  check('E18', 'Form: empty submit shows the error and opens nothing; treatment link preselects the service', errShown && pre === 'Kegel EMS', `preselected: ${pre}`);
+  check('E19', 'Form opens WhatsApp with the visitor\'s details as the message; past dates blocked',
+    opened.startsWith(`https://wa.me/${wa}?text=`) && ['Nama: Ahmad', 'No. telefon: 012-345 6789', 'Perkhidmatan: Kegel EMS', 'Tarikh pilihan: 15/01/2027', 'Masa pilihan: Petang', 'Mesej: Soalan ringkas.'].every((l) => msg.includes(l)) && /^\d{4}-\d{2}-\d{2}$/.test(minDate),
+    msg.split('\n').filter(Boolean).join(' | '));
+  // F11 — form defaults to the First Trial option and carries it into the WhatsApp message
+  const p3 = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await p3.addInitScript(() => { window.__opened = []; window.open = (u) => { window.__opened.push(u); return {}; }; });
+  await p3.goto(BASE + PATH); await p3.waitForTimeout(400);
+  await p3.fill('input[name="hm_nama"]', 'Ali'); await p3.check('input[name="hm_consent"]'); await p3.click('#temujanji button[type="submit"]'); await p3.waitForTimeout(200);
+  const m3 = await p3.evaluate(() => decodeURIComponent(new URL(window.__opened[0]).searchParams.get('text')));
+  const sw = await p3.evaluate(() => [390, document.documentElement.scrollWidth]);
+  await p3.goto(BASE + '/'); const swHome = await p3.evaluate(() => document.documentElement.scrollWidth);
+  const offerTop = await p3.evaluate(() => Math.round(document.querySelector('.hm-offer').getBoundingClientRect().top + scrollY));
+  const offerH = await p3.evaluate(() => Math.round(document.querySelector('.hm-offer').getBoundingClientRect().height));
+  await p3.close();
+  check('F11', 'Booking form defaults to "First Trial RM288" and the WhatsApp message names it; phone layout has no overflow',
+    m3.includes(`Perkhidmatan: First Trial ${priceNow}`) && sw[1] === 390 && swHome === 390, `offer card on phone: ${offerH}px tall, starts at ${offerTop}px`);
+  // E20 — FAQ first question open
+  const faq = await p.$$eval('#soalan .kg-toggle-card', (els) => els.map((e) => e.dataset.kgToggleState));
+  check('E20', 'FAQ: first question open, others closed', faq[0] === 'open' && faq.slice(1).every((s) => s === 'close'), faq.join(','));
+  // G2 — Notis Privasi contents: rail on desktop, collapsed box on phones, no overflow
+  const g = {};
+  for (const w of [1440, 390]) {
+    const pg = await b.newPage({ viewport: { width: w, height: 900 } }); await pg.goto(BASE + '/notis-privasi/'); await pg.waitForTimeout(300);
+    g[w] = await pg.evaluate(() => ({ n: document.querySelectorAll('.hm-doc__toc-list a').length, open: document.querySelector('[data-hm-toc]').open, sw: document.documentElement.scrollWidth,
+      ok: [...document.querySelectorAll('.hm-doc__toc-list a')].every((a) => document.getElementById(a.hash.slice(1))) }));
+    await pg.close();
+  }
+  check('G2', 'Notis Privasi contents list: 14 working links; open rail at 1440px, collapsed at 390px; no overflow',
+    g[1440].n === 14 && g[1440].ok && g[1440].open && !g[390].open && g[1440].sw === 1440 && g[390].sw === 390, JSON.stringify(g));
+  // H3 — email image loads from the theme, is readable and undistorted on desktop and phone
+  const h3 = {};
+  for (const w of [1440, 390]) {
+    const pg = await b.newPage({ viewport: { width: w, height: 900 } }); await pg.goto(BASE + '/notis-privasi/');
+    await pg.evaluate(async () => { for (const i of document.querySelectorAll('.hm-contact-img')) { i.loading = 'eager'; if (!i.complete) await new Promise((r) => { i.onload = i.onerror = r; }); } });
+    h3[w] = await pg.$$eval('.hm-contact-img', (els) => els.map((i) => { const r = i.getBoundingClientRect(); return { nw: i.naturalWidth, nh: i.naturalHeight, w: +r.width.toFixed(2), h: +r.height.toFixed(2) }; }));
+    await pg.close();
+  }
+  const okImg = (list) => list.length === 2 && list.every((i) => i.nw === 693 && i.nh === 84 && i.w >= 200 && Math.abs(i.w / i.h - 693 / 84) < 0.02);
+  check('H3', 'Contact image loads, keeps its aspect ratio and is readable (≥200px wide) at 1440px and 390px', okImg(h3[1440]) && okImg(h3[390]), JSON.stringify({ 1440: h3[1440][0], 390: h3[390][0] }));
+  await b.close();
+}
+
+const fails = results.filter((r) => !r.pass);
+console.log(`\n${results.length - fails.length} passed, ${fails.length} failed`);
+process.exit(fails.length ? 1 : 0);

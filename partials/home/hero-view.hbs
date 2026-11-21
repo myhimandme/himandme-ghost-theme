@@ -1,6 +1,6 @@
 <section class="hm-container hm-hero" aria-labelledby="hm-hero-title">
     <div class="hm-hero__text">
-        <span class="hm-label"><span class="hm-label__slash">/</span> {{t "KESIHATAN LELAKI"}}<span class="hm-hide-mobile"> · {{t "[BANDAR]"}}</span></span>
+        <span class="hm-label"><span class="hm-label__slash">/</span> {{t "KESIHATAN LELAKI"}}{{#if @custom.city}}<span class="hm-hide-mobile"> · {{@custom.city}}</span>{{/if}}</span>
         <h1 class="hm-hero__title" id="hm-hero-title">{{title}}</h1>
         <p class="hm-hero__intro">{{intro}}</p>
         <div class="hm-hero__ctas hm-hide-mobile">
@@ -13,7 +13,7 @@
         {{> "components/image" src=img alt=alt class="hm-hero__img hm-cut" sizes="(max-width: 599px) 100vw, 50vw" eager=true}}
         <div class="hm-hero__card">
             <strong class="hm-hero__card-title hm-hide-mobile">{{t "Apa yang anda boleh jangka"}}</strong>
-            <span class="hm-check">{{> "icons/check"}}{{t "Bilik konsultasi tertutup & peribadi"}}</span>
+            <span class="hm-check">{{> "icons/check"}}{{t "Slot rawatan khas untuk setiap pesakit — tiada pesakit lain pada waktu yang sama"}}</span>
             <span class="hm-check">{{> "icons/check"}}{{t "Penilaian sebelum sebarang cadangan rawatan"}}</span>
             <span class="hm-check">{{> "icons/check"}}{{t "Penjelasan jelas tentang kos & pilihan"}}</span>
         </div>

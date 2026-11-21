@@ -2,7 +2,7 @@
 
 Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site (Utama, Disfungsi Ereksi) and a separate editorial blog (/blog/). The approved HTML prototype is the master visual reference.
 
-> **Status: Stage 3 (homepage).** Site chrome (Stage 2) and the homepage match the approved prototype. The ED page, blog, topic/author pages and articles are still *verification scaffolding* until Stages 4–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md), [`docs/STAGE-2-REPORT.md`](docs/STAGE-2-REPORT.md), [`docs/STAGE-3-REPORT.md`](docs/STAGE-3-REPORT.md).
+> **Status: Stage 4 (Disfungsi Ereksi page + RM288 First Trial offer), awaiting approval.** Site chrome, the homepage and the ED page match the approved prototype. Blog, topic/author pages and articles are still *verification scaffolding* until Stages 5–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md) · [`STAGE-2`](docs/STAGE-2-REPORT.md) · [`STAGE-3`](docs/STAGE-3-REPORT.md) · [`STAGE-4`](docs/STAGE-4-REPORT.md). **Clinical content checklist: [`docs/CLINICAL-REVIEW.md`](docs/CLINICAL-REVIEW.md).**
 
 ## Requirements
 
@@ -25,6 +25,7 @@ Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site
 | `npm run test:stage1` | Routing and content-block verification suite against a **local** Ghost (see [`test/stage1/README.md`](test/stage1/README.md)) |
 | `npm run test:stage2` | Site-chrome checks (headers, footers, menus, settings, block fallback) against a local Ghost |
 | `npm run test:stage3` | Homepage checks (every block + fallback, article teaser, images, doctor card, accessibility basics) against a local Ghost |
+| `npm run test:stage4` | Disfungsi Ereksi page checks (blocks + fallback, FAQ, settings, every CTA, WhatsApp form in a browser, overflow) against a local Ghost |
 | `npm run visual` | Side-by-side screenshots of the approved prototype vs the local theme (`PROTOTYPE_HTML=…`) |
 
 ## Ghost Admin setup checklist (paths verified on Ghost 6.75.0)
@@ -39,7 +40,7 @@ Paths were checked in the Ghost 6.75.0 Admin interface. Screenshots are in [`doc
 | 4 | Homepage SEO title/description | **Settings → General settings → Meta data** |
 | 5 | Turn off social web (required) | **Settings → Growth → Network** → switch **off**. Ghost 6 has it on by default; it would publish every post, including content blocks, to the fediverse. |
 | 6 | Doctor profile, and slug for routes | **Settings → General settings → Staff** → your name → **Profile** tab: name (with "Dr."), photo, bio, **Slug** |
-| 7 | Theme settings (WhatsApp, prices, credentials…) | **Settings → Site → Design & branding → Theme** tab → *Site wide* (17 fields) and *Post* (doctor credentials) → **Save**. Ghost derives the field labels from the setting names (e.g. "Whatsapp number"). |
+| 7 | Theme settings (WhatsApp, prices, credentials…) | **Settings → Site → Design & branding → Theme** tab → *Site wide* (13 fields) and *Post* (doctor credentials). The theme uses **14 of Ghost's 20** custom settings → **Save**. Ghost derives the field labels from the setting names (e.g. "Whatsapp number"). |
 | 8 | Language and timezone | **Settings → General settings → Publication language** (`ms`) and **Timezone** (Asia/Kuala_Lumpur) |
 | 9 | Menus | **Settings → Site → Navigation**: *Primary* = main menu (Utama `/`, Disfungsi Ereksi `/disfungsi-ereksi/`, Blog `/blog/`). *Secondary* = blog category bar (e.g. Disfungsi Ereksi `/blog/topik/disfungsi-ereksi/`). "Semua" is added by the theme. |
 
@@ -82,12 +83,63 @@ Homepage and ED-page section headings and descriptions are **content blocks**: p
 | `blok-utama-faq` | FAQ heading | — | **Toggle cards**, one per question (first opens automatically) | — |
 | `blok-utama-cta` | Closing band heading | Band text | — | — |
 
+The hero label shows the theme setting **`city`** after "KESIHATAN LELAKI" (desktop). If `city` is empty the label shows no city at all, never a blank or placeholder.
+
 The doctor card uses the staff profile named in theme setting **`doctor_author_slug`** (name, photo) and the **`doctor_credentials`** setting. The "Dari blog" cards are the three newest articles and never include blocks. Section labels ("/ PERKHIDMATAN"), the hero checklist, the trust strip and the four process steps are fixed theme text in `locales/ms.json`.
+
+### Disfungsi Ereksi page (Stage 4)
+
+**The page itself** (Pages → *Disfungsi Ereksi*, Template: *Disfungsi ereksi*): **title** = H1, **excerpt** = hero intro, **body** = the FAQ (one **toggle card** per question; the first opens automatically), **meta data** = SEO title and description.
+
+**Blocks** (tag `#blok` + `#blok-ed`):
+
+| Block slug | Title | Excerpt | Body | Feature image |
+|---|---|---|---|---|
+| `blok-ed-apa` | 01 heading | "Bila perlu berjumpa doktor?" text | Paragraphs (left column), then **one bulleted list** (the signs, shown in the right-hand card) | — |
+| `blok-ed-punca` | 02 heading | Description | Charcoal callout text | — |
+| `blok-ed-penilaian` | 03 heading | Intro text | — | — |
+| `blok-ed-shockwave` / `blok-ed-kegel-ems` | 04 / 05 heading | Subtitle | **First paragraph** (shown above the tiles), then a **heading + bulleted list**, then a **closing note paragraph** (shown below the tiles) | Section photo (set alt text) |
+| `blok-ed-perbandingan` | Comparison heading | — | — | — |
+| `blok-ed-faq` | FAQ heading | — | — | — |
+| `blok-ed-temujanji` | Booking heading | Booking intro | — | — |
+
+*Write the body in that order. The theme shows the paragraphs and the list in their designed places automatically, so no special formatting is needed.*
+
+**Theme settings used:** `offer_price` (First Trial), `consultation_fee`, `shockwave_price`, `kegel_ems_price`, **`show_prices`** (hides the fee and price tiles when off), WhatsApp number and messages, address, hours and phone (booking panel). Durations and per-treatment session counts are not shown, so those settings were removed.
+**Fixed theme text** (`locales/ms.json`): section labels and tabs, the six cause cards, the four consultation steps, tile labels ("PEMBEDAHAN: Tidak", "BERPAKAIAN: [Sahkan]"), the comparison table rows, form labels and the WhatsApp message format.
+
+**Session counts:** the treatment programme is a *combined* programme: "Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS…" (an estimate, not a guarantee). It appears once, in the FAQ answer on the page body.
+
+**Booking form:** builds a WhatsApp message from the visitor's input (name, phone, service, date, time, message) and opens WhatsApp. **Nothing is sent to or stored on the website.** The treatment CTAs ("Buat Temu Janji" under Shockwave / Kegel EMS) preselect that service.
+
+### First Trial offer (Stage 4 follow-up)
+
+One block, one setting. **The price lives only in the theme setting `offer_price`** (Settings → Site → Design & branding → Theme → *Offer price*, e.g. `RM288`). Every place the offer shows reads it: the homepage card, the ED hero bar, the ED section "Apa yang termasuk dalam First Trial", the "First Trial" tab, the booking-form option, and every "Tempah First Trial" WhatsApp message ("Salam Him & Me, saya berminat untuk menempah First Trial RM288."). **Leave `offer_price` empty to hide the offer everywhere.**
+
+| Block slug | Title | Excerpt | Body |
+|---|---|---|---|
+| `blok-tawaran` (tag `#blok`) | Package name (e.g. "First Trial"); also used in the WhatsApp message and the form option | Button label ("Tempah First Trial") | **First paragraph** = short description. **One bulleted list**: each item is **bold item name** followed by its description (the theme adds the icons, or the 01/02/03 numbers on the ED page). **Last paragraph** = slot note. **Never type the price in the block.** |
+
+If the block is unpublished, the approved copy is shown, still using `offer_price`.
+
+### Email address (anti-harvesting)
+
+The email address is **never in the site HTML as text**: there's no email in the footer (desktop or mobile), and no `mailto:` link. On the Notis Privasi page it appears as an image, `assets/images/hubungi-himandme.png` (theme asset, transparent PNG, 3 KB). The image is used in both the BM and English contact sections, inside an **HTML card**, with no "E-mel"/"Email" label. Its alt text is "Hubungi Him & Me untuk pertanyaan privasi" / "Contact Him & Me for privacy enquiries".
+
+The words "e-mel" and "email" are kept out of everything the site serves: the image file name, CSS class (`hm-contact-img`) and alt text avoid them. The notice's data list says "Alamat mel elektronik" / "Electronic mail address" instead (owner's wording). This deters simple harvesters; it is not proof against OCR.
+
+To change the address, edit `ADDRESS` in `scripts/make-contact-image.mjs` and run `node scripts/make-contact-image.mjs`. Then compress the PNG to a palette image (the committed file was reduced from 12 KB to 3 KB with Pillow `quantize(48)`), rebuild and upload the theme. Don't type the address into a page, block or setting.
+
+### Legal pages
+
+`seed/pages/notis-privasi.txt` holds the owner's Notis Privasi text (BM, then English). `seed/blocks.mjs` converts it to the page body: `## ` heading, `### ` subheading, `* ` / `1. ` lists, `---` divider, `# ` second-language title. Once imported, edit it in Ghost Admin → Pages → Notis Privasi.
+
+Plain pages use `page.hbs`, styled like a blog article. Each **H2 heading** becomes an entry in the "Dalam halaman ini" contents list (shown when there are at least 3). Use H3 for subsections. The page keeps the main-site header and the compact footer with the Notis Privasi link.
 
 ## Repository layout (Stage 0–1)
 
 ```
-package.json, routes.yaml       theme manifest (18 theme settings) and routing (source of truth)
+package.json, routes.yaml       theme manifest (20 theme settings, Ghost's maximum) and routing (source of truth)
 *.hbs, partials/                Stage 1 verification scaffolding (replaced from Stage 2)
 assets/css, assets/js           sources → assets/built/ (generated, not committed)
 scripts/build.mjs, zip.mjs      build and packaging

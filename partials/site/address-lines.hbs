@@ -1,0 +1,4 @@
+{{!-- One element per address line (the excerpt has one line per Enter), so a long line that wraps
+      stays tight while real line breaks keep the designed gap. --}}
+{{#split text separator="
+"}}{{#foreach this}}<span class="hm-footer__line">{{this}}</span>{{/foreach}}{{/split}}

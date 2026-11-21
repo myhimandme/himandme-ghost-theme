@@ -26,7 +26,8 @@
     "guard": "node scripts/check-blok-guard.mjs",
     "test:stage2": "node test/stage2/run.mjs",
     "visual": "node test/visual/compare.mjs",
-    "test:stage3": "node test/stage3/run.mjs"
+    "test:stage3": "node test/stage3/run.mjs",
+    "test:stage4": "node test/stage4/run.mjs"
   },
   "devDependencies": {
     "bestzip": "4.0.3",
@@ -57,9 +58,14 @@
     },
     "card_assets": true,
     "custom": {
+      "city": {
+        "type": "text",
+        "default": "Setiawangsa",
+        "description": "City for the homepage hero label (e.g. Kuala Lumpur). Leave empty to show no city."
+      },
       "whatsapp_number": {
         "type": "text",
-        "default": "60000000000",
+        "default": "601157912606",
         "description": "Digits only, international format, e.g. 60123456789. Used by all WhatsApp buttons."
       },
       "whatsapp_default_message": {
@@ -69,17 +75,12 @@
       },
       "phone_display": {
         "type": "text",
-        "default": "[No. telefon]",
+        "default": "011-5791 2606",
         "description": "Phone number exactly as it should be shown."
-      },
-      "contact_email": {
-        "type": "text",
-        "default": "[E-mel]",
-        "description": "Public contact email address."
       },
       "address_short": {
         "type": "text",
-        "default": "[Alamat ringkas]",
+        "default": "Eight Setiawangsa, Kuala Lumpur",
         "description": "Short address for the top bar. Full address: content block 'maklumat-hubungan'."
       },
       "google_maps_url": {
@@ -89,47 +90,27 @@
       },
       "opening_hours_short": {
         "type": "text",
-        "default": "[Waktu operasi]",
+        "default": "Isnin – Sabtu, 10 pagi – 6 petang · dengan temu janji sahaja",
         "description": "One-line opening hours for the top bar and contact panel."
       },
-      "consultation_duration": {
+      "offer_price": {
         "type": "text",
-        "default": "[± minit]",
-        "description": "Consultation length on the Disfungsi Ereksi page, e.g. 30 minit."
+        "default": "RM288",
+        "description": "First Trial price — shown on Utama, ED page, booking form and WhatsApp. Empty hides the offer."
       },
       "consultation_fee": {
         "type": "text",
-        "default": "[RM —]",
+        "default": "RM150 (percuma dengan First Trial)",
         "description": "Consultation fee on the Disfungsi Ereksi page."
-      },
-      "shockwave_session_duration": {
-        "type": "text",
-        "default": "[± minit]",
-        "description": "Shockwave therapy: length of one session."
-      },
-      "shockwave_session_count": {
-        "type": "text",
-        "default": "[Ditentukan doktor]",
-        "description": "Shockwave therapy: number of sessions."
       },
       "shockwave_price": {
         "type": "text",
-        "default": "[RM — / pakej]",
+        "default": "RM450 / sesi",
         "description": "Shockwave therapy: price."
-      },
-      "kegel_ems_session_duration": {
-        "type": "text",
-        "default": "[± minit]",
-        "description": "Kegel EMS: length of one session."
-      },
-      "kegel_ems_session_count": {
-        "type": "text",
-        "default": "[Ditentukan doktor]",
-        "description": "Kegel EMS: number of sessions."
       },
       "kegel_ems_price": {
         "type": "text",
-        "default": "[RM — / pakej]",
+        "default": "RM350 / sesi",
         "description": "Kegel EMS: price."
       },
       "show_prices": {
@@ -144,7 +125,7 @@
       },
       "doctor_credentials": {
         "type": "text",
-        "default": "",
+        "default": "Doktor yang sah",
         "group": "post",
         "description": "Verified credentials shown under 'Ditulis dan disemak oleh' on articles."
       }

@@ -13,7 +13,9 @@
 .hm-footer__col--hubungi { flex: 0 1 180px; }
 .hm-footer__col--laman { flex: 0 1 160px; }
 .hm-footer__heading { font-size: 13px; letter-spacing: 0.1em; color: var(--hm-text-2); font-weight: 700; }
-.hm-footer__address { white-space: pre-line; line-height: calc(1.366em + 10px); margin: -5px 0; } /* one line per address line, spaced like the prototype's 10px gap */
+.hm-footer__address { display: block; }
+.hm-footer__line { display: block; margin: 0 0 10px; } /* one element per address line, 10px apart as in the prototype */
+.hm-footer__line:last-child { margin-bottom: 0; }
 .hm-footer__hours p { margin: 0 0 10px; }
 .hm-footer__hours p:last-child { margin-bottom: 0; }
 .hm-footer__maps { font-weight: 600; }
@@ -35,7 +37,7 @@
 .hm-footer__m-info { display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
 .hm-footer__m-info .hm-footer__heading { font-size: 12px; }
 .hm-footer__m-info .hm-footer__hours p { margin: 0 0 6px; }
-.hm-footer__m-info .hm-footer__address { line-height: calc(1.366em + 6px); margin: -3px 0; }
+.hm-footer__m-info .hm-footer__line { margin-bottom: 6px; }
 .hm-footer__m-links { display: flex; gap: 20px; font-size: 15px; font-weight: 600; flex-wrap: wrap; }
 .hm-footer__m-links a { color: var(--hm-charcoal); text-decoration: none; }
 .hm-footer__m-disclaimer { font-size: 12px; line-height: 1.6; color: var(--hm-text-2); border-top: 1px solid var(--hm-rule-warm); padding-top: 20px; }

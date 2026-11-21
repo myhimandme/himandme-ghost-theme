@@ -9,7 +9,25 @@
         "posts": [
           {
             "id": "6a0000080000000000000000",
-            "uuid": "ddbed6ce-1883-4fb9-8bc2-68d3bde5a180",
+            "uuid": "84b0eae3-1af3-4fc8-9697-ae2c80c3a7eb",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "page",
+            "created_at": "2026-11-05T00:40:00.000Z",
+            "updated_at": "2026-11-05T00:40:00.000Z",
+            "slug": "disfungsi-ereksi",
+            "title": "Disfungsi ereksi boleh dinilai. Dan boleh dirawat.",
+            "custom_excerpt": "Panduan jelas tentang disfungsi ereksi (erectile dysfunction, ED) — puncanya, cara ia dinilai, dan pilihan rawatan yang tersedia di Him & Me.",
+            "meta_title": "Disfungsi Ereksi — Him & Me",
+            "meta_description": null,
+            "custom_template": "custom-disfungsi-ereksi",
+            "html": "<div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Adakah disfungsi ereksi perkara biasa?</h4></div><div class=\"kg-toggle-content\"><p>Ya. Ia biasa berlaku dalam kalangan lelaki, terutamanya apabila usia meningkat atau dengan keadaan seperti kencing manis dan darah tinggi. Ia boleh dibincangkan dan dinilai seperti masalah kesihatan lain.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Adakah shockwave therapy menyakitkan?</h4></div><div class=\"kg-toggle-content\"><p>Anda mungkin merasai sedikit ketidakselesaan, tetapi tiada kesakitan.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Berapa banyak sesi yang saya perlukan?</h4></div><div class=\"kg-toggle-content\"><p>Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Bolehkah saya teruskan ubat yang sedang saya ambil?</h4></div><div class=\"kg-toggle-content\"><p>Boleh. Doktor akan menyemak semula ubat anda dan menasihati jika ada yang tidak sesuai.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Bolehkah pasangan saya hadir bersama?</h4></div><div class=\"kg-toggle-content\"><p>Amat dialukan, untuk perbincangan yang lebih menyeluruh bersama pasangan — bergantung kepada keselesaan anda.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Berapakah kos rawatan?</h4></div><div class=\"kg-toggle-content\"><p>Satu sesi Shockwave therapy berharga RM450 dan satu sesi Kegel EMS berharga RM350 (harga ala carte). Pakej yang lebih jimat akan dimaklumkan semasa konsultasi.</p></div></div>",
+            "published_at": "2026-11-05T00:40:00.000Z"
+          },
+          {
+            "id": "6a0000090000000000000000",
+            "uuid": "bd44ec7c-55d3-4302-be91-01b5219858f8",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -18,45 +36,34 @@
             "updated_at": "2026-11-05T00:41:00.000Z",
             "slug": "jurnal",
             "title": "Jurnal Kesihatan Lelaki",
+            "custom_excerpt": "Route data for /blog/ (SEO title, description and social image).",
             "meta_title": "Jurnal Kesihatan Lelaki — Him & Me",
             "meta_description": "Artikel pendidikan tentang kesihatan lelaki.",
-            "custom_excerpt": "Blog Him & Me.",
-            "html": "<p>Route data for /blog/.</p>",
+            "custom_template": null,
+            "html": "<p>Halaman data untuk /blog/. Jangan nyahterbit.</p>",
             "published_at": "2026-11-05T00:41:00.000Z"
           },
           {
-            "id": "6a0000090000000000000000",
-            "uuid": "44dc495c-14a8-468e-8c5c-9d76c6a7a865",
-            "status": "published",
-            "visibility": "public",
-            "featured": false,
-            "type": "page",
-            "created_at": "2026-11-05T00:43:00.000Z",
-            "updated_at": "2026-11-05T00:43:00.000Z",
-            "slug": "notis-privasi",
-            "title": "Notis Privasi",
-            "html": "<p>Kandungan ujian notis privasi.</p>",
-            "published_at": "2026-11-05T00:43:00.000Z"
-          },
-          {
             "id": "6a00000a0000000000000000",
-            "uuid": "a39d0977-149b-4b0d-9143-978565ae7bca",
+            "uuid": "b03bc6ed-9265-4b53-bf75-4636b8da63bd",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "page",
             "created_at": "2026-11-05T00:42:00.000Z",
             "updated_at": "2026-11-05T00:42:00.000Z",
-            "slug": "disfungsi-ereksi",
-            "title": "Disfungsi ereksi boleh dinilai. Dan boleh dirawat.",
-            "custom_excerpt": "Panduan jelas tentang disfungsi ereksi.",
-            "custom_template": "custom-disfungsi-ereksi",
-            "html": "<div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Adakah disfungsi ereksi perkara biasa?</h4></div><div class=\"kg-toggle-content\"><p>Jawapan ujian FAQ ED.</p></div></div>",
+            "slug": "notis-privasi",
+            "title": "Notis Privasi",
+            "custom_excerpt": null,
+            "meta_title": "Notis Privasi | Him & Me",
+            "meta_description": "Bagaimana Him & Me mengumpul, menggunakan dan melindungi maklumat peribadi anda (PDPA 2010). English version included.",
+            "custom_template": null,
+            "html": "<p><a href=\"#privacy-notice\">English version: Privacy Notice ↓</a></p><p>Tarikh kuat kuasa: 5 November 2026</p><p>Tarikh kemas kini terakhir: 5 November 2026</p><h2>1. Pengenalan</h2><p>Notis Privasi ini menerangkan bagaimana Him &amp; Me Wellness PLT, yang mengendalikan Him &amp; Me (“kami” atau “Him &amp; Me”), mengumpul, menggunakan, menyimpan, memproses dan melindungi maklumat peribadi anda apabila anda melayari laman web kami, menghubungi kami, membuat pertanyaan atau mendapatkan perkhidmatan kami.</p><p>Kami menghormati privasi anda dan mengendalikan maklumat peribadi mengikut Akta Perlindungan Data Peribadi 2010 [Akta 709] dan undang-undang berkaitan yang berkuat kuasa di Malaysia.</p><p>Dengan memberikan maklumat peribadi kepada kami, anda mengakui bahawa anda telah dimaklumkan mengenai amalan pemprosesan data yang diterangkan dalam notis ini.</p><h2>2. Maklumat Peribadi Yang Kami Kumpulkan</h2><p>Bergantung pada interaksi anda dengan kami, maklumat yang mungkin dikumpulkan termasuk:</p><h3>A. Maklumat pengenalan dan hubungan</h3><ul><li>Nama.</li><li>Nombor telefon.</li><li>Alamat mel elektronik, jika diberikan.</li></ul><h3>B. Maklumat temu janji dan perkhidmatan</h3><ul><li>Perkhidmatan yang anda minati atau tempah.</li><li>Tarikh dan masa temu janji.</li><li>Pertanyaan, permintaan atau komunikasi dengan pihak kami.</li><li>Rekod berkaitan tempahan dan perkhidmatan yang diberikan.</li></ul><h3>C. Maklumat kesihatan</h3><p>Jika anda secara sukarela memberikan maklumat berkaitan kesihatan, termasuk sejarah kesihatan, keadaan perubatan atau maklumat berkaitan kesesuaian rawatan, maklumat tersebut mungkin dikumpulkan dan diproses setakat yang diperlukan untuk tujuan penilaian dan penyediaan perkhidmatan.</p><p>Maklumat kesihatan merupakan maklumat peribadi sensitif dan akan dikendalikan dengan perlindungan yang sewajarnya.</p><h3>D. Maklumat teknikal</h3><p>Apabila anda melayari laman web kami, maklumat teknikal tertentu mungkin dikumpulkan secara automatik, seperti:</p><ul><li>Alamat IP.</li><li>Jenis dan versi pelayar.</li><li>Jenis peranti.</li><li>Tarikh dan masa lawatan.</li><li>Halaman yang dilawati dan maklumat log teknikal.</li></ul><p>Maklumat ini digunakan untuk keselamatan, penyelenggaraan dan fungsi laman web.</p><h2>3. Tujuan Pengumpulan dan Pemprosesan Maklumat</h2><p>Kami mengumpulkan dan memproses maklumat peribadi untuk tujuan berikut:</p><ol><li>Mengendalikan pertanyaan dan permintaan pelanggan.</li><li>Menguruskan tempahan, penjadualan dan pengesahan temu janji.</li><li>Menghubungi anda berkaitan pertanyaan atau temu janji.</li><li>Memahami keperluan anda dan menentukan kesesuaian perkhidmatan yang diminta.</li><li>Menyediakan konsultasi dan perkhidmatan yang berkaitan.</li><li>Menyelenggara rekod pelanggan dan transaksi.</li><li>Mengendalikan aduan, maklum balas dan permintaan pelanggan.</li><li>Menambah baik keselamatan, fungsi dan pengalaman penggunaan laman web.</li><li>Mematuhi kewajipan undang-undang dan keperluan pihak berkuasa yang berkaitan.</li><li>Menyampaikan maklumat pemasaran secara berkala mengenai rawatan, perkhidmatan dan promosi yang mungkin berkaitan dengan keperluan dan minat anda.</li></ol><p>Anda boleh memilih untuk tidak menerima komunikasi pemasaran dengan memaklumkan kepada kami melalui saluran hubungan yang dinyatakan dalam notis ini.</p><h2>4. Saluran Komunikasi dan WhatsApp</h2><p>Him &amp; Me menyediakan WhatsApp sebagai salah satu saluran komunikasi untuk pertanyaan dan tempahan.</p><p>Apabila anda memilih untuk menghubungi kami melalui WhatsApp:</p><ul><li>Anda akan berkomunikasi melalui platform WhatsApp yang dikendalikan oleh pihak ketiga.</li><li>Maklumat yang anda hantar melalui WhatsApp akan diproses mengikut amalan privasi dan terma WhatsApp.</li><li>Kami mungkin menggunakan maklumat tersebut untuk menjawab pertanyaan, menguruskan tempahan dan berkomunikasi dengan anda berkaitan perkhidmatan.</li></ul><p>Sila elakkan daripada menghantar maklumat kesihatan sensitif yang tidak diperlukan melalui mesej WhatsApp.</p><p>Laman web kami tidak menyediakan konsultasi perubatan dalam talian melalui WhatsApp. Pertanyaan ringkas boleh dikemukakan melalui saluran tersebut, tertakluk kepada kesesuaian dan keperluan penilaian secara bersemuka.</p><h2>5. Akses dan Pendedahan Maklumat Kepada Pihak Ketiga</h2><p>Akses kepada akaun WhatsApp Him &amp; Me dan mesej pelanggan adalah terhad kepada:</p><ol><li>Doktor yang mengendalikan Him &amp; Me.</li><li>Pembantu perubatan Him &amp; Me.</li></ol><p>Tiada kakitangan lain atau individu lain yang diberikan akses kepada akaun WhatsApp tersebut.</p><p>Kami tidak menjual maklumat peribadi pelanggan kepada pihak ketiga.</p><p>Walau bagaimanapun, maklumat peribadi mungkin diproses atau didedahkan kepada pihak berikut setakat yang diperlukan untuk tujuan yang dinyatakan dalam notis ini:</p><ul><li><strong>Penyedia perkhidmatan teknologi dan pengehosan</strong> – untuk menyelenggara laman web, sistem dan infrastruktur digital.</li><li><strong>Penyedia platform komunikasi</strong> – termasuk WhatsApp untuk komunikasi yang dimulakan oleh anda.</li><li><strong>Penyedia perkhidmatan profesional</strong> – seperti penasihat undang-undang, akauntan atau juruaudit, jika diperlukan.</li><li><strong>Pihak berkuasa dan agensi kerajaan</strong> – apabila pendedahan diperlukan atau dibenarkan oleh undang-undang.</li></ul><h2>6. Penyimpanan dan Pemindahan Data</h2><p>Maklumat peribadi anda mungkin disimpan dalam sistem digital, rekod perniagaan dan platform komunikasi yang digunakan oleh Him &amp; Me.</p><p>Laman web Him &amp; Me menggunakan infrastruktur pengehosan pelayan yang terletak di Singapura. Oleh itu, sesetengah maklumat teknikal dan data laman web mungkin diproses atau disimpan di luar Malaysia.</p><p>Komunikasi melalui WhatsApp juga tertakluk kepada infrastruktur dan amalan pemprosesan data penyedia platform tersebut.</p><p>Sebarang pemindahan data peribadi ke luar Malaysia akan dikendalikan tertakluk kepada keperluan undang-undang perlindungan data peribadi yang berkenaan.</p><h2>7. Tempoh Penyimpanan Maklumat</h2><p>Kami menyimpan maklumat peribadi sepanjang tempoh yang diperlukan untuk memenuhi tujuan pengumpulannya, termasuk:</p><ul><li>Menguruskan pertanyaan dan temu janji.</li><li>Menyelenggara rekod pelanggan dan transaksi.</li><li>Memenuhi kewajipan undang-undang, perakaunan dan pentadbiran.</li><li>Menangani pertikaian atau aduan yang mungkin timbul.</li></ul><p>Tempoh penyimpanan mungkin berbeza bergantung pada jenis maklumat dan keperluan undang-undang yang terpakai.</p><h2>8. Keselamatan Maklumat</h2><p>Kami mengambil langkah keselamatan yang bersesuaian dari segi teknikal dan organisasi untuk melindungi maklumat peribadi daripada:</p><ul><li>Akses tanpa kebenaran.</li><li>Pendedahan atau penggunaan yang tidak dibenarkan.</li><li>Kehilangan atau kemusnahan.</li><li>Pengubahsuaian yang tidak dibenarkan.</li></ul><p>Walau bagaimanapun, tiada penghantaran atau penyimpanan maklumat melalui internet yang boleh dijamin selamat sepenuhnya.</p><h2>9. Hak Anda Berkaitan Maklumat Peribadi</h2><p>Tertakluk kepada Akta Perlindungan Data Peribadi 2010 dan undang-undang berkaitan, anda mempunyai hak untuk:</p><ol><li>Meminta akses kepada maklumat peribadi anda yang disimpan oleh kami.</li><li>Meminta pembetulan terhadap maklumat yang tidak tepat, tidak lengkap atau tidak terkini.</li><li>Menghubungi kami untuk pertanyaan atau aduan berkaitan pemprosesan maklumat peribadi.</li><li>Menarik balik persetujuan terhadap pemprosesan tertentu apabila berkenaan, tertakluk kepada sekatan undang-undang dan kewajipan yang terpakai.</li><li>Meminta kami mengehadkan pemprosesan tertentu, tertakluk kepada hak dan kewajipan di bawah undang-undang.</li></ol><p>Kami mungkin perlu mengesahkan identiti anda sebelum memproses permintaan berkaitan maklumat peribadi.</p><p>Untuk menggunakan hak tersebut, sila hubungi kami melalui maklumat hubungan yang dinyatakan di bahagian akhir notis ini.</p><h2>10. Maklumat Wajib dan Sukarela</h2><p>Pemberian maklumat peribadi tertentu mungkin diperlukan untuk membolehkan kami mengendalikan pertanyaan, menguruskan temu janji atau menyediakan perkhidmatan yang diminta.</p><p>Maklumat lain adalah secara sukarela.</p><p>Jika anda tidak memberikan maklumat yang diperlukan, kami mungkin tidak dapat memproses pertanyaan atau menguruskan tempahan anda.</p><p>Anda tidak diwajibkan memberikan maklumat kesihatan yang tidak berkaitan dengan tujuan penilaian atau perkhidmatan yang diminta.</p><h2>11. Pautan Ke Laman Web Pihak Ketiga</h2><p>Laman web kami mungkin mengandungi pautan ke laman web atau platform pihak ketiga, termasuk WhatsApp.</p><p>Kami tidak mengawal amalan privasi atau kandungan laman web pihak ketiga tersebut.</p><p>Anda digalakkan membaca notis privasi pihak ketiga sebelum memberikan maklumat peribadi melalui platform mereka.</p><h2>12. Perubahan Kepada Notis Privasi</h2><p>Kami berhak mengemas kini Notis Privasi ini dari semasa ke semasa bagi mencerminkan perubahan dalam amalan pengendalian maklumat, sistem, perkhidmatan atau keperluan undang-undang.</p><p>Sebarang perubahan akan diterbitkan di halaman ini bersama tarikh kemas kini terkini.</p><h2>13. Hubungi Kami</h2><p>Jika anda mempunyai pertanyaan, permintaan akses, permintaan pembetulan atau aduan berkaitan maklumat peribadi anda, sila hubungi:</p><p><strong>Him &amp; Me Wellness PLT</strong></p><p>Alamat: 1-3, Eight Setiawangsa, Jalan Setiawangsa 13, Taman Setiawangsa, 54200 Kuala Lumpur.</p><!--kg-card-begin: html--><p><img class=\"hm-contact-img\" src=\"/assets/images/hubungi-himandme.png\" width=\"231\" height=\"28\" alt=\"Hubungi Him &amp; Me untuk pertanyaan privasi\" loading=\"lazy\" decoding=\"async\"></p><!--kg-card-end: html--><p>Telefon / WhatsApp: 011-5791 2606</p><hr><h2>Privacy Notice</h2><p>Effective date: 5 November 2026</p><p>Last updated: 5 November 2026</p><h3>1. Introduction</h3><p>This Privacy Notice explains how Him &amp; Me Wellness PLT, the entity operating Him &amp; Me (“we”, “us” or “Him &amp; Me”), collects, uses, stores, processes and protects your personal data when you visit our website, contact us, make an enquiry or use our services.</p><p>We respect your privacy and handle personal data in accordance with the Personal Data Protection Act 2010 [Act 709] and other applicable Malaysian laws.</p><p>By providing your personal data to us, you acknowledge that you have been informed of the data processing practices described in this notice.</p><h3>2. Personal Data We Collect</h3><p>Depending on your interaction with us, we may collect the following categories of information:</p><h4>A. Identification and contact information</h4><ul><li>Name.</li><li>Telephone number.</li><li>Electronic mail address, if provided.</li></ul><h4>B. Appointment and service information</h4><ul><li>Services you enquire about or book.</li><li>Appointment dates and times.</li><li>Enquiries, requests and communications with us.</li><li>Records relating to bookings and services provided.</li></ul><h4>C. Health information</h4><p>If you voluntarily provide health-related information, including medical history, health conditions or information relevant to treatment suitability, we may collect and process such information to the extent necessary for assessment and service delivery.</p><p>Health information is sensitive personal data and will be handled with appropriate safeguards.</p><h4>D. Technical information</h4><p>When you visit our website, certain technical information may be collected automatically, including:</p><ul><li>IP address.</li><li>Browser type and version.</li><li>Device type.</li><li>Date and time of visits.</li><li>Pages visited and technical log information.</li></ul><p>This information is used for website security, maintenance and functionality.</p><h3>3. Purposes of Processing</h3><p>We collect and process personal data for the following purposes:</p><ol><li>Responding to enquiries and customer requests.</li><li>Managing bookings, scheduling and appointment confirmations.</li><li>Contacting you regarding enquiries or appointments.</li><li>Understanding your needs and assessing the suitability of requested services.</li><li>Providing consultations and related services.</li><li>Maintaining customer and transaction records.</li><li>Handling complaints, feedback and customer requests.</li><li>Improving website security, functionality and user experience.</li><li>Complying with applicable legal and regulatory requirements.</li><li>Sending periodic marketing communications about treatments, services and promotions that may be relevant to your needs and interests.</li></ol><p>You may opt out of receiving marketing communications by contacting us through the contact details provided in this notice.</p><h3>4. Communication Through WhatsApp</h3><p>Him &amp; Me provides WhatsApp as one of its communication channels for enquiries and bookings.</p><p>When you choose to contact us through WhatsApp:</p><ul><li>You communicate through a third-party platform operated by WhatsApp.</li><li>Information you send through WhatsApp is subject to WhatsApp's own privacy practices and terms.</li><li>We may use the information to respond to enquiries, manage bookings and communicate with you regarding our services.</li></ul><p>Please avoid sending unnecessary sensitive health information through WhatsApp messages.</p><p>Our website does not provide online medical consultations through WhatsApp. Brief enquiries may be submitted through this channel, subject to suitability and the need for an in-person assessment.</p><h3>5. Access to and Disclosure of Personal Data</h3><p>Access to the Him &amp; Me WhatsApp account and customer messages is restricted to:</p><ol><li>The doctor operating Him &amp; Me.</li><li>The Him &amp; Me medical assistant.</li></ol><p>No other staff members or individuals are granted access to this WhatsApp account.</p><p>We do not sell customers' personal data to third parties.</p><p>However, personal data may be processed or disclosed to the following parties where necessary for the purposes described in this notice:</p><ul><li><strong>Technology and hosting providers</strong> – to maintain our website, systems and digital infrastructure.</li><li><strong>Communication platform providers</strong> – including WhatsApp for communications initiated by you.</li><li><strong>Professional service providers</strong> – such as legal advisers, accountants and auditors, where necessary.</li><li><strong>Government authorities and regulatory agencies</strong> – where disclosure is required or permitted by law.</li></ul><h3>6. Data Storage and International Transfers</h3><p>Your personal data may be stored in digital systems, business records and communication platforms used by Him &amp; Me.</p><p>The Him &amp; Me website uses server-hosting infrastructure located in Singapore. Accordingly, certain technical information and website data may be processed or stored outside Malaysia.</p><p>Communications through WhatsApp are also subject to the infrastructure and data-processing practices of the platform provider.</p><p>Any transfer of personal data outside Malaysia will be handled subject to applicable personal data protection requirements.</p><h3>7. Data Retention</h3><p>We retain personal data for as long as necessary to fulfil the purposes for which it was collected, including:</p><ul><li>Managing enquiries and appointments.</li><li>Maintaining customer and transaction records.</li><li>Meeting legal, accounting and administrative obligations.</li><li>Addressing potential disputes or complaints.</li></ul><p>Retention periods may vary depending on the type of information and applicable legal requirements.</p><h3>8. Data Security</h3><p>We take appropriate technical and organisational security measures to protect personal data against:</p><ul><li>Unauthorised access.</li><li>Unauthorised disclosure or use.</li><li>Loss or destruction.</li><li>Unauthorised modification.</li></ul><p>However, no transmission or storage of information over the internet can be guaranteed to be completely secure.</p><h3>9. Your Rights Regarding Personal Data</h3><p>Subject to the Personal Data Protection Act 2010 and applicable laws, you have the right to:</p><ol><li>Request access to your personal data held by us.</li><li>Request correction of inaccurate, incomplete or outdated information.</li><li>Contact us with enquiries or complaints regarding the processing of your personal data.</li><li>Withdraw consent for certain processing activities where applicable, subject to legal restrictions and obligations.</li><li>Request that certain processing activities be limited, subject to applicable legal rights and obligations.</li></ol><p>We may need to verify your identity before processing requests relating to your personal data.</p><p>To exercise these rights, please contact us using the contact details provided at the end of this notice.</p><h3>10. Mandatory and Voluntary Information</h3><p>Certain personal data may be necessary for us to respond to your enquiries, manage your appointments or provide the services you request.</p><p>Other information is provided voluntarily.</p><p>If you do not provide information that is necessary for a particular purpose, we may be unable to process your enquiry or manage your booking.</p><p>You are not required to provide health information that is unrelated to the assessment or service requested.</p><h3>11. Third-Party Websites</h3><p>Our website may contain links to third-party websites or platforms, including WhatsApp.</p><p>We do not control the privacy practices or content of those third-party websites.</p><p>You are encouraged to review their privacy notices before providing personal data through their platforms.</p><h3>12. Changes to This Privacy Notice</h3><p>We may update this Privacy Notice from time to time to reflect changes in our data-handling practices, systems, services or legal requirements.</p><p>Any changes will be published on this page together with the latest update date.</p><h3>13. Contact Us</h3><p>If you have any questions, access requests, correction requests or complaints regarding your personal data, please contact:</p><p><strong>Him &amp; Me Wellness PLT</strong></p><p>Address: 1-3, Eight Setiawangsa, Jalan Setiawangsa 13, Taman Setiawangsa, 54200 Kuala Lumpur.</p><!--kg-card-begin: html--><p><img class=\"hm-contact-img\" src=\"/assets/images/hubungi-himandme.png\" width=\"231\" height=\"28\" alt=\"Contact Him &amp; Me for privacy enquiries\" loading=\"lazy\" decoding=\"async\"></p><!--kg-card-end: html--><p>Telephone / WhatsApp: 011-5791 2606</p>",
             "published_at": "2026-11-05T00:42:00.000Z"
           },
           {
             "id": "6a00000b0000000000000000",
-            "uuid": "cc65bae8-15d4-433d-95d3-ab1fe2c65a52",
+            "uuid": "411e3a53-76a6-40dc-8579-1d11c4dde962",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -65,13 +72,13 @@
             "updated_at": "2026-11-05T02:00:00.000Z",
             "slug": "blok-maklumat-hubungan",
             "title": "Maklumat hubungan (footer)",
-            "custom_excerpt": "[Alamat penuh]\n[Poskod, Bandar, Negeri]",
-            "html": "<p>[Isnin – Jumaat: 00:00 – 00:00]</p><p>[Sabtu: 00:00 – 00:00]</p><p>[Ahad &amp; cuti umum: Tutup]</p>",
+            "custom_excerpt": "Him & Me Mens Health Setiawangsa\n1-3, Eight Setiawangsa\nJalan Setiawangsa 13, Taman Setiawangsa\n54200 Kuala Lumpur",
+            "html": "<p>Isnin – Sabtu: 10:00 pagi – 6:00 petang</p><p>Slot pesakit baharu: 11:00 pagi – 5:00 petang</p><p>Dengan temu janji sahaja — tiada walk-in, untuk menjaga privasi pesakit</p>",
             "published_at": "2026-11-05T02:00:00.000Z"
           },
           {
             "id": "6a00000c0000000000000000",
-            "uuid": "7cdc385a-6708-495f-ae21-45da6c5b2aaa",
+            "uuid": "e0f63889-d890-4bed-bcde-c75d02baa2d8",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -86,202 +93,322 @@
           },
           {
             "id": "6a00000d0000000000000000",
-            "uuid": "6507e52c-c795-42f6-8221-19040946f235",
+            "uuid": "6a4d5c8c-3b8a-42a0-bce6-daf5933cce0a",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:02:00.000Z",
             "updated_at": "2026-11-05T02:02:00.000Z",
-            "slug": "blok-utama-hero",
-            "title": "Kesihatan lelaki, dibincang dengan tenang dan profesional.",
-            "custom_excerpt": "Penilaian dan rawatan disfungsi ereksi (erectile dysfunction) dalam suasana yang sulit dan selesa. Kami bermula dengan memahami keadaan anda — bukan dengan menjual rawatan.",
-            "html": "",
+            "slug": "blok-tawaran",
+            "title": "First Trial",
+            "custom_excerpt": "Tempah First Trial",
+            "html": "<p>Sesi percubaan pertama — untuk memahami keadaan anda dan merasai kedua-dua rawatan.</p><ul><li><strong>1 × Konsultasi doktor</strong> Sejarah perubatan, pemeriksaan fizikal dan perbincangan pilihan rawatan.</li><li><strong>1 × Shockwave Therapy</strong> Satu sesi terapi gelombang kejutan intensiti rendah, tanpa pembedahan dan tanpa ubat.</li><li><strong>1 × Kegel EMS</strong> Satu sesi rangsangan otot lantai pelvis, dalam keadaan berpakaian.</li></ul><p>Slot pesakit baharu 11:00 pagi – 5:00 petang · Dengan temu janji sahaja, tiada walk-in.</p>",
             "published_at": "2026-11-05T02:02:00.000Z"
           },
           {
             "id": "6a00000e0000000000000000",
-            "uuid": "2aae2a1a-d76b-4b65-a625-5e2ec8cd182d",
+            "uuid": "88079ac3-42db-4464-9cb7-a0cee47f0b05",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:03:00.000Z",
             "updated_at": "2026-11-05T02:03:00.000Z",
-            "slug": "blok-utama-kenyataan",
-            "title": "Disfungsi ereksi ialah keadaan perubatan yang biasa —",
-            "custom_excerpt": "bukan kelemahan diri.",
-            "html": "<p>Ia sering berkait dengan kesihatan jantung, hormon, tekanan dan gaya hidup.</p>",
+            "slug": "blok-utama-hero",
+            "title": "Kesihatan lelaki, dibincang dengan tenang dan profesional.",
+            "custom_excerpt": "Penilaian dan rawatan disfungsi ereksi (erectile dysfunction) dalam suasana yang sulit dan selesa. Kami bermula dengan memahami keadaan anda — bukan dengan menjual rawatan.",
+            "html": "",
             "published_at": "2026-11-05T02:03:00.000Z"
           },
           {
             "id": "6a00000f0000000000000000",
-            "uuid": "11f08413-c86c-4897-a0da-dac69cd77d19",
+            "uuid": "d89e95e6-f4f5-4b87-9cb9-075081b3ea47",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:04:00.000Z",
             "updated_at": "2026-11-05T02:04:00.000Z",
-            "slug": "blok-utama-perkhidmatan",
-            "title": "Apa yang kami tawarkan",
-            "custom_excerpt": "Setiap pelan rawatan bermula dengan penilaian. Doktor akan menerangkan sama ada sesuatu rawatan sesuai untuk anda.",
-            "html": "",
+            "slug": "blok-utama-kenyataan",
+            "title": "Disfungsi ereksi ialah keadaan perubatan yang biasa berlaku —",
+            "custom_excerpt": "bukan kelemahan diri.",
+            "html": "<p>Ia sering berkait dengan kesihatan jantung, hormon, tekanan dan gaya hidup.</p>",
             "published_at": "2026-11-05T02:04:00.000Z"
           },
           {
             "id": "6a0000100000000000000000",
-            "uuid": "7a892ad8-31cf-4238-809d-fb98a14aa8ea",
+            "uuid": "a70ee3e6-eee7-4e05-9243-2abb75ffc6db",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:05:00.000Z",
             "updated_at": "2026-11-05T02:05:00.000Z",
-            "slug": "blok-utama-servis-konsultasi",
-            "title": "Konsultasi & penilaian",
-            "custom_excerpt": "Perbincangan sulit tentang simptom, sejarah kesihatan dan faktor penyumbang — langkah pertama untuk setiap pesakit.",
+            "slug": "blok-utama-perkhidmatan",
+            "title": "Apa yang kami tawarkan",
+            "custom_excerpt": "Setiap pelan rawatan bermula dengan penilaian. Doktor akan menerangkan sama ada sesuatu rawatan sesuai untuk anda.",
             "html": "",
             "published_at": "2026-11-05T02:05:00.000Z"
           },
           {
             "id": "6a0000110000000000000000",
-            "uuid": "8739a298-45ed-448d-b1fb-442f1c1443a4",
+            "uuid": "7483c4f4-365d-4108-b160-b12cd9132483",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:06:00.000Z",
             "updated_at": "2026-11-05T02:06:00.000Z",
-            "slug": "blok-utama-servis-shockwave",
-            "title": "Shockwave therapy",
-            "custom_excerpt": "Terapi gelombang kejutan intensiti rendah (Li-ESWT) — rawatan tanpa pembedahan dan tanpa ubat untuk pesakit yang sesuai.",
+            "slug": "blok-utama-servis-konsultasi",
+            "title": "Konsultasi & penilaian",
+            "custom_excerpt": "Perbincangan sulit tentang simptom, sejarah kesihatan dan faktor penyumbang — langkah pertama untuk setiap pesakit.",
             "html": "",
             "published_at": "2026-11-05T02:06:00.000Z"
           },
           {
             "id": "6a0000120000000000000000",
-            "uuid": "015408c7-f919-4c1c-9323-776173c3715c",
+            "uuid": "5be61359-b347-498a-9955-c90b14594b59",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:07:00.000Z",
             "updated_at": "2026-11-05T02:07:00.000Z",
-            "slug": "blok-utama-servis-kegel-ems",
-            "title": "Kegel EMS",
-            "custom_excerpt": "Stimulasi otot lantai pelvis (pelvic floor) menggunakan teknologi EMS untuk membantu menguatkan otot yang menyokong fungsi seksual.",
+            "slug": "blok-utama-servis-shockwave",
+            "title": "Shockwave therapy",
+            "custom_excerpt": "Terapi gelombang kejutan intensiti rendah (Li-ESWT) — rawatan tanpa pembedahan dan tanpa ubat untuk pesakit yang sesuai.",
             "html": "",
             "published_at": "2026-11-05T02:07:00.000Z"
           },
           {
             "id": "6a0000130000000000000000",
-            "uuid": "e96b5eca-2915-486b-84cb-63df0c3040a3",
+            "uuid": "4c1c80aa-f23b-4ba4-9095-5dd02823e13e",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:08:00.000Z",
             "updated_at": "2026-11-05T02:08:00.000Z",
-            "slug": "blok-utama-proses",
-            "title": "Empat langkah, tanpa tekanan",
-            "custom_excerpt": null,
+            "slug": "blok-utama-servis-kegel-ems",
+            "title": "Kegel EMS",
+            "custom_excerpt": "Stimulasi otot lantai pelvis (pelvic floor) menggunakan teknologi EMS untuk membantu menguatkan otot yang menyokong fungsi seksual.",
             "html": "",
             "published_at": "2026-11-05T02:08:00.000Z"
           },
           {
             "id": "6a0000140000000000000000",
-            "uuid": "6f00cdd3-2d35-41cb-b9bc-ac2e5604fec8",
+            "uuid": "e7c4652d-dff0-43b5-89c8-04691b01df8a",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:09:00.000Z",
             "updated_at": "2026-11-05T02:09:00.000Z",
-            "slug": "blok-utama-privasi",
-            "title": "Privasi anda bukan tambahan. Ia asas cara kami bekerja.",
+            "slug": "blok-utama-proses",
+            "title": "Empat langkah, tanpa tekanan",
             "custom_excerpt": null,
-            "html": "<ul><li>Rekod perubatan dirahsiakan dan dilindungi di bawah Akta Perlindungan Data Peribadi 2010.</li><li>Konsultasi dalam bilik tertutup, berdua bersama doktor.</li><li>[Butiran tambahan — cth. bil/resit tanpa nama perkhidmatan, jika benar]</li></ul>",
+            "html": "",
             "published_at": "2026-11-05T02:09:00.000Z"
           },
           {
             "id": "6a0000150000000000000000",
-            "uuid": "57b8219c-9cf8-4148-9526-160b2216ab05",
+            "uuid": "5c3f275c-dada-413c-8d76-f7c856f6fae1",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:10:00.000Z",
             "updated_at": "2026-11-05T02:10:00.000Z",
-            "slug": "blok-utama-pasukan",
-            "title": "Kenali doktor anda sebelum datang",
-            "custom_excerpt": "Mengetahui siapa yang akan anda temui menjadikan langkah pertama lebih mudah.",
-            "html": "",
+            "slug": "blok-utama-privasi",
+            "title": "Privasi anda bukan tambahan. Ia asas cara kami bekerja.",
+            "custom_excerpt": null,
+            "html": "<ul><li>Rekod perubatan dirahsiakan dan dilindungi di bawah Akta Perlindungan Data Peribadi 2010.</li><li>Konsultasi dalam bilik tertutup, berdua bersama doktor.</li><li>Tiada pesakit lain pada slot temu janji anda.</li></ul>",
             "published_at": "2026-11-05T02:10:00.000Z"
           },
           {
             "id": "6a0000160000000000000000",
-            "uuid": "97d22f06-d406-495e-a6fa-bca6e9febe1e",
+            "uuid": "1fb6b2a8-ddc1-44de-a2f8-777de360f7dd",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:11:00.000Z",
             "updated_at": "2026-11-05T02:11:00.000Z",
-            "slug": "blok-utama-blog",
-            "title": "Baca dahulu, bertanya kemudian",
-            "custom_excerpt": null,
+            "slug": "blok-utama-pasukan",
+            "title": "Kenali doktor anda sebelum datang",
+            "custom_excerpt": "Mengetahui siapa yang akan anda temui menjadikan langkah pertama lebih mudah.",
             "html": "",
             "published_at": "2026-11-05T02:11:00.000Z"
           },
           {
             "id": "6a0000170000000000000000",
-            "uuid": "169a1781-c0ca-4293-a985-d9bc828e6db7",
+            "uuid": "61a611c4-ae3e-47b4-9631-ca494380cbb9",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:12:00.000Z",
             "updated_at": "2026-11-05T02:12:00.000Z",
-            "slug": "blok-utama-faq",
-            "title": "Soalan yang ramai segan tanya",
+            "slug": "blok-utama-blog",
+            "title": "Baca dahulu, bertanya kemudian",
             "custom_excerpt": null,
-            "html": "<div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Adakah konsultasi saya benar-benar sulit?</h4></div><div class=\"kg-toggle-content\"><p>Ya. Perbincangan dan rekod perubatan anda hanya diakses oleh pasukan yang terlibat dalam penjagaan anda, selaras dengan PDPA 2010.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Perlukah saya dirujuk oleh doktor lain dahulu?</h4></div><div class=\"kg-toggle-content\"><p>[Jawapan — akan disahkan]</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Berapakah kos konsultasi?</h4></div><div class=\"kg-toggle-content\"><p>[Jawapan — akan disahkan]</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Bolehkah saya bertanya melalui WhatsApp dahulu?</h4></div><div class=\"kg-toggle-content\"><p>[Jawapan — akan disahkan]</p></div></div>",
+            "html": "",
             "published_at": "2026-11-05T02:12:00.000Z"
           },
           {
             "id": "6a0000180000000000000000",
-            "uuid": "b98a0922-4508-4bb2-aee1-f535a68a6854",
+            "uuid": "48885b6b-d5c7-4d24-9a53-b211f2237c69",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
             "created_at": "2026-11-05T02:13:00.000Z",
             "updated_at": "2026-11-05T02:13:00.000Z",
-            "slug": "blok-utama-cta",
-            "title": "Sedia untuk berbincang?",
-            "custom_excerpt": "Tempah konsultasi, atau mesej kami dahulu jika anda ada soalan. Tiada komitmen untuk memulakan rawatan.",
-            "html": "",
+            "slug": "blok-utama-faq",
+            "title": "Soalan yang ramai segan tanya",
+            "custom_excerpt": null,
+            "html": "<div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Adakah konsultasi saya benar-benar sulit?</h4></div><div class=\"kg-toggle-content\"><p>Ya. Perbincangan dan rekod perubatan anda hanya diakses oleh doktor dan pembantu perubatan berlesen yang terlibat dalam rawatan anda, selaras dengan PDPA 2010.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Perlukah saya dirujuk oleh doktor lain dahulu?</h4></div><div class=\"kg-toggle-content\"><p>Tidak perlu. Anda boleh datang terus jika anda rasa ada tanda-tanda awal.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Berapakah kos konsultasi?</h4></div><div class=\"kg-toggle-content\"><p>RM150 untuk sesi konsultasi — percuma jika anda mengambil sesi First Trial.</p></div></div><div class=\"kg-card kg-toggle-card\" data-kg-toggle-state=\"close\"><div class=\"kg-toggle-heading\"><h4 class=\"kg-toggle-heading-text\">Bolehkah saya bertanya melalui WhatsApp dahulu?</h4></div><div class=\"kg-toggle-content\"><p>Boleh, untuk pertanyaan ringkas. Namun doktor tidak dibenarkan membuat konsultasi dalam talian, jadi kami syorkan anda datang ke sesi First Trial untuk konsultasi penuh.</p></div></div>",
             "published_at": "2026-11-05T02:13:00.000Z"
           },
           {
             "id": "6a0000190000000000000000",
-            "uuid": "2d156d00-d013-4f6b-8b64-ccd77a0e3d42",
+            "uuid": "cd958a68-e934-4064-8e70-e36bc77897c6",
             "status": "published",
             "visibility": "public",
             "featured": false,
             "type": "post",
-            "created_at": "2026-11-05T08:59:00.000Z",
-            "updated_at": "2026-11-05T08:59:00.000Z",
-            "slug": "blok-ed-shockwave",
-            "title": "Shockwave therapy (blok)",
-            "custom_excerpt": "Ujian blok shockwave.",
-            "html": "<p>Kandungan blok ujian.</p>",
-            "published_at": "2026-11-05T08:59:00.000Z"
+            "created_at": "2026-11-05T02:14:00.000Z",
+            "updated_at": "2026-11-05T02:14:00.000Z",
+            "slug": "blok-utama-cta",
+            "title": "Sedia untuk berbincang?",
+            "custom_excerpt": "Tempah konsultasi, atau mesej kami dahulu jika anda ada soalan. Tiada komitmen untuk memulakan rawatan.",
+            "html": "",
+            "published_at": "2026-11-05T02:14:00.000Z"
           },
           {
             "id": "6a00001a0000000000000000",
-            "uuid": "4df4d203-35f4-42b4-9d5e-c77d31a666df",
+            "uuid": "a449624e-00fd-442d-acdc-843e18abba81",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "post",
+            "created_at": "2026-11-05T02:15:00.000Z",
+            "updated_at": "2026-11-05T02:15:00.000Z",
+            "slug": "blok-ed-apa",
+            "title": "Kesukaran berterusan untuk mencapai atau mengekalkan ereksi.",
+            "custom_excerpt": "Jika masalah berlaku berulang kali selama beberapa minggu, atau jika anda juga mempunyai kencing manis, darah tinggi atau sakit jantung.",
+            "html": "<p>Disfungsi ereksi (ED) ialah keadaan apabila seorang lelaki kerap mengalami kesukaran untuk mendapatkan atau mengekalkan ereksi yang mencukupi untuk hubungan seksual. Mengalaminya sekali-sekala adalah perkara biasa. Apabila ia berlaku secara berulang, ia wajar dinilai oleh doktor.</p><p>ED bukan sahaja isu bilik tidur. Ereksi bergantung kepada salur darah, saraf, hormon dan keadaan emosi yang sihat — jadi perubahan pada fungsi ereksi kadangkala memberi petunjuk tentang kesihatan keseluruhan anda.</p><ul><li>Sukar mendapatkan ereksi</li><li>Ereksi tidak bertahan cukup lama</li><li>Ereksi kurang keras berbanding sebelum ini</li><li>Kebimbangan tentang prestasi yang menjejaskan keyakinan</li></ul>",
+            "published_at": "2026-11-05T02:15:00.000Z"
+          },
+          {
+            "id": "6a00001b0000000000000000",
+            "uuid": "27801980-aa22-49c6-9691-99f9f9faf564",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "post",
+            "created_at": "2026-11-05T02:16:00.000Z",
+            "updated_at": "2026-11-05T02:16:00.000Z",
+            "slug": "blok-ed-punca",
+            "title": "Selalunya lebih daripada satu faktor",
+            "custom_excerpt": "Faktor fizikal dan psikologi sering saling mempengaruhi. Penilaian membantu mengenal pasti yang mana berkaitan dengan anda.",
+            "html": "<p>ED kadangkala muncul lebih awal daripada simptom masalah jantung atau salur darah. Itulah sebabnya kami menilai kesihatan anda secara menyeluruh — bukan simptom sahaja.</p>",
+            "published_at": "2026-11-05T02:16:00.000Z"
+          },
+          {
+            "id": "6a00001c0000000000000000",
+            "uuid": "f4158501-4a65-4232-a0ce-5aa04eeafbde",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "post",
+            "created_at": "2026-11-05T02:17:00.000Z",
+            "updated_at": "2026-11-05T02:17:00.000Z",
+            "slug": "blok-ed-penilaian",
+            "title": "Rawatan yang betul bermula dengan soalan yang betul.",
+            "custom_excerpt": "Konsultasi pertama ialah perbualan sulit bersama doktor. Tiada pemeriksaan dilakukan tanpa penjelasan dan persetujuan anda.",
+            "html": "",
+            "published_at": "2026-11-05T02:17:00.000Z"
+          },
+          {
+            "id": "6a00001d0000000000000000",
+            "uuid": "16d4742f-b6fd-406f-82a4-83377c6cd958",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "post",
+            "created_at": "2026-11-05T02:18:00.000Z",
+            "updated_at": "2026-11-05T02:18:00.000Z",
+            "slug": "blok-ed-shockwave",
+            "title": "Shockwave therapy",
+            "custom_excerpt": "Terapi gelombang kejutan intensiti rendah (Low-Intensity Extracorporeal Shockwave Therapy, Li-ESWT)",
+            "html": "<p>Rawatan tanpa pembedahan dan tanpa ubat yang menggunakan gelombang akustik bertenaga rendah pada tisu zakar. Ia bertujuan menyokong aliran darah dan disyorkan hanya selepas penilaian menunjukkan ia sesuai untuk anda.</p><h3>Semasa sesi</h3><ul><li>Anda berbaring dengan selesa; gel digunakan pada kawasan rawatan.</li><li>Peranti digerakkan perlahan pada beberapa titik; anda akan merasai getaran akustik.</li><li>Anda boleh meneruskan aktiviti harian selepas sesi.</li></ul><p>Keputusan berbeza mengikut individu. Rawatan ini tidak sesuai untuk semua pesakit; doktor akan menilai kesesuaian anda terlebih dahulu.</p>",
+            "published_at": "2026-11-05T02:18:00.000Z"
+          },
+          {
+            "id": "6a00001e0000000000000000",
+            "uuid": "0fc398b0-6cec-46d8-9529-426e064aff60",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "post",
+            "created_at": "2026-11-05T02:19:00.000Z",
+            "updated_at": "2026-11-05T02:19:00.000Z",
+            "slug": "blok-ed-kegel-ems",
+            "title": "Kegel EMS",
+            "custom_excerpt": "Stimulasi otot lantai pelvis (pelvic floor muscle stimulation)",
+            "html": "<p>Otot lantai pelvis membantu mengawal aliran darah keluar dari zakar semasa ereksi. Kegel EMS memberikan rangsangan otot dan kecutan yang lebih kuat dan konsisten berbanding senaman Kegel. Satu sesi bersamaan dengan 12,000 kontraksi senaman Kegel.</p><h3>Disyorkan</h3><ul><li>Dibuat sebagai sebahagian daripada sesi rawatan, untuk kesan yang lebih konsisten</li></ul><p>Keputusan berbeza mengikut individu. Kesesuaian ditentukan selepas penilaian oleh doktor.</p>",
+            "published_at": "2026-11-05T02:19:00.000Z"
+          },
+          {
+            "id": "6a00001f0000000000000000",
+            "uuid": "1deb1096-fdff-47ea-b740-8683064cbb8f",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "post",
+            "created_at": "2026-11-05T02:20:00.000Z",
+            "updated_at": "2026-11-05T02:20:00.000Z",
+            "slug": "blok-ed-perbandingan",
+            "title": "Perbandingan ringkas",
+            "custom_excerpt": null,
+            "html": "",
+            "published_at": "2026-11-05T02:20:00.000Z"
+          },
+          {
+            "id": "6a0000200000000000000000",
+            "uuid": "448306a7-e1aa-4137-9a10-72ea1ac1129b",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "post",
+            "created_at": "2026-11-05T02:21:00.000Z",
+            "updated_at": "2026-11-05T02:21:00.000Z",
+            "slug": "blok-ed-faq",
+            "title": "Soalan lazim",
+            "custom_excerpt": null,
+            "html": "",
+            "published_at": "2026-11-05T02:21:00.000Z"
+          },
+          {
+            "id": "6a0000210000000000000000",
+            "uuid": "58ed5bed-9663-414f-bd76-a3df7edf10ee",
+            "status": "published",
+            "visibility": "public",
+            "featured": false,
+            "type": "post",
+            "created_at": "2026-11-05T02:22:00.000Z",
+            "updated_at": "2026-11-05T02:22:00.000Z",
+            "slug": "blok-ed-temujanji",
+            "title": "Tempah konsultasi sulit anda",
+            "custom_excerpt": "Isi borang dan pasukan kami akan menghubungi anda untuk mengesahkan masa. Lebih cepat? WhatsApp kami terus.",
+            "html": "",
+            "published_at": "2026-11-05T02:22:00.000Z"
+          },
+          {
+            "id": "6a0000220000000000000000",
+            "uuid": "d657a7b7-4a4f-435a-a8ca-68ea4cf3df5e",
             "status": "published",
             "visibility": "public",
             "featured": true,
@@ -295,8 +422,8 @@
             "published_at": "2026-11-05T04:01:00.000Z"
           },
           {
-            "id": "6a00001b0000000000000000",
-            "uuid": "d4078c2f-a195-4662-9e24-19b9ed9f74ca",
+            "id": "6a0000230000000000000000",
+            "uuid": "1f91aab6-070f-43b7-8267-39a659540806",
             "status": "published",
             "visibility": "public",
             "featured": true,
@@ -310,8 +437,8 @@
             "published_at": "2026-11-05T04:02:00.000Z"
           },
           {
-            "id": "6a00001c0000000000000000",
-            "uuid": "c00a041e-be99-4d04-9b67-086641ec0a7d",
+            "id": "6a0000240000000000000000",
+            "uuid": "ac507255-c82c-446d-9326-10af70426794",
             "status": "published",
             "visibility": "public",
             "featured": true,
@@ -325,8 +452,8 @@
             "published_at": "2026-11-05T04:03:00.000Z"
           },
           {
-            "id": "6a00001d0000000000000000",
-            "uuid": "65961632-7b18-4e14-a571-854521ef437c",
+            "id": "6a0000250000000000000000",
+            "uuid": "baa9dd4f-5afc-4db5-8168-5bc000281161",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -340,8 +467,8 @@
             "published_at": "2026-11-05T04:04:00.000Z"
           },
           {
-            "id": "6a00001e0000000000000000",
-            "uuid": "9b379622-bce4-4259-92f9-ca9ee263a08f",
+            "id": "6a0000260000000000000000",
+            "uuid": "d8e8fce3-a6b4-472b-8bbf-3e51a0b53d18",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -355,8 +482,8 @@
             "published_at": "2026-11-05T04:05:00.000Z"
           },
           {
-            "id": "6a00001f0000000000000000",
-            "uuid": "e481565a-f223-41aa-86d6-6a7766690b8d",
+            "id": "6a0000270000000000000000",
+            "uuid": "70b7a4fd-d2a0-48e9-8aff-e1bfb23d1f36",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -370,8 +497,8 @@
             "published_at": "2026-11-05T04:06:00.000Z"
           },
           {
-            "id": "6a0000200000000000000000",
-            "uuid": "5c2d28eb-70d3-440e-b2b8-6f42bbc6d866",
+            "id": "6a0000280000000000000000",
+            "uuid": "c1fe07e0-5929-49e3-850b-e92e34a316c0",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -385,8 +512,8 @@
             "published_at": "2026-11-05T04:07:00.000Z"
           },
           {
-            "id": "6a0000210000000000000000",
-            "uuid": "f6f99e68-f9d2-4f6b-abe8-06eb36405edb",
+            "id": "6a0000290000000000000000",
+            "uuid": "e5658685-7291-4c87-89a9-c64cada26c60",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -400,8 +527,8 @@
             "published_at": "2026-11-05T04:08:00.000Z"
           },
           {
-            "id": "6a0000220000000000000000",
-            "uuid": "c30f4834-deac-4073-a2fc-b59c96dc344b",
+            "id": "6a00002a0000000000000000",
+            "uuid": "80e91cf1-c5ab-4b95-bfb1-a2ca447140b4",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -415,8 +542,8 @@
             "published_at": "2026-11-05T04:09:00.000Z"
           },
           {
-            "id": "6a0000230000000000000000",
-            "uuid": "eea7dd52-658f-4add-9d28-4677765973f2",
+            "id": "6a00002b0000000000000000",
+            "uuid": "4ef377fc-da93-4748-953f-51b991e9f0f0",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -430,8 +557,8 @@
             "published_at": "2026-11-05T04:10:00.000Z"
           },
           {
-            "id": "6a0000240000000000000000",
-            "uuid": "432c2991-01d5-425a-a6c7-80b763310a25",
+            "id": "6a00002c0000000000000000",
+            "uuid": "0119cdf5-76b8-4b73-8ddd-6bf49d008fec",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -445,8 +572,8 @@
             "published_at": "2026-11-05T04:11:00.000Z"
           },
           {
-            "id": "6a0000250000000000000000",
-            "uuid": "e41ea6dc-266f-46bd-8244-ae8bc89b7125",
+            "id": "6a00002d0000000000000000",
+            "uuid": "a5c20ddb-6f48-4922-a763-2c4ada4bad44",
             "status": "published",
             "visibility": "public",
             "featured": false,
@@ -528,11 +655,6 @@
             "sort_order": 0
           },
           {
-            "post_id": "6a00000d0000000000000000",
-            "tag_id": "6a0000020000000000000000",
-            "sort_order": 1
-          },
-          {
             "post_id": "6a00000e0000000000000000",
             "tag_id": "6a0000010000000000000000",
             "sort_order": 0
@@ -649,63 +771,88 @@
           },
           {
             "post_id": "6a0000190000000000000000",
+            "tag_id": "6a0000020000000000000000",
+            "sort_order": 1
+          },
+          {
+            "post_id": "6a00001a0000000000000000",
+            "tag_id": "6a0000010000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a00001a0000000000000000",
             "tag_id": "6a0000030000000000000000",
             "sort_order": 1
           },
           {
-            "post_id": "6a00001a0000000000000000",
-            "tag_id": "6a0000050000000000000000",
-            "sort_order": 0
-          },
-          {
-            "post_id": "6a00001a0000000000000000",
-            "tag_id": "6a0000040000000000000000",
-            "sort_order": 1
-          },
-          {
             "post_id": "6a00001b0000000000000000",
-            "tag_id": "6a0000050000000000000000",
+            "tag_id": "6a0000010000000000000000",
             "sort_order": 0
           },
           {
             "post_id": "6a00001b0000000000000000",
-            "tag_id": "6a0000040000000000000000",
+            "tag_id": "6a0000030000000000000000",
             "sort_order": 1
           },
           {
             "post_id": "6a00001c0000000000000000",
-            "tag_id": "6a0000050000000000000000",
+            "tag_id": "6a0000010000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a00001c0000000000000000",
+            "tag_id": "6a0000030000000000000000",
+            "sort_order": 1
+          },
+          {
+            "post_id": "6a00001d0000000000000000",
+            "tag_id": "6a0000010000000000000000",
             "sort_order": 0
           },
           {
             "post_id": "6a00001d0000000000000000",
-            "tag_id": "6a0000050000000000000000",
+            "tag_id": "6a0000030000000000000000",
+            "sort_order": 1
+          },
+          {
+            "post_id": "6a00001e0000000000000000",
+            "tag_id": "6a0000010000000000000000",
             "sort_order": 0
           },
           {
             "post_id": "6a00001e0000000000000000",
-            "tag_id": "6a0000050000000000000000",
-            "sort_order": 0
-          },
-          {
-            "post_id": "6a00001e0000000000000000",
-            "tag_id": "6a0000070000000000000000",
+            "tag_id": "6a0000030000000000000000",
             "sort_order": 1
           },
           {
             "post_id": "6a00001f0000000000000000",
-            "tag_id": "6a0000060000000000000000",
+            "tag_id": "6a0000010000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a00001f0000000000000000",
+            "tag_id": "6a0000030000000000000000",
+            "sort_order": 1
+          },
+          {
+            "post_id": "6a0000200000000000000000",
+            "tag_id": "6a0000010000000000000000",
             "sort_order": 0
           },
           {
             "post_id": "6a0000200000000000000000",
-            "tag_id": "6a0000050000000000000000",
+            "tag_id": "6a0000030000000000000000",
+            "sort_order": 1
+          },
+          {
+            "post_id": "6a0000210000000000000000",
+            "tag_id": "6a0000010000000000000000",
             "sort_order": 0
           },
           {
             "post_id": "6a0000210000000000000000",
-            "tag_id": "6a0000050000000000000000",
-            "sort_order": 0
+            "tag_id": "6a0000030000000000000000",
+            "sort_order": 1
           },
           {
             "post_id": "6a0000220000000000000000",
@@ -713,9 +860,19 @@
             "sort_order": 0
           },
           {
+            "post_id": "6a0000220000000000000000",
+            "tag_id": "6a0000040000000000000000",
+            "sort_order": 1
+          },
+          {
             "post_id": "6a0000230000000000000000",
             "tag_id": "6a0000050000000000000000",
             "sort_order": 0
+          },
+          {
+            "post_id": "6a0000230000000000000000",
+            "tag_id": "6a0000040000000000000000",
+            "sort_order": 1
           },
           {
             "post_id": "6a0000240000000000000000",
@@ -724,6 +881,51 @@
           },
           {
             "post_id": "6a0000250000000000000000",
+            "tag_id": "6a0000050000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a0000260000000000000000",
+            "tag_id": "6a0000050000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a0000260000000000000000",
+            "tag_id": "6a0000070000000000000000",
+            "sort_order": 1
+          },
+          {
+            "post_id": "6a0000270000000000000000",
+            "tag_id": "6a0000060000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a0000280000000000000000",
+            "tag_id": "6a0000050000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a0000290000000000000000",
+            "tag_id": "6a0000050000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a00002a0000000000000000",
+            "tag_id": "6a0000050000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a00002b0000000000000000",
+            "tag_id": "6a0000050000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a00002c0000000000000000",
+            "tag_id": "6a0000050000000000000000",
+            "sort_order": 0
+          },
+          {
+            "post_id": "6a00002d0000000000000000",
             "tag_id": "6a0000060000000000000000",
             "sort_order": 0
           }

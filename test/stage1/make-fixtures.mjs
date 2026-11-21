@@ -2,7 +2,7 @@
 // (1) verify the Admin "Import content" path and (2) seed the routing / content-block tests.
 // Test data only. The real launch seed (21 blocks with approved copy) is produced in a later stage.
 import { writeFileSync, mkdirSync } from 'node:fs';
-import { BLOCKS } from '../../seed/blocks.mjs';
+import { BLOCKS, PAGES } from '../../seed/blocks.mjs';
 
 let n = 0;
 const oid = () => (0x6a000000 + ++n).toString(16).padStart(8, '0') + '0000000000000000';
@@ -40,17 +40,11 @@ const add = (p, tagSlugs = []) => {
 };
 
 // Landing page (real public page with a custom template) + SEO data page for /blog/
-add({ type: 'page', slug: 'jurnal', title: 'Jurnal Kesihatan Lelaki', meta_title: 'Jurnal Kesihatan Lelaki — Him & Me', meta_description: 'Artikel pendidikan tentang kesihatan lelaki.', custom_excerpt: 'Blog Him & Me.', html: '<p>Route data for /blog/.</p>', published_at: at(499) });
-add({ type: 'page', slug: 'notis-privasi', title: 'Notis Privasi', html: '<p>Kandungan ujian notis privasi.</p>', published_at: at(497) });
-add({ type: 'page', slug: 'disfungsi-ereksi', title: 'Disfungsi ereksi boleh dinilai. Dan boleh dirawat.',
-  custom_excerpt: 'Panduan jelas tentang disfungsi ereksi.', custom_template: 'custom-disfungsi-ereksi',
-  html: '<div class="kg-card kg-toggle-card" data-kg-toggle-state="close"><div class="kg-toggle-heading"><h4 class="kg-toggle-heading-text">Adakah disfungsi ereksi perkara biasa?</h4></div><div class="kg-toggle-content"><p>Jawapan ujian FAQ ED.</p></div></div>',
-  published_at: at(498) });
 
+// Pages (ED page with its FAQ body, jurnal route data, policy pages) from the seed.
+PAGES.forEach((pg, i) => add({ type: 'page', slug: pg.slug, title: pg.title, custom_excerpt: pg.excerpt || null, meta_title: pg.meta_title || null, meta_description: pg.meta_description || null, custom_template: pg.custom_template || null, html: pg.html, published_at: at(500 - i) }));
 // Content blocks: the real block definitions with approved copy (seed/blocks.mjs).
 BLOCKS.forEach((b, i) => add({ slug: b.slug, title: b.title, custom_excerpt: b.excerpt || null, html: b.html || '', published_at: at(420 - i) }, b.tags));
-// ED-page test block (replaced by the real ED blocks in Stage 4).
-add({ slug: 'blok-ed-shockwave', title: 'Shockwave therapy (blok)', custom_excerpt: 'Ujian blok shockwave.', html: '<p>Kandungan blok ujian.</p>', published_at: at(1) }, ['hash-blok', 'hash-blok-ed']);
 
 // Test articles: 12 posts so /blog/ (9 per page) and the tag archive paginate.
 for (let i = 1; i <= 12; i++) {
