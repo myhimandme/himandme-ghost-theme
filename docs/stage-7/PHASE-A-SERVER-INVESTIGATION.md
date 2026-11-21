@@ -1,5 +1,7 @@
 # Stage 7, Phase A: server investigation (read-only)
 
+> **Later maintenance (Update 6.7, plan §16.11):** finding 2 (automatic security updates): **M6** done 20 Nov 2026. I33 (TLS 1.0/1.1): **M5** done 21 Nov 2026; ciphers unchanged.
+>
 > **Phase A signed off by the owner, 19 Nov 2026** (`docs/STAGE-7-PLAN.md` §16.10).
 >
 > **Update 19 Nov 2026, read-only follow-ups (details in `docs/STAGE-7-PLAN.md` §16):**

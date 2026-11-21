@@ -1,5 +1,7 @@
 # Stage 7, Phase A findings (read-only audit)
 
+> **Later maintenance (Update 6.7):** I33/R40: TLS 1.0/1.1 removed from the configuration by **M5** (21 Nov 2026); ciphers unchanged by the owner's decision. Automatic security updates enabled by **M6** (20 Nov 2026). See plan §16.11.
+>
 > **Phase A was signed off by the owner on 19 Nov 2026** (`docs/STAGE-7-PLAN.md` §16.10). The O30 LLM setting is off (step 1 verified). Phases B–H remain unauthorised.
 >
 > **Current status (18 Nov 2026), historical:** Phase A is **still open** (outstanding work in the summary below).

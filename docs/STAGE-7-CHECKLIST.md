@@ -6,6 +6,7 @@
 > **Update 6.4 (19 Nov 2026):** O28 decided (blocks belong only to `dr`); G6 extended; G12 added; FE1 (multi-author attribution) noted as a future enhancement (plan §16.8). Documentation only.
 > **Update 6.5 (19 Nov 2026):** the owner's Phase A decisions are recorded (plan §16.9). Findings accepted. **The A-gate is ready for sign-off once this update is approved.** Decisions are not executed automatically. **Phase B is not authorised.**
 > **Update 6.6 (19 Nov 2026):** **O30 done** (LLM setting off; step 1 verified) and **Phase A signed off by the owner** (plan §16.10). **Phase B is not authorised.**
+> **Update 6.7 (21 Nov 2026):** **M6 and M5 done and verified** (plan §16.11). Monthly runbook: `docs/stage-7/MONTHLY-MAINTENANCE.md` (first run around 19 Dec 2026). N6 pending around 25 Nov. **Phase B is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -28,7 +29,7 @@
 | E: Production config (§5) | 2 | 3 | 6 | 1 |
 | S: SEO (§6) | 1 | 6 | 7 | 0 |
 | Phases A–H | **A signed off (19 Nov)** | 0 | 0 | 7 (B–H; each waits for the gate before it) |
-| M: Server maintenance (section 8a) | M1, M2, M3 done; M4 N1–N5 done | N6 observation | M5, M6 approved, not executed; O34 deferred | 0 |
+| M: Server maintenance (section 8a) | M1, M2, M3, M5, M6 done; M4 N1–N5 done | N6 observation | O34 deferred | 0 |
 
 ---
 
@@ -159,9 +160,9 @@
 | O32 | SSH key-only migration (M2): approve; confirm VNC break-glass, the key's device, and a second copy | R32 | ✅ Executed 18 Nov (M2) | [x] |
 | O33 | Maintenance window for 27 updates + one reboot (M3), after a Tencent snapshot | R33 | ✅ Executed 18 Nov (M3; snapshot `himandme-pre-m3-updates-2026-11-18`) | [x] |
 | O34 | Ghost mail provider (SMTP; port 587 is reachable, but delivery must be proven in M1) and its SPF/DKIM DNS records | R34 | ⏸ **Deferred** (19 Nov): Gmail kept temporarily; working config preserved; long-term provider later | [ ] |
-| O35 | Enable automatic security updates (add the `-security` origin); reboots stay manual | R36 | ✅ **Approved** 19 Nov (new step M6): security-only, reboots manual; snapshot + APT config check first. **Not yet executed** | [ ] |
+| O35 | Enable automatic security updates (add the `-security` origin); reboots stay manual | R36 | ✅ **Executed 20 Nov 2026** (M6): security-only automatic updates, `mysql-` excluded, needrestart MySQL rule, reboots manual; first runs 20 and 21 Nov verified (plan §16.11) | [x] |
 | O36 | Nginx catch-all and security headers (M4 N4–N6) | R31, R35 | ✅ Approved 18 Nov (subject to the HSTS review); N4–N5 done, N6 pending | [ ] |
-| O37 | TLS hardening (possible M5): TLS 1.2/1.3 only, modern ciphers in `ssl-params.conf` (I33, R40) | R40 | ✅ **Approved** 19 Nov (M5): TLS 1.2/1.3 only, with or after N6, subject to procedure + backup. **Not yet executed** | [ ] |
+| O37 | TLS hardening (M5): restrict protocols to TLS 1.2/1.3 in `nginx.conf` and `ssl-params.conf` (I33, R40). Cipher suites were **not** changed (owner decision); a cipher review remains a separate outstanding consideration | R40 | ✅ **Executed 21 Nov 2026** (M5): `ssl_protocols TLSv1.2 TLSv1.3;` in `nginx.conf` and `ssl-params.conf`; verified; ciphers unchanged (plan §16.11) | [x] |
 | O38 | Staff-wide email 2FA in Ghost Admin (currently **off**); first confirm its interaction with `staffDeviceVerification` (R39) | R39 | ⏸ **Deferred** (19 Nov) pending a read-only investigation of its interaction with `staffDeviceVerification`; **both settings unchanged** | [ ] |
 | O39 | I34 follow-up: read-only correlation and persistence checks (plan §16.2) | R41 | ✅ **Done 19 Nov:** I34 resolved, R41 closed (plan §16.7) | [x] |
 
@@ -243,10 +244,10 @@
 |---|---|---|---|---|---|---|
 | M1 | **Original Revision 6 plan:** Ghost SMTP via a chosen provider (provider port reachability → `ghost config` → restart → delivery test → second-browser device-verification login, with the original session kept open). **Actual completion, 18 Nov 2026:** **interim Gmail SMTP**; both required tests passed (delivery ✅; second-browser verification email and login ✅). See Update 6.1 below and plan §15.2 | Originally O34 (provider choice) + DNS approval (SPF/DKIM). These belonged to the provider-selection plan and were **not needed** for the interim Gmail completion. **O34 stays open only for the future replacement provider**; Gmail stays unchanged until every replacement test passes; no migration started | Ghost restart ~10 s | Phase D | [x] | [x] |
 | M2 | SSH key-only (planned sequence in plan §14.4). **Executed 18 Nov 2026:** Ed25519 key installed (before M2, no account had a key) → fresh key-only login tested → root login, password login and keyboard-interactive login off; public-key login on → effective values verified with `sshd -T` → SSH active after reload. Recovery: passphrase-protected key, USB backup, Tencent VNC | O32 ✅. (I32 and I34 are separate **outstanding Phase A audit items**, not M2 prerequisites that failed) | SSH reload; sessions kept | Phase C (recommended) | [x] | [x] |
-| M3 | Ubuntu updates + reboot (plan §14.3). **Executed 18 Nov 2026:** snapshot `himandme-pre-m3-updates-2026-11-18` → **27 upgraded, 7 newly installed, 0 removed, 2 phased updates deferred** → reboot → kernel 6.8.0-149, Node 22.23.5, MySQL 8.0.46.5; SSH, Nginx, MySQL, Ghost, fail2ban active. **Automatic security updates (O35) not done**, still open | O33 ✅; O35 open | Reboot ~2–5 min | Phase C (recommended) | [x] | [x] |
+| M3 | Ubuntu updates + reboot (plan §14.3). **Executed 18 Nov 2026:** snapshot `himandme-pre-m3-updates-2026-11-18` → **27 upgraded, 7 newly installed, 0 removed, 2 phased updates deferred** → reboot → kernel 6.8.0-149, Node 22.23.5, MySQL 8.0.46.5; SSH, Nginx, MySQL, Ghost, fail2ban active. Automatic security updates (O35) were **not** done in M3; **completed later by M6 (20 Nov 2026)** | O33 ✅; O35 ✅ (completed by M6) | Reboot ~2–5 min | Phase C (recommended) | [x] | [x] |
 | M4 | Nginx hardening. **Original Revision 6 procedure (plan §14.5–14.5a):** W0 apex fingerprint → N1 → W1 → N2 issue with **RSA 2048** → N2b `--install-cert` to `/etc/nginx/ssl/www.himandme.my/{cert,fullchain,key}.pem` → N3 → V1–V3 → N4 → N5 → N6. **Actual execution, 18 Nov 2026:** N1–N5 **complete**; the www certificate was issued as **ECDSA / EC-256** (not RSA) and installed via `--install-cert` to those paths (Update 6.1 below; plan §15.5–15.6). **The apex certificate is unchanged** (serial and SHA-256 fingerprint verified). **N6 pending** (HSTS `max-age=300`; review around 25 Nov) | O31 = Option A ✅; O36 approved (subject to the HSTS review) ✅; apex ACME location untouched | Nginx reloads only | Phase D (www rows of D2b) | [x] | [ ] (N6 pending) |
-| M5 | TLS 1.2/1.3 only, modern ciphers in `ssl-params.conf` (O37, R40). Procedure + backup to be prepared and reviewed first; with or after N6 | O37 ✅ | Nginx reload | — | [x] | [ ] |
-| M6 | Security-only automatic updates, reboots manual (O35, R36). Snapshot + read-only APT config check, then the exact change for review | O35 ✅ | none expected | — | [x] | [ ] |
+| M5 | TLS 1.2/1.3 only (O37, R40). **Executed 21 Nov 2026:** backup `/home/ubuntu/m5/backup-20261121-163931` → both `ssl_protocols` lines set to `TLSv1.2 TLSv1.3` → `nginx -t` + reload → verified: no other config change; certificates and headers (HSTS `max-age=300`) unchanged; TLS 1.0/1.1 refused, 1.2/1.3 accepted (apex and www); unknown host refused; apex 200, www 301. Ciphers unchanged | O37 ✅ | Nginx reload (none observed) | — | [x] | [x] |
+| M6 | Security-only automatic updates, MySQL excluded, reboots manual (O35, R36). **Executed 20 Nov 2026 01:36 CST** after snapshot `himandme-pre-m6-2026-11-19`: `52himandme-unattended-upgrades` + `needrestart` `50himandme-mysql.conf` → verified (origins noble + noble-security; blacklist `mysql-`; no auto reboot). First automatic runs 20 and 21 Nov installed nginx, libgstreamer and python3-jwt security updates; MySQL untouched. Monthly runbook: `docs/stage-7/MONTHLY-MAINTENANCE.md` | O35 ✅ | none (config only) | — | [x] | [x] |
 
 **Update 6.1, executed 18 Nov 2026 (plan §15):**
 
@@ -261,6 +262,8 @@
 | M4 N4 | Stock default link removed (file kept); `00-catch-all.conf`: unknown HTTP 444, unknown HTTPS handshake rejected; ACME paths reachable | [x] |
 | M4 N5 | Headers snippet on the 3 apex HTTPS locations; HSTS `max-age=300`, Referrer-Policy, Permissions-Policy, one X-Frame-Options (`proxy_hide_header`), nosniff | [x] |
 | **M4 N6** | **Pending:** observe from 18 Nov, review ~25 Nov; keep `max-age=300`; no `includeSubDomains`/`preload` without validating every subdomain; one-year HSTS only by owner decision after review | [ ] |
+| **M5** | Done 21 Nov 2026 (plan §16.11) | [x] |
+| **M6** | Done 20 Nov 2026; first automatic runs 20 and 21 Nov verified; monthly runbook `docs/stage-7/MONTHLY-MAINTENANCE.md`, first run around 19 Dec 2026 | [x] |
 | Health 18 Nov | `nginx -t` OK; Nginx, MySQL, Ghost, SSH, fail2ban active; apex 200; www 301; headers present; unknown HTTP closed; disk 15 % used, 49 GB free; renewals: apex 5 Jan 2027, www 16 Jan 2027 | [x] |
 
 **Next authorised action:** read-only only. Finish the open Phase A items (Admin/console views, I32, I33 rest, I34; *all done by 19 Nov, I34 resolved, plan §16.7*), then the N6 observation review around 25 Nov 2026, then the owner's decisions (plan §15.9).

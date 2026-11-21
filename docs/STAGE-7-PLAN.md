@@ -6,6 +6,7 @@
 > **Update 6.4 (19 Nov 2026)** adds §16.8: the **O28 block-ownership rule** (every `#blok` post belongs only to `dr`), safeguards **G6** (extended) and **G12**, and multi-author attribution as future enhancement **FE1**. Single-author attribution is unchanged. Documentation only.
 > **Update 6.5 (19 Nov 2026)** adds §16.9: the **owner's Phase A decision register**. The owner accepts the §16 findings. **The A-gate is ready for sign-off once this update is approved.** Recorded decisions are **not** executed automatically. **Phases B–H remain unauthorised** until the owner approves Phase B in writing.
 > **Update 6.6 (19 Nov 2026)** adds §16.10: **O30 executed** (LLM setting off; verification step 1 passed) and **Phase A signed off by the owner**. **Phases B–H remain unauthorised** until the owner approves Phase B in writing.
+> **Update 6.7 (21 Nov 2026)** adds §16.11: **M6** (security-only automatic updates, MySQL excluded) and **M5** (TLS 1.2/1.3 only) **executed and verified**; monthly maintenance runbook in [`stage-7/MONTHLY-MAINTENANCE.md`](stage-7/MONTHLY-MAINTENANCE.md). N6 stays pending (around 25 Nov; HSTS `max-age=300`). **Phases B–H remain unauthorised.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -705,11 +706,11 @@ This is decision **O21** (none / `LocalBusiness` / another type with evidence). 
 | R33 | 23 security updates pending (kernel, glibc, MySQL, perl, ca-certificates…); restart pending since 5 Nov; running kernel 6.8.0-138 (I1, I21) | **High** | M3 (§14.3): snapshot → `apt upgrade` → one reboot → checks | ✅ Mitigated 18 Nov (M3; §15.4) |
 | R34 | Ghost mail `Direct` with outbound port 25 blocked, while staff device verification is on: **a login from any new browser or device cannot be completed**; resets and invites fail (I3, I26) | **High** | Keep the current Admin browser session; M1 SMTP via a provider before Phase D. Port 587 is only shown reachable; delivery and the second-browser verification must pass in M1 (§14.6) | ✅ Mitigated 18 Nov (M1, interim Gmail; see R37) |
 | R35 | Nginx stock default site: welcome page for www and any unknown host over HTTP; unknown hosts and the bare IP over HTTPS reach Ghost with the apex certificate (I9, I13) | Low–Medium | M4 step N4 (catch-all: 444 on port 80, `ssl_reject_handshake` on 443), after N1–N3 | ✅ Mitigated 18 Nov (M4 N4; §15.5) |
-| R36 | Automatic updates enabled but limited to `noble`, so **security updates are never installed automatically** (I21) | Medium | Add the `-security` origin (O35); reboots stay manual | ✅ O35 approved 19 Nov (M6, security-only, reboots manual); not yet executed (§16.9) |
+| R36 | Automatic updates enabled but limited to `noble`, so **security updates are never installed automatically** (I21) | Medium | Add the `-security` origin (O35); reboots stay manual | ✅ **Mitigated** 20 Nov 2026 (M6 executed; first automatic runs 20 and 21 Nov installed security updates; MySQL excluded) (§16.11) |
 | R37 | Ghost mail depends on an **interim Gmail SMTP** account (personal-account dependency, sending limits, no domain-aligned SPF/DKIM/DMARC for the site's sender identity) | Medium | Replacement provider as a future maintenance item; keep Gmail until every replacement test passes (§15.2) | ⏸ O34 deferred 19 Nov: Gmail kept for now (§16.9) |
 | R38 | An older HSTS policy (`max-age=63072000; includeSubDomains; preload`, previously in `ssl-params.conf`) **may be cached** in browsers that received it; preload-list status unchecked | Low–Medium | Keep `max-age=300` during the N6 observation; no `includeSubDomains`/`preload` without validating every subdomain; check the preload status read-only (§15.5, §15.8) | ⏳ N6 |
 | R39 | Staff-wide email 2FA setting in Ghost Admin is **off** (19 Nov). The config's `staffDeviceVerification: true` (new-device verification) is separate and was tested in M1 | Medium | Confirm how the two interact on Ghost 6.75, then decide; test with the original session open (§16.4) | ⏸ O38 deferred pending read-only investigation; both settings unchanged (§16.9) |
-| R40 | Nginx `ssl-params.conf` permits **TLS 1.0/1.1** and **legacy ciphers** (I33) | Medium | Possible M5: TLS 1.2/1.3 only with a modern cipher list; `nginx -t` + reload; rollback copy (§16.4) | ✅ O37 approved 19 Nov (M5, with or after N6; procedure + backup first); not yet executed (§16.9) |
+| R40 | Nginx `ssl-params.conf` permits **TLS 1.0/1.1** and **legacy ciphers** (I33) | Medium | **Protocols, done:** M5 (21 Nov 2026) restricted `ssl_protocols` to TLS 1.2/1.3 in `nginx.conf` and `ssl-params.conf`, verified (§16.11). **Ciphers, separate and optional:** the cipher suites were deliberately left unchanged (owner decision); a read-only cipher review, and any later cipher change, would be a separate decision | ◐ **Protocols fixed** 21 Nov 2026 (M5: TLS 1.2/1.3 only, verified); legacy ciphers unchanged by owner decision (§16.11) |
 | R41 | **Eight accepted password logins** (6 on 17 Nov, 2 on 18 Nov) **not all confirmed** by the owner (I34). Not a confirmed breach | **High until explained** | Password login has been off since M2; read-only correlation and persistence checks (§16.2) | ✅ **Closed** 19 Nov (I34 resolved, §16.7) |
 | R31 | No HSTS, Referrer-Policy, Permissions-Policy; X-Frame-Options only on `/ghost/` (I10) | Low–Medium | M4 step N5–N6 (snippet included in each HTTPS location; HSTS 300 s → 1 year; no preload) | ◐ Partly: N5 done 18 Nov; **N6 pending** (§15.5) |
 
@@ -795,6 +796,8 @@ Both documents were re-read after the revision 3 edits. Checked and aligned:
 | Status | Phase A not started; nothing deployed | Header, section 10 |
 
 Revision 4 re-check: the robots.txt rule (200, not 302) is the same in §3.6 (measurement table, D2b, H3), §6 S3, G6, R27, AS8 and the checklist.
+
+**Update 6.7 (21 Nov 2026), documentation only:** adds §16.11 (M6 and M5 executed and verified, with the evidence) and the new runbook `docs/stage-7/MONTHLY-MAINTENANCE.md`. Updates R36, R40, O35, O37 and the M5/M6 rows.
 
 **Update 6.6 (19 Nov 2026), documentation only:** adds §16.10 (O30 executed by the owner and step 1 verified by read-only requests; Phase A signed off). Updates R28, E12, O30 and the Phase A row in §9.
 
@@ -1668,3 +1671,60 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 - **Signing the A-gate does not authorise Phase B.**
 - **Phases B–H and production theme deployment remain unauthorised** until the owner approves Phase B in writing.
 - No further server or Ghost change is authorised except as each approved item's own procedure allows.
+
+### 16.11 M5 and M6 executed: Update 6.7 (21 Nov 2026)
+
+> **What this section records:** the owner carried out the approved maintenance steps M6 (19–21 Nov 2026) and M5 (21 Nov 2026) on the production VPS, following the reviewed procedures.
+> - **Source:** command output pasted by the owner, checked step by step in this session. No command was run from this documentation session.
+> - **Times:** server time is CST (UTC+8).
+> - **Unchanged:** no Ghost, DNS, Cloudflare or content change, and no Phase B work. HSTS was not changed.
+
+**M6: security-only automatic updates, MySQL excluded (O35).** ✅ **Done.**
+
+| Step | Result |
+|---|---|
+| Pre-check | Ubuntu's `50unattended-upgrades` on this image allowed only `${distro_id}:${distro_codename}`, so the dry run reported `Allowed origins are: o=Ubuntu,a=noble`. That is why security updates had never installed automatically (R36). The mirror does serve `o=Ubuntu,a=noble-security`. No later file overrode the unattended-upgrades settings. `needrestart` loads `conf.d/*.conf`, and no explicit restart mode is configured, so Ubuntu 24.04's default applies: **affected services are restarted automatically** |
+| Syntax checks | `apt-config -c …` showed the combined lists correctly; `perl -c` on the needrestart rule: `syntax OK` |
+| Snapshot | `himandme-pre-m6-2026-11-19` (`lhsnap-hty2dne5`), status Normal, created 2026-11-20 01:00:44 console time |
+| Installed (2026-11-20 01:36 CST) | `/etc/apt/apt.conf.d/52himandme-unattended-upgrades` (adds `${distro_id}:${distro_codename}-security`, blacklists `mysql-`, `Automatic-Reboot "false"`) and `/etc/needrestart/conf.d/50himandme-mysql.conf` (`$nrconf{override_rc}{qr(^mysql)} = 0;`); both `root:root`, mode 644 |
+| Verification | `Allowed origins are: o=Ubuntu,a=noble, o=Ubuntu,a=noble-security` (no `noble-updates`); `Initial blacklist: mysql-`, pinned at priority −32768; `Automatic-Reboot "false"`; `needrestart` exit 0; kernel 6.8.0-149 current; both APT timers scheduled; ssh, nginx, mysql, ghost and fail2ban active; homepage 200 |
+| First automatic runs | **20 Nov 06:38 CST:** `libgstreamer1.0-0`, `nginx`, `nginx-common` → "All upgrades installed". **21 Nov 06:39 CST:** `nginx`, `nginx-common`, `python3-jwt` → "All upgrades installed". nginx is now `1.24.0-2ubuntu7.21` |
+| MySQL untouched | `mysql-server-8.0` still `8.0.46-0ubuntu0.24.04.5`; MySQL running continuously since 18 Nov 18:18:51 CST (the M3 reboot) |
+| Reboot | None required, none performed |
+
+**Known limits (as approved):**
+- The blacklist matches package names beginning with `mysql-` only. MySQL-related packages with other names (for example `libmysqlclient*`) are not excluded.
+- The needrestart rule (`override_rc` for `^mysql`) protects services whose names match it from **needrestart-triggered** automatic restarts after library updates. Because needrestart's default on Ubuntu 24.04 is to restart automatically, the rule is what keeps MySQL running through unattended runs. It does **not** prevent restarts through other mechanisms (package maintainer scripts, manual restarts, reboots).
+
+**Monthly maintenance:** the approved routine (review pending upgrades, snapshot, verified database backup, a gated `apt upgrade`, checks, a reboot only if required) is in [`stage-7/MONTHLY-MAINTENANCE.md`](stage-7/MONTHLY-MAINTENANCE.md). **First run around 19 Dec 2026**, or sooner for a critical MySQL fix.
+
+**M5: TLS 1.2 and 1.3 only (O37).** ✅ **Done** on 21 Nov 2026. The owner chose to run it before the N6 review; M5 does not touch HSTS, and N6 stays scheduled around 25 Nov.
+
+| Step | Result |
+|---|---|
+| Pre-check | Exactly one `ssl_protocols` line each in `/etc/nginx/nginx.conf` (Ubuntu stock: `TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE`) and `/etc/nginx/snippets/ssl-params.conf` (`TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;`); no other file set it |
+| Backup and baseline | `/home/ubuntu/m5/backup-20261121-163931` (a copy of `/etc/nginx`, checksums, `nginx -T`, certificates, headers). Baseline: TLS 1.0 and 1.1 **already refused** (`alert protocol version`; OpenSSL 3.0.13, security level 2), TLS 1.2 and 1.3 accepted, for apex and www |
+| Change | Both lines set to `ssl_protocols TLSv1.2 TLSv1.3; # Him & Me M5` (`nginx.conf` line 33, `ssl-params.conf` line 1); `nginx -t` OK; graceful reload |
+| Verification | Full `nginx -T` compared: **no change except `ssl_protocols`**. Certificates unchanged (apex serial `06695E5BCF4574FB421FBFF376F940009541`, to 3 Feb 2027; www serial `050264C8245DEE86167F7359E309EDD76ADD`, to 16 Feb 2027). Headers unchanged, all five present, HSTS still `max-age=300`. TLS 1.0/1.1 refused and 1.2/1.3 accepted, for apex and www. Unknown host refused (`alert number 112`). Apex 200, www 301 → `https://himandme.my/`. nginx, ghost and mysql active. Error log: only a `[notice]` from the 06:39 automatic nginx update |
+| Ciphers | **Unchanged**, as the owner decided. The "legacy cipher suites" part of I33 remains; an optional read-only cipher review is available but not scheduled |
+| Interruption | None |
+
+- **Two test-command corrections during execution** (the commands only, never the change itself):
+  1. the header check now matches the full name `strict-transport-security`;
+  2. TLS 1.3 success is recognised by `New, TLSv1.3`.
+
+  The baseline was re-recorded with the corrected commands before the change.
+- **Operational note:** since `nginx.conf` is now edited, a future nginx update that ships a changed `nginx.conf` will be held back by the automatic updates and must be handled in the monthly maintenance (keep the installed file unless a change has been reviewed).
+
+**Effect on status:**
+- O35 ✅ executed; R36 ✅ mitigated.
+- O37 ✅ executed; R40 ◐ protocols fixed (the ciphers stay as decided).
+
+**Still open:**
+- N6 (around 25 Nov 2026, read-only; HSTS stays `max-age=300` until the owner decides);
+- O30 step 2 (after import);
+- O19 and O20 (later);
+- O22 (conditional);
+- deferred O34, O38 and the content inputs.
+
+**Phases B–H remain unauthorised.**
