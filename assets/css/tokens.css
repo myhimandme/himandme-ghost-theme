@@ -1,0 +1,55 @@
+/* Design tokens — values taken 1:1 from the approved prototype (visual direction + design system boards). */
+:root {
+  /* Brand colours */
+  --hm-red: #C52626;
+  --hm-red-deep: #B42323;      /* hover, red text links */
+  --hm-red-darker: #8E1B1B;    /* link hover, placeholder text */
+  --hm-red-tint: #FCEAEA;      /* icon tiles, placeholder chips */
+  --hm-red-on-dark: #F07A7A;   /* slash / labels on charcoal */
+  --hm-white: #FFFFFF;
+  --hm-warm: #F7F4F1;          /* warm white */
+  --hm-charcoal: #242424;
+  --hm-grey-light: #EAEAEA;
+
+  /* Supporting neutrals used in the prototype */
+  --hm-text-2: #5E5E5E;        /* secondary text (6.4:1 on white) */
+  --hm-text-body: #3F3F3F;     /* long-form body on ED page */
+  --hm-text-article: #2E2E2E;  /* article body */
+  --hm-text-on-dark: #D9D9D9;
+  --hm-text-on-dark-2: #CFCFCF;
+  --hm-topbar-text: #E8E8E8;
+  --hm-rule-warm: #DCD6CF;     /* rules on warm white */
+  --hm-input-border: #D6D6D6;
+  --hm-whatsapp-glyph: #4ADE80;
+  --hm-success: #1C6B3A;
+  --hm-ph: #E6E1DB;            /* image placeholder (main site) */
+  --hm-ph-blog: #E2DCD5;       /* image placeholder (blog) */
+
+  /* Typography. Ghost's Admin font picker (--gh-font-*) only applies if Design → Typography
+     is changed from "Theme default"; the README says to keep the default. */
+  --hm-font-sans: var(--gh-font-body, "Manrope Variable", Manrope, system-ui, -apple-system, "Segoe UI", sans-serif);
+  --hm-font-heading: var(--gh-font-heading, "Manrope Variable", Manrope, system-ui, -apple-system, "Segoe UI", sans-serif);
+  --hm-font-serif: "Newsreader Variable", Newsreader, Georgia, "Times New Roman", serif;
+
+  /* Radii */
+  --hm-radius-btn-sm: 8px;
+  --hm-radius-btn: 10px;
+  --hm-radius-tile: 14px;
+  --hm-radius-card: 16px;
+  --hm-radius-card-lg: 20px;
+  --hm-radius-band: 24px;
+  --hm-radius-blog: 2px;
+
+  /* Layout */
+  --hm-container: 1240px;      /* main site */
+  --hm-container-blog: 1280px; /* blog */
+  --hm-gutter: 24px;
+  --hm-gutter-mobile: 16px;
+
+  /* Elevation — the single shadow from the design system */
+  --hm-shadow: 0 1px 2px rgba(36, 36, 36, .06), 0 12px 32px rgba(36, 36, 36, .08);
+  --hm-shadow-bar: 0 -1px 0 var(--hm-grey-light), 0 -8px 24px rgba(36, 36, 36, .1);
+
+  /* The slash motif angle */
+  --hm-slash-skew: -32deg;
+}

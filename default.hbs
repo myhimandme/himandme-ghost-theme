@@ -4,13 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{meta_title}}</title>
+    <link rel="preload" href="{{asset "fonts/manrope-latin-wght-normal.woff2"}}" as="font" type="font/woff2" crossorigin>
+    {{{block "preload"}}}
     <link rel="stylesheet" href="{{asset "built/screen.css"}}">
     {{!-- Native search is excluded: its index lists every published post, including #blok
-         content blocks (Stage 1 test B7). The blog gets a theme search that skips them. --}}
+         content blocks (Stage 1 test B7). The blog gets a filtered theme search in Stage 5. --}}
     {{ghost_head exclude="search"}}
 </head>
-<body class="{{body_class}}">
-    {{!-- STAGE 1 SCAFFOLD: the approved headers/footers are built in Stage 2. --}}
+<body class="{{body_class}} is-{{{block "mode"}}}">
+    <a class="hm-skip-link" href="#main">{{t "Langkau ke kandungan"}}</a>
     {{{body}}}
     <script src="{{asset "built/main.js"}}" defer></script>
     {{ghost_foot}}

@@ -1,44 +1,13 @@
-/* Him & Me — stylesheet entry point.
-   Stage 0–1: minimal base only. The approved prototype's tokens, layouts and
-   components are implemented from Stage 2 onwards (tokens.css, base.css, …). */
-
-:root {
-  --hm-red: #C52626;
-  --hm-red-deep: #B42323;
-  --hm-white: #FFFFFF;
-  --hm-warm-white: #F7F4F1;
-  --hm-charcoal: #242424;
-  --hm-grey-light: #EAEAEA;
-}
-
-body {
-  margin: 0;
-  /* Brand fonts are fixed by the approved design. Ghost's Admin font picker
-     (--gh-font-*) only applies if someone changes Design → Typography away
-     from "Theme default"; the README says to leave it on the default. */
-  font-family: var(--gh-font-body, Manrope, system-ui, sans-serif);
-  color: var(--hm-charcoal);
-  background: var(--hm-white);
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--gh-font-heading, Manrope, system-ui, sans-serif);
-}
-
-/* Required by Ghost (GScan): editor image width classes. */
-.kg-width-wide {
-  position: relative;
-  width: 85vw;
-  min-width: 100%;
-  margin: auto calc(50% - 50vw);
-  transform: translateX(calc(50vw - 50%));
-}
-
-.kg-width-full {
-  position: relative;
-  width: 100vw;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-}
+/* Him & Me — stylesheet entry point (bundled by scripts/build.mjs into assets/built/screen.css). */
+@import "./tokens.css";
+@import "./fonts.css";
+@import "./base.css";
+@import "./layout.css";
+@import "./components/buttons.css";
+@import "./site/header.css";
+@import "./site/menu.css";
+@import "./site/blog-header.css";
+@import "./site/footer.css";
+@import "./site/mobile-bar.css";
+@import "./pages/error.css";
+@import "./ghost.css";

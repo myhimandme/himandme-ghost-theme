@@ -57,7 +57,17 @@ const blocks = (await admin('/posts/?limit=all&filter=tag:hash-blok&fields=id,uu
 const author = (await admin('/users/me/')).users[0];
 const blockSlugs = blocks.map((b) => b.slug);
 const blockMarkers = blocks.map((b) => (b.custom_excerpt || '').match(/ZZBLOK-\d+/)?.[0]).filter(Boolean);
-const leaks = (text) => [...blockSlugs, ...blockMarkers, 'hash-blok'].filter((s) => text.includes(s));
+// Blocks rendered site-wide by design (footer address/hours + disclaimer). Their copy legitimately appears
+// on every page, so their markers are excluded from text-leak checks; their slugs are still checked.
+const SHARED_BLOCKS = ['blok-maklumat-hubungan', 'blok-penafian'];
+const sharedMarkers = blocks.filter((b) => SHARED_BLOCKS.includes(b.slug)).map((b) => (b.custom_excerpt || '').match(/ZZBLOK-\d+/)?.[0]);
+const leaks = (text) => [...blockSlugs, ...blockMarkers.filter((m) => !sharedMarkers.includes(m)), 'hash-blok'].filter((s) => text.includes(s));
+// For HTML pages: a block "leaks" if it is listed or linked as an article, or its non-shared copy appears.
+const htmlLeaks = (html) => [...new Set([
+  ...listed(html).filter((s) => blockSlugs.includes(s)),
+  ...[...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]).filter((h) => blockSlugs.some((b) => h.includes(`/${b}/`))),
+  ...blockMarkers.filter((m) => !sharedMarkers.includes(m) && html.includes(m)),
+])];
 console.log(`Ghost ${BASE} · ${blocks.length} content blocks · author /${author.slug}/\n`);
 
 // ---------- 1. Routes ----------
@@ -101,9 +111,10 @@ check('R14', 'Routes', 'Author profile URL is /blog/penulis/{slug}/ (channel rou
 
 // ---------- 2. Content blocks must not be discoverable ----------
 const direct = await Promise.all(blockSlugs.flatMap((s) => [`/blog/${s}/`, `/${s}/`]).map(async (p) => {
-  const r = await fetch(BASE + p); const t = await r.text(); return [p, r.status, new URL(r.url).pathname, leaks(t).length];
+  const r = await fetch(BASE + p); const t = await r.text();
+  return [p, r.status, new URL(r.url).pathname, template(t) === 'error-404' ? htmlLeaks(t).length : 1];
 }));
-check('B1', 'Blocks', 'Block article URLs end in 404 with no block content', direct.every(([, s, , l]) => s === 404 && l === 0),
+check('B1', 'Blocks', 'Block article URLs end in the 404 page with no block content', direct.every(([, s, , l]) => s === 404 && l === 0),
   [...new Set(direct.map(([p, s, f]) => `${p.startsWith('/blog/') ? '/blog/{block}/' : '/{block}/'} → ${f} ${s}`))].join('; '));
 const apiUrls = (await content(`/posts/?filter=tag:hash-blok&fields=slug,url`)).posts.map((p) => p.url);
 check('B2', 'Blocks', 'Ghost assigns blocks no public URL (url = /404/)', apiUrls.every((u) => u.endsWith('/404/')), [...new Set(apiUrls.map((u) => new URL(u).pathname))].join(', '));
@@ -113,7 +124,7 @@ check('B3', 'Blocks', 'Preview links /p/{uuid}/ do not expose published blocks',
 
 const listingPaths = ['/blog/', '/blog/page/2/', '/blog/topik/disfungsi-ereksi/', '/blog/topik/disfungsi-ereksi/page/2/', '/blog/topik/gaya-hidup/', `/blog/penulis/${author.slug}/`, `/blog/penulis/${author.slug}/page/2/`];
 const listingLeaks = [];
-for (const p of listingPaths) { const r = await get(p); const l = leaks(r.body); if (l.length) listingLeaks.push(`${p}: ${l.join(',')}`); }
+for (const p of listingPaths) { const r = await get(p); const l = htmlLeaks(r.body); if (l.length) listingLeaks.push(`${p}: ${l.join(',')}`); }
 check('B4', 'Blocks', 'Blocks absent from blog listing, topic and author archives', listingLeaks.length === 0, listingLeaks.join('; ') || `${listingPaths.length} listing pages checked`);
 
 const rssPaths = ['/blog/rss/', '/blog/topik/disfungsi-ereksi/rss/', `/blog/penulis/${author.slug}/rss/`, '/rss/'];

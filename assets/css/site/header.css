@@ -1,0 +1,31 @@
+/* Utility bar + main-site header (prototype: Utama / Disfungsi Ereksi desktop + mobile). */
+.hm-utility { background: var(--hm-charcoal); color: var(--hm-topbar-text); font-size: 13px; }
+.hm-utility__inner { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+.hm-utility__meta { display: flex; gap: 24px; flex-wrap: wrap; }
+@media (max-width: 599px) { .hm-utility { display: none; } }
+
+.hm-header { border-bottom: 1px solid var(--hm-grey-light); background: var(--hm-white); }
+.hm-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 18px; padding-bottom: 18px; }
+.hm-header__logo { display: flex; }
+.hm-header__logo .hm-logo { height: 44px; width: auto; }
+
+.hm-nav { display: flex; gap: 36px; font-size: 15px; font-weight: 600; }
+.hm-nav__link { position: relative; padding: 6px 0; color: var(--hm-text-2); text-decoration: none; }
+.hm-nav__link:hover { color: var(--hm-charcoal); }
+.hm-nav__link.nav-current { color: var(--hm-charcoal); }
+.hm-nav__link.nav-current::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: var(--hm-red); transform: skewX(var(--hm-slash-skew));
+}
+
+.hm-header__actions { display: flex; gap: 12px; align-items: center; }
+.hm-header__menu { display: none; }
+
+@media (max-width: 899px) {
+  .hm-nav, .hm-header__actions { display: none; }
+  .hm-header__menu { display: inline-flex; }
+}
+@media (max-width: 599px) {
+  .hm-header__inner { padding: 14px 16px; }
+  .hm-header__logo .hm-logo { height: 34px; }
+}

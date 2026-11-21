@@ -1,0 +1,29 @@
+{{!-- Mobile menu panel (opened by the header menu button below 900px). Not drawn in the prototype;
+      built only from existing header, navigation and button styles, as agreed in the plan. --}}
+<div class="hm-menu" id="hm-menu" role="dialog" aria-modal="true" aria-label="{{t "Menu"}}" hidden data-hm-menu>
+    <div class="hm-menu__top">
+        <a class="hm-menu__logo" href="{{@site.url}}/">{{> "components/logo"}}</a>
+        <button class="hm-icon-btn hm-icon-btn--framed" type="button" data-hm-menu-close>
+            {{> "icons/close"}}<span class="hm-visually-hidden">{{t "Tutup menu"}}</span>
+        </button>
+    </div>
+    <nav class="hm-menu__nav" aria-label="{{t "Navigasi utama"}}">
+        {{#foreach @site.navigation}}
+            <a class="{{link_class for=url class="hm-menu__link"}}" href="{{url absolute="true"}}">{{label}}</a>
+        {{/foreach}}
+    </nav>
+    {{#if categories}}
+        <p class="hm-menu__label">{{t "Topik"}}</p>
+        <nav class="hm-menu__cats" aria-label="{{t "Kategori"}}">
+            <a class="{{link_class for="/blog/" class="hm-menu__cat"}}" href="{{@site.url}}/blog/">{{t "Semua"}}</a>
+            {{#foreach @site.secondary_navigation}}
+                <a class="{{link_class for=url class="hm-menu__cat"}}" href="{{url absolute="true"}}">{{label}}</a>
+            {{/foreach}}
+        </nav>
+    {{/if}}
+    <div class="hm-menu__actions">
+        <a class="hm-btn hm-btn--whatsapp hm-btn--block" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="20"}}{{t "WhatsApp Kami"}}</a>
+        <a class="hm-btn hm-btn--primary hm-btn--block" href="{{> "components/booking-href"}}">{{> "icons/calendar" size="20"}}{{t "Buat Temu Janji"}}</a>
+    </div>
+    {{#if @custom.address_short}}<p class="hm-menu__meta">{{@custom.address_short}}{{#if @custom.opening_hours_short}} · {{@custom.opening_hours_short}}{{/if}}</p>{{/if}}
+</div>

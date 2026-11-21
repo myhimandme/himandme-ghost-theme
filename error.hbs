@@ -1,6 +1,13 @@
 {{!< default}}
-<main data-template="error">
-    <h1>{{statusCode}}</h1>
-    <p>{{message}}</p>
-    <a href="{{@site.url}}">Kembali ke laman utama</a>
+{{#contentFor "mode"}}main{{/contentFor}}
+{{> "site/header-main"}}
+<main id="main" class="hm-container hm-error" data-template="error">
+    <span class="hm-label"><span class="hm-label__slash">/</span> {{statusCode}}</span>
+    <h1 class="hm-error__title">{{t "Maaf, berlaku ralat."}}</h1>
+    <p class="hm-error__text">{{t "Sila cuba sebentar lagi, atau hubungi kami melalui WhatsApp."}}</p>
+    <div class="hm-error__actions">
+        <a class="hm-btn hm-btn--primary" href="{{@site.url}}/">{{t "Kembali ke laman utama"}}</a>
+        <a class="hm-btn hm-btn--whatsapp" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="20"}}{{t "WhatsApp Kami"}}</a>
+    </div>
 </main>
+{{> "site/footer-compact"}}

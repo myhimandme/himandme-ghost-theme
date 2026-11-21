@@ -1,0 +1,16 @@
+/* Containers — main site 1240px, blog 1280px of CONTENT, plus 24px gutters (16px on phones).
+   The prototype used content-box sizing, so its max-width excludes the gutters; the theme uses
+   border-box everywhere and adds the gutters back here to keep identical positions. */
+.hm-container { max-width: calc(var(--hm-container) + 2 * var(--hm-gutter)); margin: 0 auto; padding-left: var(--hm-gutter); padding-right: var(--hm-gutter); }
+.hm-container-blog { max-width: calc(var(--hm-container-blog) + 2 * var(--hm-gutter)); margin: 0 auto; padding-left: var(--hm-gutter); padding-right: var(--hm-gutter); }
+
+/* Breakpoints used across the theme:
+   ≤599px  phone layout (prototype mobile boards, 390px)
+   <900px  header navigation collapses to the menu button
+   <1100px article side rails hide */
+@media (max-width: 599px) {
+  .hm-container, .hm-container-blog { padding-left: var(--hm-gutter-mobile); padding-right: var(--hm-gutter-mobile); }
+}
+
+@media (max-width: 599px) { .hm-hide-mobile { display: none !important; } }
+@media (min-width: 600px) { .hm-show-mobile { display: none !important; } }

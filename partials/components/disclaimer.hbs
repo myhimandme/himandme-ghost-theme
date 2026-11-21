@@ -1,0 +1,10 @@
+{{!-- Footer disclaimer from content block "blok-penafian".
+      Main site (variant omitted): the block's BODY. Blog/article (variant="blog"): the block's EXCERPT.
+      Falls back to the approved prototype copy when the block is missing. --}}
+{{#get "posts" filter="slug:blok-penafian" limit="1"}}
+    {{#foreach posts}}
+        {{#match ../../variant "blog"}}{{#if custom_excerpt}}{{custom_excerpt}}{{else}}{{t "Kandungan blog ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Artikel disemak sebelum diterbitkan."}}{{/if}}{{else}}<div class="hm-disclaimer-body">{{content}}</div>{{/match}}
+    {{else}}
+        {{#match ../variant "blog"}}{{t "Kandungan blog ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Artikel disemak sebelum diterbitkan."}}{{else}}{{t "Maklumat di laman web ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan profesional. Kesesuaian sebarang rawatan ditentukan selepas penilaian oleh doktor."}}{{/match}}
+    {{/foreach}}
+{{/get}}

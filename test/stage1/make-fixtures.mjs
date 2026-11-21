@@ -40,6 +40,7 @@ const add = (p, tagSlugs = []) => {
 
 // Landing page (real public page with a custom template) + SEO data page for /blog/
 add({ type: 'page', slug: 'jurnal', title: 'Jurnal Kesihatan Lelaki', meta_title: 'Jurnal Kesihatan Lelaki — Him & Me', meta_description: 'Artikel pendidikan tentang kesihatan lelaki.', custom_excerpt: 'Blog Him & Me.', html: '<p>Route data for /blog/.</p>', published_at: at(499) });
+add({ type: 'page', slug: 'notis-privasi', title: 'Notis Privasi', html: '<p>Kandungan ujian notis privasi.</p>', published_at: at(497) });
 add({ type: 'page', slug: 'disfungsi-ereksi', title: 'Disfungsi ereksi boleh dinilai. Dan boleh dirawat.',
   custom_excerpt: 'Panduan jelas tentang disfungsi ereksi.', custom_template: 'custom-disfungsi-ereksi',
   html: '<div class="kg-card kg-toggle-card" data-kg-toggle-state="close"><div class="kg-toggle-heading"><h4 class="kg-toggle-heading-text">Adakah disfungsi ereksi perkara biasa?</h4></div><div class="kg-toggle-content"><p>Jawapan ujian FAQ ED.</p></div></div>',
@@ -50,6 +51,8 @@ add({ slug: 'blok-utama-hero', title: 'Kesihatan lelaki, dibincang dengan tenang
 add({ slug: 'blok-utama-faq', title: 'Soalan yang ramai segan tanya', custom_excerpt: 'Soalan lazim utama ZZBLOK-004.',
   html: '<div class="kg-card kg-toggle-card" data-kg-toggle-state="close"><div class="kg-toggle-heading"><h4 class="kg-toggle-heading-text">Adakah konsultasi saya benar-benar sulit?</h4></div><div class="kg-toggle-content"><p>Ya. Jawapan ujian FAQ utama.</p></div></div>',
   published_at: at(401) }, ['hash-blok', 'hash-blok-utama']);
+add({ slug: 'blok-maklumat-hubungan', title: 'Maklumat hubungan (footer)', custom_excerpt: 'No. 1, Jalan Contoh 1/2\n50000 Kuala Lumpur ZZBLOK-006', html: '<p>Isnin – Jumaat: 10:00 – 19:00</p><p>Sabtu: 10:00 – 14:00</p><p>Ahad &amp; cuti umum: Tutup</p>', published_at: at(405) }, ['hash-blok']);
+add({ slug: 'blok-penafian', title: 'Penafian (footer)', custom_excerpt: 'Kandungan blog ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan. Artikel disemak sebelum diterbitkan. ZZBLOK-007', html: '<p>Maklumat di laman web ini adalah untuk pendidikan umum dan bukan pengganti nasihat perubatan profesional. Kesesuaian sebarang rawatan ditentukan selepas penilaian oleh doktor. ZZBLOK-007</p>', published_at: at(404) }, ['hash-blok']);
 add({ slug: 'blok-utama-perkhidmatan', title: 'Apa yang kami tawarkan', custom_excerpt: 'Ujian blok perkhidmatan ZZBLOK-001.', html: '<p>Kandungan blok ZZBLOK-001.</p>', published_at: at(400) }, ['hash-blok', 'hash-blok-utama']);
 add({ slug: 'blok-utama-proses', title: 'Empat langkah, tanpa tekanan', custom_excerpt: 'Ujian blok proses ZZBLOK-002.', html: '<ul><li>Hubungi kami ZZBLOK-002</li><li>Konsultasi</li></ul>', published_at: at(399) }, ['hash-blok', 'hash-blok-utama']);
 add({ slug: 'blok-ed-shockwave', title: 'Shockwave therapy (blok)', custom_excerpt: 'Ujian blok shockwave ZZBLOK-003.', html: '<p>Kandungan blok ZZBLOK-003.</p>', published_at: at(1) }, ['hash-blok', 'hash-blok-ed']);

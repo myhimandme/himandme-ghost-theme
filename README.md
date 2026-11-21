@@ -2,7 +2,7 @@
 
 Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site (Utama, Disfungsi Ereksi) and a separate editorial blog (/blog/). The approved HTML prototype is the master visual reference.
 
-> **Status: Stage 0–1 (technical foundation).** The templates in this repo are currently *verification scaffolding*: they output test markers, not the approved design. Visual development starts in Stage 2 after approval. See [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md).
+> **Status: Stage 2 (site chrome).** Headers, footers, navigation, mobile menu, the mobile action bar, error pages, design tokens and self-hosted fonts match the approved prototype. Page bodies (homepage, ED page, blog, articles) are still *verification scaffolding* until Stages 3–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md), [`docs/STAGE-2-REPORT.md`](docs/STAGE-2-REPORT.md).
 
 ## Requirements
 
@@ -19,10 +19,12 @@ Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site
 | `npm install` | Installs the build and validation tools (esbuild, GScan, bestzip) |
 | `npm run build` | Builds `assets/css/screen.css` and `assets/js/main.js` into `assets/built/` (minified, with source maps) |
 | `npm run dev` | Same build, rebuilding on every change |
-| `npm test` | Build, then GScan with the Ghost 6 ruleset. Must pass before any release. |
+| `npm test` | Build, then the **content-block guard** (every `{{#get "posts"}}` must exclude `#blok` or target one specific block), then GScan with the Ghost 6 ruleset. Must pass before any release. |
 | `npm run zip` | Build, then package `dist/himandme-ghost-theme.zip` for upload (theme files only) |
 | `npm run gscan:zip` | GScan the packaged zip (exactly what Ghost Admin will check) |
 | `npm run test:stage1` | Routing and content-block verification suite against a **local** Ghost (see [`test/stage1/README.md`](test/stage1/README.md)) |
+| `npm run test:stage2` | Site-chrome checks (headers, footers, menus, settings, block fallback) against a local Ghost |
+| `npm run visual` | Side-by-side screenshots of the approved prototype vs the local theme (`PROTOTYPE_HTML=…`) |
 
 ## Ghost Admin setup checklist (paths verified on Ghost 6.75.0)
 
@@ -38,7 +40,7 @@ Paths were checked in the Ghost 6.75.0 Admin interface. Screenshots are in [`doc
 | 6 | Doctor profile, and slug for routes | **Settings → General settings → Staff** → your name → **Profile** tab: name (with "Dr."), photo, bio, **Slug** |
 | 7 | Theme settings (WhatsApp, prices, credentials…) | **Settings → Site → Design & branding → Theme** tab → *Site wide* (17 fields) and *Post* (doctor credentials) → **Save**. Ghost derives the field labels from the setting names (e.g. "Whatsapp number"). |
 | 8 | Language and timezone | **Settings → General settings → Publication language** (`ms`) and **Timezone** (Asia/Kuala_Lumpur) |
-| 9 | Menus | **Settings → Site → Navigation** |
+| 9 | Menus | **Settings → Site → Navigation**: *Primary* = main menu (Utama `/`, Disfungsi Ereksi `/disfungsi-ereksi/`, Blog `/blog/`). *Secondary* = blog category bar (e.g. Disfungsi Ereksi `/blog/topik/disfungsi-ereksi/`). "Semua" is added by the theme. |
 
 ### Import notes (found in Stage 1)
 
@@ -55,6 +57,14 @@ Homepage and ED-page section headings and descriptions are **content blocks**: p
 4. **Never remove the `#blok` tag**, and never add a public tag to a block. Either one would turn the block into a public blog article.
 5. **Publish only** (never "Publish and email").
 6. If a block is unpublished or deleted, the approved prototype copy is shown instead. The section never goes blank.
+7. **Public website copy only.** Blocks are readable through Ghost's public Content API, so never put confidential or private information in a block.
+
+### Site-wide blocks (Stage 2)
+
+| Block slug | Title | Excerpt | Body |
+|---|---|---|---|
+| `blok-maklumat-hubungan` | (internal label) | Full footer address. Press Enter for each new line. | Opening hours, one paragraph per line |
+| `blok-penafian` | (internal label) | Blog and article footer disclaimer | Main-site footer disclaimer |
 
 ## Repository layout (Stage 0–1)
 

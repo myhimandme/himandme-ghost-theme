@@ -1,0 +1,13 @@
+{{!< default}}
+{{#contentFor "mode"}}main{{/contentFor}}
+{{> "site/header-main"}}
+<main id="main" class="hm-container hm-error" data-template="error-404">
+    <span class="hm-label"><span class="hm-label__slash">/</span> 404</span>
+    <h1 class="hm-error__title">{{t "Halaman ini tidak dijumpai."}}</h1>
+    <p class="hm-error__text">{{t "Pautan mungkin telah berubah atau halaman telah dialihkan."}}</p>
+    <div class="hm-error__actions">
+        <a class="hm-btn hm-btn--primary" href="{{@site.url}}/">{{t "Kembali ke laman utama"}}</a>
+        <a class="hm-btn hm-btn--outline" href="{{@site.url}}/blog/">{{t "Baca blog"}}</a>
+    </div>
+</main>
+{{> "site/footer-compact"}}

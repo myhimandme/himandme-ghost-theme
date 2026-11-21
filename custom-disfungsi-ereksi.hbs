@@ -1,6 +1,8 @@
 {{!< default}}
+{{#contentFor "mode"}}main{{/contentFor}}
+{{> "site/header-main"}}
 {{!-- STAGE 1 VERIFICATION SCAFFOLD — replaced by the approved ED page design in Stage 4. --}}
-<main data-template="custom-disfungsi-ereksi">
+<main id="main" data-template="custom-disfungsi-ereksi">
     {{#post}}
         <h1 data-test="page-title">{{title}}</h1>
         <p data-test="page-excerpt">{{custom_excerpt}}</p>
@@ -12,3 +14,5 @@
         {{/foreach}}
     {{/get}}
 </main>
+{{> "site/footer-compact"}}
+{{> "site/mobile-bar"}}
