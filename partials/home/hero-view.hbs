@@ -1,0 +1,21 @@
+<section class="hm-container hm-hero" aria-labelledby="hm-hero-title">
+    <div class="hm-hero__text">
+        <span class="hm-label"><span class="hm-label__slash">/</span> {{t "KESIHATAN LELAKI"}}<span class="hm-hide-mobile"> · {{t "[BANDAR]"}}</span></span>
+        <h1 class="hm-hero__title" id="hm-hero-title">{{title}}</h1>
+        <p class="hm-hero__intro">{{intro}}</p>
+        <div class="hm-hero__ctas hm-hide-mobile">
+            <a class="hm-btn hm-btn--primary hm-btn--lg" href="{{> "components/booking-href"}}">{{> "icons/calendar" size="20"}}{{t "Buat Temu Janji"}}</a>
+            <a class="hm-btn hm-btn--whatsapp hm-btn--lg" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="20"}}{{t "WhatsApp Kami"}}</a>
+        </div>
+        <span class="hm-hero__note hm-hide-mobile">{{t "Lebih selesa bertanya dahulu? Mesej WhatsApp dijawab oleh pasukan kami, bukan bot."}}</span>
+    </div>
+    <div class="hm-hero__media">
+        {{> "components/image" src=img alt=alt class="hm-hero__img hm-cut" sizes="(max-width: 599px) 100vw, 50vw" eager=true}}
+        <div class="hm-hero__card">
+            <strong class="hm-hero__card-title hm-hide-mobile">{{t "Apa yang anda boleh jangka"}}</strong>
+            <span class="hm-check">{{> "icons/check"}}{{t "Bilik konsultasi tertutup & peribadi"}}</span>
+            <span class="hm-check">{{> "icons/check"}}{{t "Penilaian sebelum sebarang cadangan rawatan"}}</span>
+            <span class="hm-check">{{> "icons/check"}}{{t "Penjelasan jelas tentang kos & pilihan"}}</span>
+        </div>
+    </div>
+</section>

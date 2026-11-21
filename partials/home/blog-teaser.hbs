@@ -1,0 +1,27 @@
+{{!-- "Dari blog": heading from block "blok-utama-blog"; the 3 latest ARTICLES (never #blok). --}}
+<section class="hm-bteaser" aria-labelledby="hm-bteaser-title">
+    <div class="hm-container hm-bteaser__inner">
+        <div class="hm-bteaser__head">
+            <div class="hm-shead__main">
+                <span class="hm-label hm-hide-mobile"><span class="hm-label__slash">/</span> {{t "DARI BLOG"}}</span>
+                {{#get "posts" filter="slug:blok-utama-blog" limit="1"}}
+                    {{#foreach posts}}<h2 class="hm-h2 hm-bteaser__title" id="hm-bteaser-title"><span class="hm-hide-mobile">{{title}}</span><span class="hm-show-mobile">{{t "Dari blog"}}</span></h2>
+                    {{else}}<h2 class="hm-h2 hm-bteaser__title" id="hm-bteaser-title"><span class="hm-hide-mobile">{{t "Baca dahulu, bertanya kemudian"}}</span><span class="hm-show-mobile">{{t "Dari blog"}}</span></h2>{{/foreach}}
+                {{/get}}
+            </div>
+            <a class="hm-bteaser__all" href="{{@site.url}}/blog/"><span class="hm-hide-mobile">{{t "Semua artikel →"}}</span><span class="hm-show-mobile">{{t "Semua →"}}</span></a>
+        </div>
+        <div class="hm-bteaser__grid">
+            {{#get "posts" filter="tag:-hash-blok" limit="3" include="tags"}}
+                {{#foreach posts}}
+                    <a class="hm-tcard" href="{{url}}">
+                        {{> "components/image" src=feature_image alt=feature_image_alt class="hm-tcard__img" sizes="(max-width: 599px) 270px, 400px"}}
+                        {{#primary_tag}}<span class="hm-tcard__kicker">{{name}}</span>{{/primary_tag}}
+                        <span class="hm-tcard__title hm-serif">{{title}}</span>
+                        <span class="hm-tcard__meta">{{reading_time minute=(t "1 min bacaan") minutes=(t "% min bacaan")}}</span>
+                    </a>
+                {{/foreach}}
+            {{/get}}
+        </div>
+    </div>
+</section>

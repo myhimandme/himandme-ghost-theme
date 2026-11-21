@@ -25,7 +25,8 @@
     "test:stage1": "node test/stage1/run.mjs",
     "guard": "node scripts/check-blok-guard.mjs",
     "test:stage2": "node test/stage2/run.mjs",
-    "visual": "node test/visual/compare.mjs"
+    "visual": "node test/visual/compare.mjs",
+    "test:stage3": "node test/stage3/run.mjs"
   },
   "devDependencies": {
     "bestzip": "4.0.3",

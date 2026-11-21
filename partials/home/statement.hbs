@@ -1,0 +1,9 @@
+{{!-- Statement. Block "blok-utama-kenyataan": title = statement, excerpt = phrase shown in red,
+      body = supporting sentence (continues the heading on desktop; separate paragraph on phones). --}}
+{{#get "posts" filter="slug:blok-utama-kenyataan" limit="1"}}
+    {{#foreach posts}}
+        {{> "home/statement-view" title=title accent=custom_excerpt html=html}}
+    {{else}}
+        {{> "home/statement-view" title=(t "Disfungsi ereksi ialah keadaan perubatan yang biasa —") accent=(t "bukan kelemahan diri.") text=(t "Ia sering berkait dengan kesihatan jantung, hormon, tekanan dan gaya hidup.")}}
+    {{/foreach}}
+{{/get}}

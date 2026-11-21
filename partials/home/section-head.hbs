@@ -1,0 +1,8 @@
+<div class="hm-shead{{#if text}} hm-shead--split{{/if}}">
+    <div class="hm-shead__main">
+        <span class="hm-label"><span class="hm-label__slash">/</span> {{label}}</span>
+        <h2 class="hm-h2" id="{{id}}">{{title}}</h2>
+    </div>
+    {{#if text}}<p class="hm-shead__text">{{text}}</p>{{/if}}
+    {{#if link}}<a class="hm-link-arrow hm-shead__link" href="{{link}}">{{linkLabel}}</a>{{/if}}
+</div>

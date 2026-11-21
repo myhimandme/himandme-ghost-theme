@@ -2,7 +2,7 @@
 
 Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site (Utama, Disfungsi Ereksi) and a separate editorial blog (/blog/). The approved HTML prototype is the master visual reference.
 
-> **Status: Stage 2 (site chrome).** Headers, footers, navigation, mobile menu, the mobile action bar, error pages, design tokens and self-hosted fonts match the approved prototype. Page bodies (homepage, ED page, blog, articles) are still *verification scaffolding* until Stages 3–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md), [`docs/STAGE-2-REPORT.md`](docs/STAGE-2-REPORT.md).
+> **Status: Stage 3 (homepage).** Site chrome (Stage 2) and the homepage match the approved prototype. The ED page, blog, topic/author pages and articles are still *verification scaffolding* until Stages 4–6. Reports: [`docs/STAGE-1-REPORT.md`](docs/STAGE-1-REPORT.md), [`docs/STAGE-2-REPORT.md`](docs/STAGE-2-REPORT.md), [`docs/STAGE-3-REPORT.md`](docs/STAGE-3-REPORT.md).
 
 ## Requirements
 
@@ -24,6 +24,7 @@ Custom Ghost 6.x theme for **himandme.my**. It has a clinical-inspired main site
 | `npm run gscan:zip` | GScan the packaged zip (exactly what Ghost Admin will check) |
 | `npm run test:stage1` | Routing and content-block verification suite against a **local** Ghost (see [`test/stage1/README.md`](test/stage1/README.md)) |
 | `npm run test:stage2` | Site-chrome checks (headers, footers, menus, settings, block fallback) against a local Ghost |
+| `npm run test:stage3` | Homepage checks (every block + fallback, article teaser, images, doctor card, accessibility basics) against a local Ghost |
 | `npm run visual` | Side-by-side screenshots of the approved prototype vs the local theme (`PROTOTYPE_HTML=…`) |
 
 ## Ghost Admin setup checklist (paths verified on Ghost 6.75.0)
@@ -65,6 +66,23 @@ Homepage and ED-page section headings and descriptions are **content blocks**: p
 |---|---|---|---|
 | `blok-maklumat-hubungan` | (internal label) | Full footer address. Press Enter for each new line. | Opening hours, one paragraph per line |
 | `blok-penafian` | (internal label) | Blog and article footer disclaimer | Main-site footer disclaimer |
+
+### Homepage blocks (Stage 3) — tag `#blok` + `#blok-utama`
+
+| Block slug | Title | Excerpt | Body | Feature image |
+|---|---|---|---|---|
+| `blok-utama-hero` | H1 | Intro paragraph | — | Hero photo (set its alt text) |
+| `blok-utama-kenyataan` | Statement (start) | Phrase shown in **red** | Supporting sentence | — |
+| `blok-utama-perkhidmatan` | Services heading | Description (desktop) | — | — |
+| `blok-utama-servis-konsultasi` / `-servis-shockwave` / `-servis-kegel-ems` | Card title | Card text | — | — |
+| `blok-utama-proses` | Process heading | — | — | — |
+| `blok-utama-privasi` | Privacy heading | — | Bullet list | Photo in the charcoal band |
+| `blok-utama-pasukan` | Doctor-section heading | Text (desktop) | — | — |
+| `blok-utama-blog` | Blog-teaser heading (desktop) | — | — | — |
+| `blok-utama-faq` | FAQ heading | — | **Toggle cards**, one per question (first opens automatically) | — |
+| `blok-utama-cta` | Closing band heading | Band text | — | — |
+
+The doctor card uses the staff profile named in theme setting **`doctor_author_slug`** (name, photo) and the **`doctor_credentials`** setting. The "Dari blog" cards are the three newest articles and never include blocks. Section labels ("/ PERKHIDMATAN"), the hero checklist, the trust strip and the four process steps are fixed theme text in `locales/ms.json`.
 
 ## Repository layout (Stage 0–1)
 

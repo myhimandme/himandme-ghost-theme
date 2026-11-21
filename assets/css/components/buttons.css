@@ -37,3 +37,7 @@
   border: 0; background: transparent; padding: 0; color: var(--hm-charcoal); border-radius: var(--hm-radius-btn);
 }
 .hm-icon-btn--framed { border: 1.5px solid var(--hm-grey-light); background: var(--hm-white); }
+
+/* Section label with the red slash, e.g. "/ PERKHIDMATAN" */
+.hm-label { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.hm-label__slash { color: var(--hm-red); }

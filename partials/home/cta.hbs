@@ -1,0 +1,16 @@
+{{!-- Closing CTA band. Block "blok-utama-cta": title = H2, excerpt = text. --}}
+<section class="hm-container hm-cta" id="temujanji" aria-labelledby="hm-cta-title">
+    <div class="hm-cta__band">
+        <div class="hm-cta__deco" aria-hidden="true"></div>
+        <div class="hm-cta__text">
+            {{#get "posts" filter="slug:blok-utama-cta" limit="1"}}
+                {{#foreach posts}}<h2 class="hm-cta__title" id="hm-cta-title">{{title}}</h2><p class="hm-cta__intro">{{custom_excerpt}}</p>
+                {{else}}<h2 class="hm-cta__title" id="hm-cta-title">{{t "Sedia untuk berbincang?"}}</h2><p class="hm-cta__intro">{{t "Tempah konsultasi, atau mesej kami dahulu jika anda ada soalan. Tiada komitmen untuk memulakan rawatan."}}</p>{{/foreach}}
+            {{/get}}
+        </div>
+        <div class="hm-cta__btns">
+            <a class="hm-btn hm-btn--lg hm-cta__primary" href="{{> "components/booking-href"}}">{{t "Buat Temu Janji"}}</a>
+            <a class="hm-btn hm-btn--whatsapp hm-btn--lg hm-hide-mobile" href="{{> "components/wa-href"}}" target="_blank" rel="noopener">{{> "icons/whatsapp" size="20"}}{{t "WhatsApp Kami"}}</a>
+        </div>
+    </div>
+</section>

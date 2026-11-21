@@ -43,3 +43,24 @@
     });
   });
 })();
+
+// FAQ accordions (Ghost toggle cards inside [data-hm-faq]): first question open, as in the prototype;
+// Malay labels and aria-expanded kept in sync with Ghost's own toggle script.
+(function () {
+  document.querySelectorAll('[data-hm-faq]').forEach(function (list) {
+    var cards = list.querySelectorAll('.kg-toggle-card');
+    cards.forEach(function (card, i) {
+      var btn = card.querySelector('.kg-toggle-card-icon');
+      var q = card.querySelector('.kg-toggle-heading-text');
+      if (i === 0) card.setAttribute('data-kg-toggle-state', 'open');
+      function sync() {
+        if (!btn) return;
+        var open = card.getAttribute('data-kg-toggle-state') === 'open';
+        btn.setAttribute('aria-expanded', String(open));
+        btn.setAttribute('aria-label', (open ? 'Tutup jawapan: ' : 'Buka jawapan: ') + (q ? q.textContent.trim() : ''));
+      }
+      sync();
+      new MutationObserver(sync).observe(card, { attributes: true, attributeFilter: ['data-kg-toggle-state'] });
+    });
+  });
+})();
