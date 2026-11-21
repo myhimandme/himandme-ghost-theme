@@ -9,7 +9,7 @@
 > **Update 6.7 (21 Nov 2026):** **M6 and M5 done and verified** (plan §16.11). Monthly runbook: `docs/stage-7/MONTHLY-MAINTENANCE.md` (first run around 19 Dec 2026). N6 pending around 25 Nov. **Phase B is not authorised.**
 > **Update 6.8 (21 Nov 2026):** **Phase B approved by the owner and carried out** (plan §16.12, report [`stage-7/PHASE-B-REPORT.md`](stage-7/PHASE-B-REPORT.md)): PRs #1–#7 merged into `main` (Option A); release branch `stage-7-release` built and tested; checksums recorded (G9). **Awaiting the B-gate.** No production change. **Phase C is not authorised.**
 > **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed: the zip permission check now tells files (0644) from directory entries (0755); G12 recorded as **deferred** (an outstanding pre-launch item). Release rebuilt; checksums unchanged. **Awaiting final B-gate approval.** No production change. **Phase C is not authorised.**
-> **Update 6.9 (21 Nov 2026):** **B-gate approved; Phase B closed** (plan §16.13). PR #8 merged into `main` as `d2a014e`. Tag `v1.0.0` created on that commit; its push to GitHub is pending (owner). No production change. **Phase C is not authorised.**
+> **Update 6.9 (21 Nov 2026):** **B-gate approved; Phase B closed** (plan §16.13). PR #8 merged into `main` as `d2a014e`. Tag `v1.0.0` on that commit (published by the owner, verified). No production change. **Phase C is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -73,7 +73,7 @@
 | G0 | Branch chain is linear (`main` → `stage-0-1` → … → `stage-6`); no conflicts; `stage-6` holds all approved work | ✅ Verified | [x] |
 | G0a | Merge option A (per-stage, recommended) or B (single release PR) chosen | ✅ **Option A** (separate PR per stage), decided 19 Nov (O26) | [x] |
 | G0b | Merges carried out with merge commits; `git diff stage-6 main` is empty afterwards | ✅ Done 21 Nov: PRs #1, #2, #3, #5, #4, #6, #7 merged (merge commits); `main` = `17ae322`, equal to `stage-7-plan` | [x] |
-| G1 | Version 1.0.0 and tag `v1.0.0` | ✅ Version **1.0.0** on `main`. Annotated tag `v1.0.0` created on merge commit `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`; **push pending** (this session's GitHub access cannot push tags, HTTP 403): the owner pushes it, then verifies | [ ] tag push |
+| G1 | Version 1.0.0 and tag `v1.0.0` | ✅ Version **1.0.0** on `main`. Tag **`v1.0.0`** → `d2a014e65874b4624f5f6be72c7d14214c1ba7b2` (the PR #8 merge commit), published by the owner as GitHub release "1.0.0" on 21 Nov; verified with `git ls-remote` | [x] |
 | G2 | Logo PNG permissions `0600` → `0644` | ✅ Done: the zip stages files 0644 and folders 0755. `check-release.mjs` checks files 0644 and directory entries 0755, and fails on other entry types (B-gate correction; fixtures Z1–Z8 pass). Zip reproducible, checksum unchanged | [x] |
 | G3 | `routes.yaml` author slug `dr` → real slug (3 places) | ✅ No change needed: `dr` is the production slug (O4); channel verified by `check-release.mjs` | [x] |
 | G4 | Launch seed builder (`seed/blocks.mjs` only, allowlist + denylist) | ✅ Built: `npm run seed:launch` (23 blocks, 3 pages, no authors) | [x] |
@@ -295,7 +295,7 @@
 | Revision 4 | **Phase A authorised** (read-only: I1–I31, live-site inventory, owner inputs and decisions, review of findings and risk register). Excludes merges, releases, backups, database, DNS or Cloudflare changes, imports, publishing, theme activation and any production change | ✅ 17 Nov 2026 | [x] |
 | Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✅ Presented and accepted (19 Nov); decisions recorded (plan §16.9) | [x] |
 | A. Preparation and audit | 🛑 A-gate | ✅ **Signed off by the owner 19 Nov 2026** (plan §16.10). Carried forward: N6, M5, M6, O19, O20, O22, O30 step 2, deferred O34/O38/content inputs. **Phase B needs separate written approval** | [x] |
-| B. GitHub merge and release prep | 🛑 B-gate | ✅ **B-gate approved by the owner 21 Nov 2026; Phase B closed** (plan §16.13). PR #8 merged (merge commit `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`); `main` = that commit. Tag `v1.0.0`: push pending (G1). G12 deferred (outstanding pre-launch item). **Phase C needs separate written approval** | [x] |
+| B. GitHub merge and release prep | 🛑 B-gate | ✅ **B-gate approved by the owner 21 Nov 2026; Phase B closed** (plan §16.13). PR #8 merged (merge commit `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`); `main` = that commit. Tag `v1.0.0` on that commit (G1, verified). G12 deferred (outstanding pre-launch item). **Phase C needs separate written approval** | [x] |
 | C. Production backup | 🛑 C-gate | ⛔ B-gate | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |
 | E. Production configuration | (with D) | ⛔ D | [ ] |

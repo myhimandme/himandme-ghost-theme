@@ -9,7 +9,7 @@
 > **Update 6.7 (21 Nov 2026)** adds §16.11: **M6** (security-only automatic updates, MySQL excluded) and **M5** (TLS 1.2/1.3 only) **executed and verified**; monthly maintenance runbook in [`stage-7/MONTHLY-MAINTENANCE.md`](stage-7/MONTHLY-MAINTENANCE.md). N6 stays pending (around 25 Nov; HSTS `max-age=300`). **Phases B–H remain unauthorised.**
 > **Update 6.8 (21 Nov 2026)** adds §16.12: **Phase B approved by the owner and carried out.** PRs #1–#7 merged into `main` (Option A, merge commits); release branch `stage-7-release` built and tested on local Ghost; checksums recorded. **Awaiting the B-gate.** No production change. **Phases C–H remain unauthorised.** Report: [`stage-7/PHASE-B-REPORT.md`](stage-7/PHASE-B-REPORT.md).
 > **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed (zip permission check for directory entries; G12 recorded as deferred). Checksums unchanged. **Awaiting final B-gate approval.**
-> **Update 6.9 (21 Nov 2026)** adds §16.13: **B-gate approved by the owner; Phase B closed.** PR #8 merged into `main` (`d2a014e`); tag `v1.0.0` on that commit (push pending, owner). **Phases C–H remain unauthorised** until the owner approves Phase C in writing.
+> **Update 6.9 (21 Nov 2026)** adds §16.13: **B-gate approved by the owner; Phase B closed.** PR #8 merged into `main` (`d2a014e`); tag `v1.0.0` on that commit (published by the owner, verified). **Phases C–H remain unauthorised** until the owner approves Phase C in writing.
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -1760,7 +1760,7 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 | Merge commit | `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`. Parents: `17ae322` (previous `main`) and `26086eb` (reviewed head). Its tree is identical to `26086eb` (`git diff` empty) |
 | `main` | `d2a014e65874b4624f5f6be72c7d14214c1ba7b2` (checked with `git ls-remote`) |
 | Release from the merge commit | `npm run release` on a clean `dist/` at `d2a014e`: all checks passed; `sha256sum -c dist/SHA256SUMS` OK for the zip, seed, routes and redirects (checksums as in §16.12) |
-| Tag `v1.0.0` | Annotated tag created on `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`; it lists the four release checksums. **Push pending:** this session's GitHub access only allows pushes to its working branch and refused the tag (HTTP 403). The owner pushes the tag, then confirms that `refs/tags/v1.0.0^{}` resolves to the merge commit |
+| Tag `v1.0.0` | This session's GitHub access could not push tags (HTTP 403), so the owner published GitHub release "1.0.0" with a new tag `v1.0.0` on `main` (release notes: the zip SHA-256). Verified: `git ls-remote` shows `refs/tags/v1.0.0` = `d2a014e65874b4624f5f6be72c7d14214c1ba7b2` = `refs/heads/main`. GitHub created a lightweight tag, so the tag SHA is the commit SHA |
 | G12 | Deferred, not completed: an outstanding pre-launch item (Phase B report §8) |
 
 **Phase B is closed. Phase C (production backup) is not authorised** and needs the owner's separate written approval.
