@@ -8,6 +8,7 @@
 > **Update 6.6 (19 Nov 2026):** **O30 done** (LLM setting off; step 1 verified) and **Phase A signed off by the owner** (plan §16.10). **Phase B is not authorised.**
 > **Update 6.7 (21 Nov 2026):** **M6 and M5 done and verified** (plan §16.11). Monthly runbook: `docs/stage-7/MONTHLY-MAINTENANCE.md` (first run around 19 Dec 2026). N6 pending around 25 Nov. **Phase B is not authorised.**
 > **Update 6.8 (21 Nov 2026):** **Phase B approved by the owner and carried out** (plan §16.12, report [`stage-7/PHASE-B-REPORT.md`](stage-7/PHASE-B-REPORT.md)): PRs #1–#7 merged into `main` (Option A); release branch `stage-7-release` built and tested; checksums recorded (G9). **Awaiting the B-gate.** No production change. **Phase C is not authorised.**
+> **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed: the zip permission check now tells files (0644) from directory entries (0755); G12 recorded as **deferred** (an outstanding pre-launch item). Release rebuilt; checksums unchanged. **Awaiting final B-gate approval.** No production change. **Phase C is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -72,12 +73,12 @@
 | G0a | Merge option A (per-stage, recommended) or B (single release PR) chosen | ✅ **Option A** (separate PR per stage), decided 19 Nov (O26) | [x] |
 | G0b | Merges carried out with merge commits; `git diff stage-6 main` is empty afterwards | ✅ Done 21 Nov: PRs #1, #2, #3, #5, #4, #6, #7 merged (merge commits); `main` = `17ae322`, equal to `stage-7-plan` | [x] |
 | G1 | Version 1.0.0 and tag `v1.0.0` | ✅ Version **1.0.0** on `stage-7-release`. Tag `v1.0.0` proposed on the release merge commit after the B-gate | [ ] tag |
-| G2 | Logo PNG permissions `0600` → `0644` | ✅ Done: the zip stages every file as 0644 (verified by `check-release.mjs`); zip reproducible | [x] |
+| G2 | Logo PNG permissions `0600` → `0644` | ✅ Done: the zip stages files 0644 and folders 0755. `check-release.mjs` checks files 0644 and directory entries 0755, and fails on other entry types (B-gate correction; fixtures Z1–Z8 pass). Zip reproducible, checksum unchanged | [x] |
 | G3 | `routes.yaml` author slug `dr` → real slug (3 places) | ✅ No change needed: `dr` is the production slug (O4); channel verified by `check-release.mjs` | [x] |
 | G4 | Launch seed builder (`seed/blocks.mjs` only, allowlist + denylist) | ✅ Built: `npm run seed:launch` (23 blocks, 3 pages, no authors) | [x] |
 | G5 | Placeholder scanner | ✅ Built: `npm run placeholders`; theme and seed 0 hits outside the documented allowlist | [x] |
 | G6 | Read-only production smoke test (modes: `--expect-private` for D2b, private cookie for F, anonymous for H3). **Plus (Update 6.4):** every `#blok` post has exactly one author, `dr`, and G6 **fails if any block has any other author, even when a containment route hides it**; every author archive in `sitemap-authors.xml` inspected; re-run after any staff change | ✅ Built: `test/prod/smoke.mjs` (GET only); exercised on local Ghost only | [x] |
-| G12 | Local test: an additional author (Author role) with only real articles. Their archive, pagination and RSS show no block; `dr` archive unchanged (plan §16.8) | ⏸ Not built: not in the 21 Nov Phase B scope. Partly covered by the author-archive test (N2a–N2c) and G6 (every author archive). Owner to decide | [ ] |
+| G12 | Local test: an additional author (Author role) with only real articles. Their archive, pagination and RSS show no block; `dr` archive unchanged (plan §16.8) | ⏸ **Deferred, not completed.** Outside the 21 Nov Phase B scope (G1–G7, G11). **Outstanding pre-launch item:** build and pass, or owner waiver, before the H-gate and before any second staff author is added; needs separate approval (Phase B report §8) | [ ] deferred |
 | G7 | README "Production launch" section | ✅ Done | [x] |
 | G11 | Test: every block `.md` URL is 404; no block in `llms.txt`/`llms-full.txt` (F11) | ✅ Built: `test/stage7/llms-markdown.mjs` (5/5 locally) + smoke test group `llms` | [x] |
 | G8 | Local Stage 1–6 suites + guard + GScan (zip) all green on the release build | ✅ Green on the release zip (21 Nov): 32/23/12/39/21/16; GScan compatible, upload 0/0 | [x] |
