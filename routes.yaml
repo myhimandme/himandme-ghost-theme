@@ -2,8 +2,8 @@
 # Ghost Admin: Settings → Advanced → Labs → Open → Routes → Edit → paste this file → Save.
 # This repo copy is the source of truth.
 #
-# BEFORE UPLOADING: replace "dr" (3 places, author channel below) with the doctor's
-# staff-profile slug (Settings → Staff → profile → Slug).
+# Author slug: `dr`, the production staff slug, confirmed by the owner (O4, 19 Nov 2026).
+# No replacement is needed. scripts/check-release.mjs verifies the author channel before release.
 
 routes:
   # Homepage. Section copy comes from #blok content blocks; SEO title/description
