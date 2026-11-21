@@ -1,0 +1,38 @@
+# Him & Me — dynamic routing for Ghost 6.x (verified on Ghost 6.75.0 in Stage 1)
+# Ghost Admin: Settings → Advanced → Labs → Open → Routes → Edit → paste this file → Save.
+# This repo copy is the source of truth.
+#
+# BEFORE UPLOADING: replace "dr" (3 places, author channel below) with the doctor's
+# staff-profile slug (Settings → Staff → profile → Slug).
+
+routes:
+  # Homepage. Section copy comes from #blok content blocks; SEO title/description
+  # come from Settings → General → Meta data (Ghost's native homepage meta).
+  /:
+    template: home
+
+  # Author archive for the single doctor profile. This filtered channel takes precedence
+  # over the author taxonomy at the same URL, because taxonomy archives ignore collection
+  # filters and would list #blok content blocks (Stage 1 tests B4/B5). The taxonomy below
+  # is kept so the author's URL resolves to /blog/penulis/{slug}/ (test R14).
+  /blog/penulis/dr/:
+    controller: channel
+    filter: authors:dr+tag:-hash-blok
+    template: author
+    data: author.dr
+
+collections:
+  # Blog under /blog/. Content blocks (internal tag #blok) are excluded, so they get
+  # no public URL and never appear in listings, RSS or the sitemap.
+  /blog/:
+    permalink: /blog/{slug}/
+    template: index
+    filter: tag:-hash-blok
+    # SEO title/description/social image for /blog/ from the Ghost page "jurnal".
+    # Ghost 301-redirects /jurnal/ to /blog/. (Internal tags cannot be used here:
+    # route data is read through the public API, which never returns internal tags.)
+    data: page.jurnal
+
+taxonomies:
+  tag: /blog/topik/{slug}/
+  author: /blog/penulis/{slug}/

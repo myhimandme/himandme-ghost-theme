@@ -1,0 +1,11 @@
+{{!< default}}
+{{!-- STAGE 1 VERIFICATION SCAFFOLD — replaced by the approved article design in Stage 6. --}}
+<main data-template="post">
+    {{#post}}
+        <article data-slug="{{slug}}">
+            <h1>{{title}}</h1>
+            {{#primary_author}}<p data-test="attribution">Ditulis dan disemak oleh {{name}}</p>{{/primary_author}}
+            {{content}}
+        </article>
+    {{/post}}
+</main>

@@ -1,0 +1,9 @@
+{{!< default}}
+{{!-- STAGE 1 VERIFICATION SCAFFOLD — replaced by the approved topic page design in Stage 5. --}}
+<main data-template="tag">
+    {{#tag}}<h1>{{name}}</h1>{{/tag}}
+    <ul data-test="post-list">
+        {{#foreach posts}}<li data-slug="{{slug}}"><a href="{{url}}">{{title}}</a></li>{{/foreach}}
+    </ul>
+    {{pagination}}
+</main>

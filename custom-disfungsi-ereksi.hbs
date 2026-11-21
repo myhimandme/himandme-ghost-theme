@@ -1,0 +1,14 @@
+{{!< default}}
+{{!-- STAGE 1 VERIFICATION SCAFFOLD — replaced by the approved ED page design in Stage 4. --}}
+<main data-template="custom-disfungsi-ereksi">
+    {{#post}}
+        <h1 data-test="page-title">{{title}}</h1>
+        <p data-test="page-excerpt">{{custom_excerpt}}</p>
+        <section data-test="faq">{{content}}</section>
+    {{/post}}
+    {{#get "posts" filter="tag:hash-blok-ed" limit="50" as |bloks|}}
+        {{#foreach bloks}}
+            {{#has slug="blok-ed-shockwave"}}<h2 data-test="ed-shockwave">{{title}}</h2>{{/has}}
+        {{/foreach}}
+    {{/get}}
+</main>
