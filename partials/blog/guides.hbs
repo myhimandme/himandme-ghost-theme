@@ -1,0 +1,24 @@
+{{!-- "Panduan lengkap": the 3 newest articles tagged "panduan"; hidden when there are none.
+      The prototype's "[x] BAB" shows reading time instead (approved plan decision 4). Phones: 1 large, 2 links. --}}
+{{#get "posts" filter="tag:panduan+tag:-hash-blok" limit="3" as |guides|}}
+{{#if guides}}
+<section class="hm-guides" id="panduan" aria-labelledby="hm-guides-title">
+    <div class="hm-container-blog hm-guides__inner">
+        <div class="hm-guides__head">
+            <div class="hm-guides__titles"><span class="hm-kicker hm-kicker--dark">{{t "PANDUAN LENGKAP"}}</span><h2 class="hm-guides__title hm-serif" id="hm-guides-title">{{t "Bermula dari asas"}}</h2></div>
+            <span class="hm-guides__note hm-hide-mobile">{{t "Panduan panjang, disusun mengikut bab, ditulis untuk dibaca sebelum konsultasi anda."}}</span>
+        </div>
+        <div class="hm-guides__grid">
+            {{#foreach guides}}
+            <a class="hm-guide" href="{{url}}">
+                {{> "components/image" src=feature_image alt=feature_image_alt class="hm-guide__img" dark=true sizes="(max-width: 599px) 100vw, 400px"}}
+                <span class="hm-guide__meta">{{t "PANDUAN"}} 0{{@number}} · {{reading_time minute=(t "1 MIN BACAAN") minutes=(t "% MIN BACAAN")}}</span>
+                <span class="hm-guide__title hm-serif">{{title}}</span>
+                <span class="hm-guide__go"><span class="hm-guide__go-text">{{t "Mula membaca →"}}</span><span class="hm-guide__arrow" aria-hidden="true">→</span></span>
+            </a>
+            {{/foreach}}
+        </div>
+    </div>
+</section>
+{{/if}}
+{{/get}}

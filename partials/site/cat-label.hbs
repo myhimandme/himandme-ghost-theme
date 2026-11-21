@@ -1,0 +1,10 @@
+{{!-- Category bar label. Desktop: the full navigation label. Phones: the approved short label, matched by the
+      topic URL, so Ghost tag names and slugs never change. The full label stays in the markup (visually
+      hidden on phones) for screen readers; the short one is aria-hidden. Items without a short label are unchanged. --}}
+{{#match url "~" "/topik/disfungsi-ereksi/"}}{{> "site/cat-label-pair" full=label short=(t "DISFUNGSI")}}
+{{else match url "~" "/topik/hormon-testosteron/"}}{{> "site/cat-label-pair" full=label short=(t "HORMON")}}
+{{else match url "~" "/topik/kesihatan-pelvis/"}}{{> "site/cat-label-pair" full=label short=(t "PELVIS")}}
+{{else match url "~" "/topik/seks-hubungan/"}}{{> "site/cat-label-pair" full=label short=(t "SEKS")}}
+{{else match url "~" "/topik/gaya-hidup/"}}{{> "site/cat-label-pair" full=label short=(t "GAYA HIDUP")}}
+{{else match url "~" "/topik/kesihatan-mental/"}}{{> "site/cat-label-pair" full=label short=(t "MINDA")}}
+{{else}}{{label}}{{/match}}

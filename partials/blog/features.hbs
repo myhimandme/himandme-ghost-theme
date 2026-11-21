@@ -1,0 +1,11 @@
+{{!-- Blog home, page 1: lead + 2 secondary features (the 3 newest "Feature this post" articles; the latest
+      articles fill any empty slot) and "Paling dibaca". Phones: lead, then the 2 secondary as compact rows. --}}
+<section class="hm-bhero hm-container-blog" aria-label="{{t "Artikel pilihan"}}">
+    {{#get "posts" filter="tag:-hash-blok" order="featured desc, published_at desc" limit="3" include="tags,authors"}}
+        {{#foreach posts limit="1"}}<div class="hm-bhero__lead">{{> "blog/lead"}}</div>{{/foreach}}
+        <div class="hm-bhero__second">
+            {{#foreach posts from="2" to="3"}}{{> "blog/card" variant="second"}}{{/foreach}}
+        </div>
+    {{/get}}
+    {{> "blog/popular" class="hm-bhero__popular hm-hide-mobile"}}
+</section>
