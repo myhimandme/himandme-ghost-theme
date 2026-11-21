@@ -1,6 +1,6 @@
 # Stage 7 Phase B report: GitHub merge and release preparation
 
-> **Status: Phase B work complete, B-gate review findings addressed (Revision 2, 21 Nov 2026). Awaiting the owner's final B-gate approval.**
+> **Status: B-gate approved by the owner on 21 Nov 2026. Phase B closed** (§9). Revision 2 addressed the B-gate review findings.
 > Approved by the owner in writing on 21 Nov 2026 (Option A: one reviewable PR per stage).
 > - **No production change was made.** Nothing was uploaded to or activated in Ghost Admin on himandme.my, and no command ran on the server.
 > - The read-only smoke test was run **against local Ghost only**, never against himandme.my.
@@ -131,3 +131,12 @@ Run it with `node test/release/zip-modes.mjs`. It is not added to `npm run relea
 - **Partial cover today (not a substitute):** the author-archive test (N2a–N2c) covers a second staff user who authors a block, and G6 inspects every author archive listed in `sitemap-authors.xml` and fails if any block has an author other than `dr` (O28).
 - **Why it still matters:** it is the safeguard for adding any second staff author, which the launch plan does not include (single-author attribution; FE1 is a future enhancement).
 - **Outstanding:** G12 must be built and passed, or explicitly waived by the owner, **before launch (by the H-gate) and before any second staff author is added**. It needs the owner's separate approval to build.
+
+## 9. Closure (21 Nov 2026)
+
+- **B-gate approved** by the owner.
+- **PR #8 merged** with a merge commit, pinned to the reviewed head `26086eb`. Merge commit: `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`. Parents `17ae322` and `26086eb`; its tree is identical to the reviewed head.
+- **`main`** = `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`.
+- **Rebuilt from the merge commit:** `npm run release` passed, and all four checksums in §4 verified.
+- **Tag `v1.0.0`:** published by the owner as GitHub release "1.0.0" (this session could not push tags, HTTP 403). Verified with `git ls-remote`: `refs/tags/v1.0.0` = `d2a014e65874b4624f5f6be72c7d14214c1ba7b2` = `main`. It is a lightweight tag, so the tag SHA equals the commit SHA.
+- **Not started:** Phase C. No production change was made.
