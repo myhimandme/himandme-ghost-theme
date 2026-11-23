@@ -1,6 +1,6 @@
 # Stage 7 Phase C report: production backup (C1–C10)
 
-> **Status: C1–C10 passed, 23 Nov 2026. Administrative closeout pending (§6). Awaiting the owner's C-gate review.** Phase C was approved by the owner in writing on 23 Nov 2026.
+> **Status: C1–C10 passed, 23 Nov 2026. Administrative closeout: snapshot creation, old-snapshot deletion and BitLocker confirmed by the owner; the snapshot ID is still to be recorded (§6). Awaiting the owner's C-gate review.** Phase C was approved by the owner in writing on 23 Nov 2026.
 > - **No production change** to Ghost content or settings, MySQL, Nginx, DNS or Cloudflare.
 > - **Production actions taken:**
 >   - a Tencent snapshot was created; an old snapshot was deleted to free the quota;
@@ -14,13 +14,13 @@
 
 | # | Item | Result | Evidence |
 |---|---|---|---|
-| C1 | VPS snapshot | ✅ | `himandme-pre-launch-2026-11-23` created by the owner. **Snapshot ID: PENDING** (recorded in §6 once provided). To free the 2-snapshot quota, the owner was advised to delete the oldest, superseded snapshot `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`, from before M3/M6/M5). `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) is kept as the older fallback |
+| C1 | VPS snapshot | ✅ | `himandme-pre-launch-2026-11-23` created; **creation confirmed by the owner (23 Nov)**. **Snapshot ID: PENDING** (recorded in §6 once provided). To free the 2-snapshot quota, the owner deleted (**confirmed 23 Nov**) the oldest, superseded snapshot `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`, from before M3/M6/M5). `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) is kept as the older fallback |
 | C2 | Ghost content export | ✅ | Ghost 6.75 exports a single zip: `export.json`, `members.csv`, `post-analytics.csv`, `routes.yaml`, `redirects.yaml`, `themes/`. `export.json` is valid Ghost JSON with **2 posts/pages, equal to the database** |
 | C3 | `ghost backup` | ✅ | `backup-from-v6.75.0-on-2026-11-23-16-25-44.zip`, copied into the backup folder and verified identical. **The original is kept** in `/var/www/himandme`. The token was typed only at the prompt |
 | C4 | MySQL dump | ✅ | `c4-ghost-himandme.sql` (approved command): exit 0, empty error file, "Dump completed". Reference: 2 rows in `posts` (1 published page, 1 published post), 103 tables, `utf8mb4` / `utf8mb4_0900_ai_ci`, active theme `source`, `is_private` false, **`llms_enabled` false** (O30 still in place) |
 | C5 | Content and Nginx | ✅ | `c5-content.tgz` (26 entries, no errors). `content/settings` is **empty** on the server (§3). `c5-nginx-etc.tgz` (23 entries) holds configuration only. **The www certificate's private key `ssl/www.himandme.my/key.pem` was correctly excluded**, with `cert.pem`, `fullchain.pem` and `dhparam.pem` (covered by C1). 4 symlinks were stored as links only; 3 key references recorded as paths only |
 | C6 | Theme, routes, redirects | ✅ | Active theme `source.zip` (Admin → active theme ⋯ → Download) opens. `routes.yaml` and `redirects.yaml` come from the C2 export (valid format, **0 redirect rules**, which matches the server today) |
-| C7 | Copies off the server | ✅ | `scp` to the owner's computer (`%USERPROFILE%\himandme-backup\pre-launch-20261123-163043`): **23/23 files match the server's SHA256SUMS**. BitLocker (whole drive, recovery key in the owner's Microsoft account) was turned on for the destination drive and was still encrypting at the time of the copy |
+| C7 | Copies off the server | ✅ | `scp` to the owner's computer (`%USERPROFILE%\himandme-backup\pre-launch-20261123-163043`): **23/23 files match the server's SHA256SUMS**. BitLocker (whole drive, recovery key in the owner's Microsoft account) was turned on for the destination drive and was still encrypting at the time of the copy; **encryption complete and protection status On, confirmed by the owner (23 Nov)** |
 | C8 | Restore test | ✅ | In WSL Ubuntu 24.04 with MySQL 8.0, on the owner's computer only. `ghost_restore_test` was created by the run, restored **with no errors**: **posts 2 = server 2; tables 103 = server 103; active theme `source` = server**. Then dropped. One review item, resolved (§3) |
 | C9 | Rollback readiness | ✅ | Every rollback level has its input (§2). The rule `ghost stop` before a database restore and `ghost start` after was rehearsed in planning (plan §8.1) |
 | C10 | Public URL list | ✅ | All 5 sitemap requests returned HTTP 200 with real sitemaps; the index listed exactly the 4 sub-sitemaps. **7 URLs:** `/`, `/about/`, `/author/dr/`, `/coming-soon/`, `/rss/`, `/sitemap.xml`, `/tag/news/`. They match this session's independent read-only check and the 4 approved redirects (O20). Saved as `~/backup/old-urls.txt` for D2b |
@@ -48,7 +48,7 @@
 | # | Item | Proposed handling |
 |---|---|---|
 | 1 | `ghost backup` left a content export and a members CSV in `/var/www/himandme` (the kept zip) and in `content/data/`. They are not served by Nginx, but they are extra copies of personal data on the server | After the C-gate, with the owner's approval: remove the on-server copies (the encrypted off-server copy and the C4/C5 backups remain) |
-| 2 | Off-server copies hold personal data (`members.csv`) and the database (password hashes, keys) | Keep them only on the BitLocker drive; confirm BitLocker shows "on" |
+| 2 | Off-server copies hold personal data (`members.csv`) and the database (password hashes, keys) | Keep them only on the BitLocker-protected drive. **BitLocker encryption complete, protection status On: confirmed by the owner (23 Nov)** |
 | 3 | The www certificate, its key and `dhparam.pem` are only in the C1 snapshot, not in the file backups (by design) | Acceptable: certificates can be reissued (M4 procedure) and DH parameters regenerated |
 | 4 | Partial folder from run 1 on the server | Delete after the C-gate (optional) |
 | 5 | C1 snapshot ID not yet recorded | Owner provides it; recorded in §6 |
@@ -64,9 +64,9 @@
 
 | Item | Status | Where it is recorded once confirmed |
 |---|---|---|
-| New snapshot ID (`himandme-pre-launch-2026-11-23`, starts with `lhsnap-`) | **PENDING: owner to provide** | This table; C1 row above; checklist C1; plan §16.14 |
-| Deletion of `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`) to free the quota | **PENDING: owner to confirm** whether it was deleted | This table; checklist C1 |
-| BitLocker on the off-server copy drive: encryption complete and protection status **On** | **PENDING: owner to confirm** (it was still encrypting at the time of the copy) | This table; checklist C7; plan §16.14 |
+| New snapshot ID (`himandme-pre-launch-2026-11-23`, starts with `lhsnap-`) | Snapshot **creation confirmed by the owner (23 Nov)**. **ID: PENDING: owner to supply in writing** | This table; C1 row above; checklist C1; plan §16.14 |
+| Deletion of `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`) to free the quota | ✅ **Confirmed by the owner (23 Nov): deleted** | This table; checklist C1 |
+| BitLocker on the off-server copy drive: encryption complete and protection status **On** | ✅ **Confirmed by the owner (23 Nov)** | This table; checklist C7; plan §16.14 |
 | C-gate approval | **PENDING: owner** | Checklist §10, Phase C row |
 | PR #10 (scripts, run sheet, this report, launch plan) | **Open, not merged** (head `77929e9` before Update 6.11; `main` = `23fc7f1`) | Checklist §10 |
 
