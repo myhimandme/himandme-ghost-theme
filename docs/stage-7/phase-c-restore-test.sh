@@ -3,7 +3,8 @@
 # Runs in a disposable Ubuntu on the owner's computer (WSL) with MySQL 8.0. See docs/stage-7/PHASE-C-RUNSHEET.md.
 # It only reads the copied backup folder; the test database ghost_restore_test is created and dropped again.
 # Prints "C8 RESTORE TEST PASSED" only when every check passes; otherwise "STOP: …".
-set -u
+set -u -o pipefail
+REVIEW=()   # conditions the owner must review; they prevent the PASSED line
 fail() { echo "STOP: $1"; exit 1; }
 [ -f /proc/sys/fs/binfmt_misc/WSLInterop ] || [ -n "${WSL_DISTRO_NAME:-}" ] || [ "${ALLOW_NON_WSL:-}" = 1 ] \
   || fail "this does not look like WSL; never run the restore test on the production server"
@@ -26,7 +27,8 @@ REF=c4-db-reference.txt
 want_posts="$(awk '$1=="posts_rows"{print $2}' "$REF")"
 want_tables="$(awk '$1=="tables"{print $2}' "$REF")"
 collation="$(awk '$1=="charset_collation"{print $3}' "$REF")"
-[ -n "$want_posts" ] && [ -n "$want_tables" ] && [ -n "$collation" ] || fail "reference values missing in $REF"
+want_theme="$(awk '$1=="active_theme"{print $2}' "$REF")"
+[ -n "$want_posts" ] && [ -n "$want_tables" ] && [ -n "$collation" ] && [ -n "$want_theme" ] || fail "reference values missing in $REF"
 
 # C8: restore the dump into a disposable database, count, drop.
 sudo mysql -e "DROP DATABASE IF EXISTS ghost_restore_test; CREATE DATABASE ghost_restore_test CHARACTER SET utf8mb4 COLLATE $collation;" \
@@ -40,6 +42,8 @@ sudo mysql -e "DROP DATABASE ghost_restore_test;" || fail "cannot drop ghost_res
 echo "C8 restored: posts $got_posts (server $want_posts), tables $got_tables (server $want_tables), active theme $got_theme; test database dropped"
 [ "$got_posts" = "$want_posts" ] || fail "post count differs from the server"
 [ "$got_tables" = "$want_tables" ] || fail "table count differs from the server"
+[ "$got_theme" = "$want_theme" ] || fail "restored active theme '$got_theme' differs from the server's '$want_theme'"
+echo "C8 active theme matches the server: $got_theme"
 
 # Archives readable.
 tar tzf c5-content.tgz > /dev/null || fail "c5-content.tgz unreadable"
@@ -53,15 +57,57 @@ set -- admin/*.json; J="$1"; [ -f "$J" ] || fail "no C2 content export (*.json) 
 json_posts="$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(len(d["db"][0]["data"]["posts"]))' "$J")" \
   || fail "the C2 export is not valid Ghost JSON"
 echo "C2 export $(basename "$J"): $json_posts posts/pages (database: $want_posts)"
-[ "$json_posts" = "$want_posts" ] || echo "NOTE: export and database counts differ; send this line for review"
+if [ "$json_posts" != "$want_posts" ]; then
+  REVIEW+=("C2 export has $json_posts posts/pages but the database has $want_posts (the export may have been taken at a different moment, or may leave some rows out)")
+  echo "REVIEW REQUIRED: C2 export count $json_posts differs from the database count $want_posts"
+fi
 [ -f admin/routes.yaml ] || fail "no C6 routes.yaml in admin/"
 tar xzf c5-content.tgz -O content/settings/routes.yaml | cmp -s - admin/routes.yaml \
   && echo "C6 routes.yaml matches the server copy" || fail "admin/routes.yaml differs from content/settings/routes.yaml"
-set -- admin/redirects.*; [ -f "$1" ] || fail "no C6 redirects file in admin/"
-echo "C6 redirects: $(basename "$1")"
+set -- admin/redirects.*; [ "$#" -eq 1 ] && [ -f "$1" ] || fail "expected exactly one C6 redirects file in admin/"
+# Format check only (read-only; the file is never changed). Ghost accepts YAML (301:/302: maps) or JSON (a list of {from, to}).
+rmsg="$(python3 - "$1" <<'PY'
+import json, re, sys
+p = sys.argv[1]; t = open(p, encoding="utf-8").read()
+if p.endswith(".json"):
+    d = json.loads(t) if t.strip() else []
+    assert isinstance(d, list), "JSON redirects must be a list"
+    for r in d:
+        assert isinstance(r, dict) and isinstance(r.get("from"), str) and isinstance(r.get("to"), str), f"bad JSON rule: {r!r}"
+    print(f"JSON, {len(d)} rule(s)")
+elif p.endswith((".yaml", ".yml")):
+    try:
+        import yaml
+        d = yaml.safe_load(t) or {}
+        assert isinstance(d, dict), "YAML redirects must be a map"
+        assert set(map(str, d)) <= {"301", "302"}, f"unexpected top-level keys: {sorted(map(str, d))}"
+        n = 0
+        for k, v in d.items():
+            v = v or {}
+            assert isinstance(v, dict) and all(isinstance(a, str) and isinstance(b, str) for a, b in v.items()), f"bad rules under {k}"
+            n += len(v)
+        print(f"YAML (parsed), {n} rule(s)")
+    except ImportError:
+        n = 0
+        for line in t.splitlines():
+            if not line.strip() or line.lstrip().startswith("#"): continue
+            if re.fullmatch(r"(301|302):\s*(\{\s*\})?\s*", line): continue
+            assert re.fullmatch(r"\s+\S.*:\s+\S.*", line), f"unexpected line: {line!r}"
+            n += 1
+        print(f"YAML (line check), {n} rule(s)")
+else:
+    raise SystemExit("unknown redirects file type")
+PY
+)" || fail "the C6 redirects file is not in a valid Ghost redirects format"
+echo "C6 redirects: $(basename "$1"): $rmsg (format valid; file not changed)"
 set -- admin/*.zip; [ -f "$1" ] || fail "no C6 theme zip in admin/"
 unzip -tq "$1" > /dev/null || fail "the C6 theme zip is damaged"
 echo "C6 theme: $(basename "$1") (readable; active theme in the database: $got_theme)"
 
 echo
+if [ "${#REVIEW[@]}" -gt 0 ]; then
+  echo "C8 RESTORE COMPLETED, REVIEW REQUIRED (${#REVIEW[@]} item(s)); this is not a pass until reviewed:"
+  printf '  - %s\n' "${REVIEW[@]}"
+  exit 2
+fi
 echo "C8 RESTORE TEST PASSED"

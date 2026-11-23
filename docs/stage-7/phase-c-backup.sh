@@ -6,7 +6,7 @@
 # It does not change Ghost, MySQL, Nginx, settings or content (the database is only read: mysqldump and
 # SELECT queries). No password is typed or printed: MySQL root uses auth_socket (I30).
 # It prints "PHASE C SERVER BACKUP OK" only when every check passes; otherwise "STOP: …".
-set -u
+set -u -o pipefail   # a failure anywhere in a pipeline fails that pipeline
 umask 077
 fail() { echo "STOP: $1"; echo "STOP: Phase C server backup FAILED. Do not continue; send this output."; exit 1; }
 
@@ -27,7 +27,8 @@ echo "Backup folder: $BK"
 Z="$(ls -t "$GHOST_DIR"/backup-from-v*.zip 2>/dev/null | head -n 1)"
 [ -n "$Z" ] || fail "no backup-from-v*.zip in $GHOST_DIR: run C3 (ghost backup) first"
 [ -n "$(find "$Z" -mmin -180)" ] || fail "the newest ghost backup zip is older than 3 hours: $Z (run C3 again)"
-cp -p "$Z" "$BK/" || fail "cannot copy $Z into $BK"   # the original is removed only after full success
+cp -p "$Z" "$BK/" || fail "cannot copy $Z into $BK"   # the original stays in the Ghost folder (never deleted)
+cmp -s "$Z" "$BK/$(basename "$Z")" || fail "the copied ghost backup zip differs from the original"
 ZB="$BK/$(basename "$Z")"
 unzip -l "$ZB" > c3-ghost-backup-contents.txt 2>&1 || fail "the ghost backup zip cannot be read"
 for want in '\.json' 'images/' 'themes/' 'settings/'; do
@@ -71,9 +72,27 @@ if grep -qiE '\.key$|privkey' c5-nginx-list.txt; then fail "a private-key file i
 echo "C5 content and Nginx archives OK ($(wc -l < c5-content-list.txt) and $(wc -l < c5-nginx-list.txt) entries)"
 
 # C10: every currently public URL (old site, still public), plan §8.2.
-{ for s in posts pages tags authors; do curl -s "${SITE:-https://himandme.my}/sitemap-$s.xml"; done | grep -o '<loc>[^<]*' | sed 's/<loc>//'
-  printf '%s\n' https://himandme.my/ https://himandme.my/rss/ https://himandme.my/sitemap.xml; } | sort -u > c10-old-urls.txt
+# Every sitemap request must succeed (curl exit 0, HTTP 200, a sitemap body), and the index must list exactly
+# the four sub-sitemaps, so no URL can be missed silently. The fetched sitemaps are kept as evidence.
+SITE="${SITE:-https://himandme.my}"
+fetch_sitemap() {  # $1 = name, $2 = URL
+  local code
+  code="$(curl -sS --max-time 30 -o "c10-$1.xml" -w '%{http_code}' "$2")" || fail "C10: the request for $2 failed (curl exit $?)"
+  [ "$code" = 200 ] || fail "C10: $2 returned HTTP $code"
+  grep -qE '<(urlset|sitemapindex)[ >]' "c10-$1.xml" || fail "C10: $2 is not a sitemap"
+}
+fetch_sitemap sitemap-index "$SITE/sitemap.xml"
+idx="$(grep -o '<loc>[^<]*' c10-sitemap-index.xml | sed 's/<loc>//' | sort)" || fail "C10: the sitemap index lists no sitemaps"
+want="$(for s in authors pages posts tags; do echo "$SITE/sitemap-$s.xml"; done)"
+[ "$idx" = "$want" ] || fail "C10: the sitemap index does not list exactly the four expected sitemaps: $(echo $idx)"
+for s in posts pages tags authors; do fetch_sitemap "sitemap-$s" "$SITE/sitemap-$s.xml"; done
+for s in posts pages tags authors; do
+  echo "C10 sitemap-$s.xml: $(grep -o '<loc>' "c10-sitemap-$s.xml" | wc -l) URLs"
+done
+{ cat c10-sitemap-posts.xml c10-sitemap-pages.xml c10-sitemap-tags.xml c10-sitemap-authors.xml | grep -o '<loc>[^<]*' | sed 's/<loc>//'
+  printf '%s\n' "$SITE/" "$SITE/rss/" "$SITE/sitemap.xml"; } | sort -u > c10-old-urls.txt || fail "C10: cannot build the URL list"
 [ "$(wc -l < c10-old-urls.txt)" -ge 4 ] || fail "c10-old-urls.txt has fewer than 4 URLs"
+for u in "$SITE/" "$SITE/rss/" "$SITE/sitemap.xml"; do grep -qxF "$u" c10-old-urls.txt || fail "C10: $u missing from the list"; done
 cp c10-old-urls.txt "$HOME/backup/old-urls.txt" || fail "cannot write ~/backup/old-urls.txt (used by D2b)"
 echo "C10 public URL list: $(wc -l < c10-old-urls.txt) URLs"
 
@@ -93,7 +112,8 @@ echo "Reference values (needed for C8):"; cat c4-db-reference.txt
 echo
 echo "C10 URLs:"; cat c10-old-urls.txt
 echo
-cmp -s "$Z" "$ZB" && rm -f "$Z" || fail "cannot remove the original ghost backup zip after copying it"
+[ -f "$Z" ] || fail "the original ghost backup zip is missing from $GHOST_DIR"
+echo "Original ghost backup zip kept: $Z"
 echo "PHASE C SERVER BACKUP OK: $BK"
 echo
 echo "Next (C7), in PowerShell on your computer:"
