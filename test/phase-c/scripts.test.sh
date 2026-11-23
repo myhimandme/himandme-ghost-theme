@@ -194,5 +194,24 @@ rm -f "$T/mysql.log"
 out="$(POSTS=8 restore)"; rc=$?
 check "D5 a failed check after the restore also drops the database created by this run" "$([ $rc = 1 ] && grep -q 'post count differs' <<<"$out" && [ ! -e "$T/mysql/ghost_restore_test" ]; echo $?)" "$(tail -2 <<<"$out")"
 
+echo "== empty content/settings (server uses Ghost's default routes; found in production Phase C run 1)"
+mv "$T/gh/content/settings/routes.yaml" "$T/routes.disk.bak"
+echo "routes: {}  # ghost default" > "$T/zipsrc/settings/routes.yaml"
+setup_restore() {  # fresh copy of the newest backup in $W, admin/ filled; $1 = routes content for admin/routes.yaml
+  rm -rf "$W"/pre-launch-*; cp -r "$(bkdir)" "$W/"; R="$(ls -d "$W"/pre-launch-*)"; mkdir "$R/admin"
+  echo '{"db":[{"data":{"posts":[1,2,3,4,5,6,7,8,9]}}]}' > "$R/admin/export.json"; printf '%s\n' "$1" > "$R/admin/routes.yaml"
+  printf '301:\n  /old/: /new/\n' > "$R/admin/redirects.yaml"; (cd "$T/zipsrc" && zip -qr "$R/admin/source.zip" .); rm -f "$T/mysql/ghost_restore_test"; }
+newzip e1; out="$(backup)"; rc=$?
+check "E1 empty content/settings: backup passes and says so (routes in the export and the ghost backup zip)" "$([ $rc = 0 ] && grep -q 'C5 note: content/settings is empty' <<<"$out" && grep -q 'and in the ghost backup zip' <<<"$out" && [ ! -s "$(bkdir)/c5-settings-on-disk.txt" ]; echo $?)" "$(grep -E 'STOP|C5' <<<"$out")"
+setup_restore "routes: {}  # ghost default"; out="$(restore)"; rc=$?
+check "E2 restore test compares the exported routes.yaml with the ghost backup copy and passes" "$([ $rc = 0 ] && grep -q 'matches the ghost backup copy' <<<"$out" && grep -q '^C8 RESTORE TEST PASSED' <<<"$out"; echo $?)" "$(tail -3 <<<"$out")"
+setup_restore "routes: changed"; out="$(restore)"; rc=$?
+check "E3 an exported routes.yaml that differs from the ghost backup copy stops the test" "$([ $rc = 1 ] && grep -q 'differs from .*settings/routes.yaml in the ghost backup zip' <<<"$out"; echo $?)" "$(tail -2 <<<"$out")"
+rm -f "$T/zipsrc/settings/routes.yaml"; newzip e4; backup >/dev/null; setup_restore "routes: {}"; out="$(restore)"; rc=$?
+check "E4 no server-side routes copy anywhere: REVIEW REQUIRED (exit 2), not PASSED" "$([ $rc = 2 ] && grep -q 'REVIEW REQUIRED: no server-side routes.yaml' <<<"$out" && ! grep -q 'TEST PASSED' <<<"$out"; echo $?)" "$(tail -3 <<<"$out")"
+mv "$T/routes.disk.bak" "$T/gh/content/settings/routes.yaml"; echo "extra: 1" > "$T/gh/content/settings/other.yaml"; newzip e5; out="$(backup)"; rc=$?
+check "E5 files present in content/settings are all required in the archive" "$([ $rc = 0 ] && grep -q 'C5 content/settings: 2 file(s), all archived' <<<"$out"; echo $?)" "$(grep -E 'STOP|C5' <<<"$out")"
+rm -f "$T/gh/content/settings/other.yaml"
+
 echo; echo "$pass passed, $failn failed"
 [ "$failn" = 0 ]

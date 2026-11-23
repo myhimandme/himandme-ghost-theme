@@ -79,8 +79,24 @@ if [ "$json_posts" != "$want_posts" ]; then
   echo "REVIEW REQUIRED: C2 export count $json_posts differs from the database count $want_posts"
 fi
 [ -f admin/routes.yaml ] || fail "no C6 routes.yaml in admin/"
-tar xzf c5-content.tgz -O content/settings/routes.yaml | cmp -s - admin/routes.yaml \
-  && echo "C6 routes.yaml matches the server copy" || fail "admin/routes.yaml differs from content/settings/routes.yaml"
+# Compare the exported routes with a server-side copy: the file in content/settings if the server has one,
+# otherwise the copy inside the ghost backup zip (Ghost's built-in default routes). No copy at all: review.
+if grep -qx 'content/settings/routes.yaml' c5-content-list.txt; then
+  tar xzf c5-content.tgz -O content/settings/routes.yaml > .routes-server.tmp || fail "cannot read routes.yaml from c5-content.tgz"
+  cmp -s .routes-server.tmp admin/routes.yaml && { rm -f .routes-server.tmp; echo "C6 routes.yaml matches the server file (content/settings)"; } \
+    || { rm -f .routes-server.tmp; fail "admin/routes.yaml differs from content/settings/routes.yaml"; }
+else
+  zr="$(awk '{print $NF}' c3-ghost-backup-contents.txt | grep -E '(^|/)settings/routes\.yaml$' | head -n 1)" || true
+  if [ -n "$zr" ]; then
+    set -- backup-from-v*.zip
+    unzip -p "$1" "$zr" > .routes-server.tmp || fail "cannot read $zr from the ghost backup zip"
+    cmp -s .routes-server.tmp admin/routes.yaml && { rm -f .routes-server.tmp; echo "C6 routes.yaml matches the ghost backup copy (server uses Ghost's default routes; content/settings is empty)"; } \
+      || { rm -f .routes-server.tmp; fail "admin/routes.yaml differs from $zr in the ghost backup zip"; }
+  else
+    REVIEW+=("no server-side routes.yaml to compare with (content/settings is empty and the ghost backup zip has none); admin/routes.yaml is the only copy")
+    echo "REVIEW REQUIRED: no server-side routes.yaml copy to compare admin/routes.yaml with"
+  fi
+fi
 set -- admin/redirects.*; [ "$#" -eq 1 ] && [ -f "$1" ] || fail "expected exactly one C6 redirects file in admin/"
 # Format check only (read-only; the file is never changed). Ghost accepts YAML (301:/302: maps) or JSON (a list of {from, to}).
 rmsg="$(python3 - "$1" <<'PY'

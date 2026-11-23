@@ -100,7 +100,16 @@ sudo tar czf c5-nginx-etc.tgz -C "$ETC" --no-recursion --verbatim-files-from -T 
 sudo chown "$(id -un):$(id -gn)" c5-content.tgz c5-nginx-etc.tgz || fail "cannot take ownership of the archives"
 chmod 600 c5-content.tgz c5-nginx-etc.tgz
 tar tzf c5-content.tgz > c5-content-list.txt || fail "c5-content.tgz cannot be read"
-grep -q '^content/settings/routes.yaml$' c5-content-list.txt || fail "content/settings/routes.yaml missing from c5-content.tgz"
+# content/settings holds routes.yaml (and similar) only once a routes file has been uploaded; with Ghost's built-in
+# default routes it is empty. So: every file that IS on disk there must be in the archive, and an empty folder is noted.
+sudo find "$GHOST_DIR/content/settings" -mindepth 1 -type f -printf 'content/settings/%P\n' | LC_ALL=C sort > c5-settings-on-disk.txt \
+  || fail "cannot list $GHOST_DIR/content/settings"
+while IFS= read -r f; do grep -qxF -- "$f" c5-content-list.txt || fail "$f is on the server but missing from c5-content.tgz"; done < c5-settings-on-disk.txt
+if [ -s c5-settings-on-disk.txt ]; then echo "C5 content/settings: $(wc -l < c5-settings-on-disk.txt) file(s), all archived"
+else
+  echo "C5 note: content/settings is empty on the server (no routes file was ever uploaded; Ghost uses its built-in default routes)."
+  echo "        The routes as served are in the C2 Admin export (routes.yaml)$(grep -q 'settings/routes.yaml' c3-ghost-backup-contents.txt && echo ' and in the ghost backup zip')."
+fi
 grep -q '^content/themes/' c5-content-list.txt || fail "content/themes missing from c5-content.tgz"
 tar tzf c5-nginx-etc.tgz > c5-nginx-list.txt || fail "c5-nginx-etc.tgz cannot be read"
 grep -q '^nginx/sites-available/himandme' c5-nginx-list.txt || fail "the himandme site configuration is missing from c5-nginx-etc.tgz"

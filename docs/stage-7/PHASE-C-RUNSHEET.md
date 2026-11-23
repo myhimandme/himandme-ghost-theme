@@ -6,6 +6,7 @@
 > - **Scripts:** [`phase-c-backup.sh`](phase-c-backup.sh) (server) and [`phase-c-restore-test.sh`](phase-c-restore-test.sh) (WSL). Both stop with `STOP: …` on any failed check and were dry-run against stand-ins before use.
 > - **Revision 2 (23 Nov 2026):** stricter C10 sitemap checks, the original backup zip is kept, a content freeze, encrypted storage of the copies, strict WSL separation, an active-theme comparison and a redirects format check.
 > - **Revision 3 (23 Nov 2026):** the restore test never touches an existing `ghost_restore_test` database. The Nginx archive holds configuration files only, never private-key material.
+> - **Revision 4 (23 Nov 2026):** production run 1 stopped at C5, because `content/settings/` is empty on the server: no routes file was ever uploaded, so Ghost serves its built-in default routes. The script now requires every file that **is** in that folder to be archived, and notes an empty folder. The restore test compares the exported `routes.yaml` with the `ghost backup` copy instead (REVIEW REQUIRED if neither copy exists).
 > - **Time:** about 60–90 minutes, plus a WSL install if you don't already have one.
 
 **Do not click any Upload, Activate, Import or Delete button** in Ghost Admin during this phase. Only **Export/Download**.
@@ -125,4 +126,4 @@ This is confirmed from the evidence above. The rule (`ghost stop` before any dat
 ## If a step fails
 Stop, and send the `STOP:` line. Don't retry with changed commands. I'll propose the smallest safe correction. The `ghost backup` zip always stays in `/var/www/himandme`, so a rerun of the server script needs no token.
 
-**Script tests:** `bash test/phase-c/scripts.test.sh` runs both scripts offline against stand-ins (no production access). Revision 3: 45 checks, all passing. They include the existing-database protection and hostile Nginx key files: keys under configuration-style names, with no extension, binary keys, keys named by a relative `ssl_certificate_key`, and symlinks to a key and to a key directory.
+**Script tests:** `bash test/phase-c/scripts.test.sh` runs both scripts offline against stand-ins (no production access). Revision 4: 50 checks, all passing. They include the existing-database protection and hostile Nginx key files: keys under configuration-style names, with no extension, binary keys, keys named by a relative `ssl_certificate_key`, and symlinks to a key and to a key directory.
