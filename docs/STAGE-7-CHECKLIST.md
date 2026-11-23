@@ -16,6 +16,7 @@
 > **Update 6.13 (23 Nov 2026):** snapshot ID `lhsnap-6jevw0v9` recorded (owner). **Still open for Phase C:** **C-gate approval** (not given) and the PR #10 merge. **Phase D is not authorised.**
 > **Update 6.14 (23 Nov 2026):** **Phase C C-gate approved by the owner** (C1–C10 evidence; snapshot, deletion and BitLocker confirmed). This approval does **not** authorise Phase D, production changes, deletion of the additional backup copies, or merging PR #10; each remains a separate decision. **Phase D is not authorised.**
 > **Update 6.15 (23 Nov 2026):** owner Day 0 answers recorded: business details, Maps link, privacy notice, logo, icons and credentials ✅; O27 accepted; G12 Option A (build); **A13: may go public with the photo placeholder** (narrow scope, `DAY-0-READINESS.md` §3); 10 articles at launch (to be supplied); meta and topic drafts and dates awaiting approval. **Phase D is not authorised.**
+> **Update 6.16 (23 Nov 2026):** release **1.0.1** prepared (homepage doctor section removed at the owner's request; zip `67237478…`; seed, routes and redirects unchanged; all local suites green), awaiting review. Homepage meta description: the owner's own text, approved. **Phase D is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -211,7 +212,7 @@
 | E5 | Title and meta | ✋ O15 | [ ] |
 | E6 | Icon and social images | ✋ O17 | [ ] |
 | E7 | Navigation (primary + 7 categories) | ✅ defined | [ ] |
-| E8 | 14 theme settings confirmed | ✋ O3, O4, O9–O13, O24 | [ ] |
+| E8 | 13 theme settings confirmed (release 1.0.1 removed `doctor_author_slug`) | ✋ O3 ✅, O9–O13 ✅, O24 ✅ | [ ] |
 | E9 | Routes uploaded | ⛔ G3 | [ ] |
 | E10 | Unused integrations removed | ✅ No custom integrations (19 Nov) | [x] |
 | E11 | Staff: real people only, 2FA (device verification is on, but it **depends on working mail: M1**) | 🔍 | [ ] |

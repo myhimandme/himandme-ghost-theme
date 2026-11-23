@@ -16,6 +16,7 @@
 > **Update 6.13 (23 Nov 2026):** snapshot ID `lhsnap-6jevw0v9` recorded (§16.14). Still open: **C-gate approval**, PR #10 merge. **Phases D–H remain unauthorised.**
 > **Update 6.14 (23 Nov 2026):** **Phase C C-gate approved by the owner** (§16.14). PR #10 open. **Phases D–H remain unauthorised.**
 > **Update 6.15 (23 Nov 2026):** owner Day 0 answers and decisions recorded (O27 accepted; G12 to be built; A13 profile-placeholder decision with narrow scope; 10 launch articles). See [`stage-7/DAY-0-READINESS.md`](stage-7/DAY-0-READINESS.md). **Phases D–H remain unauthorised.**
+> **Update 6.16 (23 Nov 2026):** **Release 1.0.1 prepared at the owner's request:** homepage doctor section removed; zip `67237478…`; seed, routes and redirects unchanged; all local suites green (`stage-7/DAY-0-READINESS.md` §7a). Awaiting the owner's review; not yet pushed or tagged. **Phases D–H remain unauthorised.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -340,7 +341,7 @@ Private mode is **not** described anywhere in this plan as hiding the blocks com
 | D5 | **Import** `launch-seed.json` (23 blocks + 3 pages) | Private | Posts filtered by `#blok`: exactly 23 |
 | D6 | Tags (7), staff profile (photo, bio, slug), navigation | Private | — |
 | D7 | **Activate the new theme** | Private | Owner (logged in with the private password) sees the homepage |
-| D8 | Theme settings (E8), including `doctor_author_slug` = the staff slug | Private | Homepage team card shows the doctor, not "[Nama Penuh]" |
+| D8 | Theme settings (E8) | Private | An article and the author page show the doctor's name with `doctor_credentials` ("MD (UKM)"); no "[Nama Penuh]" anywhere. (Release 1.0.1 removed the homepage doctor section and the `doctor_author_slug` setting) |
 | D9 | **Upload `routes.yaml`**, rendered with the real slug (an extra filtered channel only as **temporary containment**, §16.8, if a block's ownership is still being corrected) | Private | Labs → Routes download matches the release file |
 | D10 | Redirects (if O20 lists any) | Private | — |
 | E | Remaining production configuration (§5) | Private | — |
@@ -487,7 +488,7 @@ If the window has to stop between D1 and H1, the site **stays private** (or goes
 | `shockwave_price` | RM450 / sesi | ✋ confirm |
 | `kegel_ems_price` | RM350 / sesi | ✋ confirm |
 | `show_prices` | true | ✋ confirm |
-| `doctor_author_slug` | (empty) | ⛔ the real staff slug (O4). If empty, the homepage shows "[Nama Penuh]" |
+| ~~`doctor_author_slug`~~ | — | **Removed in release 1.0.1** together with the homepage doctor section (owner request, 23 Nov 2026) |
 | `doctor_credentials` | Doktor yang sah | ✋ "MD (UKM)" as you stated. Please confirm the exact text |
 
 ---
