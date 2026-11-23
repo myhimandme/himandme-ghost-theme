@@ -150,7 +150,7 @@ check('F9', 'Combined programme: one estimate ("Anggaran 7–10 sesi rawatan …
   h.includes('Anggaran 7–10 sesi rawatan. Setiap sesi merangkumi Shockwave Therapy dan Kegel EMS, dengan cadangan rawatan disesuaikan mengikut penilaian individu.')
   && sevenTen(h) === 1 && sevenTen(home) === 0 && !h.includes('BILANGAN SESI'), `"7–10" on ED: ${sevenTen(h)}, on Utama: ${sevenTen(home)}`);
 const csNow = (await admin('/custom_theme_settings/')).custom_theme_settings;
-check('F10', 'Theme settings: 14 registered (6 removed: email + durations + session counts), offer_price among them', csNow.length === 14 && csNow.some((s) => s.key === 'offer_price')
+check('F10', 'Theme settings: 13 registered (6 removed: email + durations + session counts; doctor_author_slug removed in 1.0.1), offer_price among them', csNow.length === 13 && csNow.some((s) => s.key === 'offer_price')
   && !csNow.some((s) => /contact_email|_duration|_session_count/.test(s.key)), `${csNow.length} settings`);
 
 // Browser checks

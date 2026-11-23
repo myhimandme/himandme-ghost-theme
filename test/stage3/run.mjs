@@ -34,7 +34,9 @@ const posts = (await admin('/posts/?limit=all&filter=tag:hash-blok&formats=html'
 const bySlug = Object.fromEntries(posts.map((p) => [p.slug, p]));
 
 // H1 — every homepage block drives its section, and falls back when unpublished.
-const homeBlocks = BLOCKS.filter((b) => b.slug.startsWith('blok-utama-'));
+// Since 1.0.1 blok-utama-pasukan is in the seed but no longer shown (doctor section removed at the owner's request).
+const UNUSED_HOME_BLOCKS = ['blok-utama-pasukan'];
+const homeBlocks = BLOCKS.filter((b) => b.slug.startsWith('blok-utama-') && !UNUSED_HOME_BLOCKS.includes(b.slug));
 const cycle = [];
 for (const b of homeBlocks) {
   const post = bySlug[b.slug]; if (!post) { cycle.push(`${b.slug}: missing`); continue; }
@@ -49,6 +51,8 @@ for (const b of homeBlocks) {
   if (!usesBlock || !fellBack) cycle.push(`${b.slug}: block ${usesBlock ? 'ok' : 'NOT used'}, fallback ${fellBack ? 'ok' : 'MISSING'}`);
 }
 check('H1', `All ${homeBlocks.length} homepage blocks drive their section and fall back to approved copy when unpublished`, cycle.length === 0, cycle.join('; ') || 'edit → visible; unpublish → approved copy; restored');
+{ const unused = bySlug['blok-utama-pasukan']; const h = await home();
+  check('H1b', 'blok-utama-pasukan (unused since 1.0.1) is not shown on the homepage', !!unused && !h.includes(esc(unused.title))); }
 
 // H2 — "Dari blog": the 3 newest real articles, never a block (even a newly re-dated block).
 const articles = (await admin('/posts/?limit=all&filter=status:published%2Btag:-hash-blok&order=published_at%20desc&fields=slug,title')).posts;
