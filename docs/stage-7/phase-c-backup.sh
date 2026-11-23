@@ -42,7 +42,7 @@ rc=$?
 [ "$rc" -eq 0 ] || fail "mysqldump exited with status $rc (see $BK/c4-ghost-himandme.sql.err)"
 [ -s c4-ghost-himandme.sql ] || fail "the dump is empty"
 [ ! -s c4-ghost-himandme.sql.err ] || fail "mysqldump reported errors or warnings (see $BK/c4-ghost-himandme.sql.err)"
-tail -n 1 c4-ghost-himandme.sql | grep -q "Dump completed" || fail "the dump does not end with 'Dump completed'"
+case "$(tail -n 1 c4-ghost-himandme.sql)" in *"Dump completed"*) ;; *) fail "the dump does not end with 'Dump completed'";; esac
 grep -q "CREATE TABLE \`posts\`" c4-ghost-himandme.sql || fail "the dump has no posts table"
 echo "C4 MySQL dump OK"
 
@@ -60,7 +60,43 @@ grep -q '^posts_rows' c4-db-reference.txt || fail "no post count in c4-db-refere
 
 # C5: content folder (logs excluded: not needed to restore, and they change while being read) and Nginx configuration.
 sudo tar czf c5-content.tgz --exclude=content/logs -C "$GHOST_DIR" content 2> c5-content.err || fail "tar of content failed (see c5-content.err)"
-sudo tar czf c5-nginx-etc.tgz -C "$ETC" nginx 2> c5-nginx.err || fail "tar of /etc/nginx failed (see c5-nginx.err)"
+# Nginx: configuration files only, never private-key material (see the rules below). Only file NAMES are ever printed.
+#  - allowlist of configuration paths; anything else under /etc/nginx is skipped and listed;
+#  - a file is skipped if it is not plain text, has a key/certificate-style name, contains a PEM private-key block,
+#    or is (by real path) a file named by ssl_certificate_key / ssl_password_file in any configuration;
+#  - symlinks are stored as links only (tar never follows them), so a link to a key copies no key material;
+#  - after archiving, the whole archive content is scanned again; any private-key block stops the script.
+NG="$ETC/nginx"
+KEYRE='-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----'
+# Directives anywhere on a line (also after "server {"); a commented-out one only adds a reference (safe side).
+sudo grep -rhoE '(^|[;{}[:space:]])(ssl_certificate_key|ssl_password_file)[[:space:]]+[^;#{}]+' "$NG" 2>/dev/null \
+  | sed -E 's/^[;{}[:space:]]*(ssl_certificate_key|ssl_password_file)[[:space:]]+//; s/[[:space:]]+$//; s/^["'"'"']//; s/["'"'"']$//' \
+  | LC_ALL=C sort -u > c5-nginx-key-references.txt
+: > c5-nginx-include.txt; : > c5-nginx-skipped.txt
+while IFS= read -r rel; do
+  f="$NG/$rel"
+  if [ -L "$f" ]; then echo "nginx/$rel" >> c5-nginx-include.txt; continue; fi   # stored as a link, never followed
+  why=""
+  case "$rel" in
+    nginx.conf|mime.types|fastcgi.conf|fastcgi_params|proxy_params|scgi_params|uwsgi_params|koi-utf|koi-win|win-utf) ;;
+    sites-available/*|sites-enabled/*|snippets/*|conf.d/*|modules-available/*|modules-enabled/*) ;;
+    *) why="not a configuration path";;
+  esac
+  [ -z "$why" ] && case "$rel" in *.key|*.pem|*.crt|*.cer|*.der|*.p12|*.pfx|*.jks|*.csr|*privkey*|*private*|*secret*) why="key/certificate-style name";; esac
+  [ -z "$why" ] && { sudo grep -Iq . "$f" 2>/dev/null || [ ! -s "$f" ]; } || why="${why:-not plain text or unreadable}"
+  [ -z "$why" ] && sudo grep -qE -- "$KEYRE" "$f" 2>/dev/null && why="contains a private-key block"
+  if [ -z "$why" ]; then
+    real="$(readlink -f -- "$f")"
+    while IFS= read -r ref; do
+      [ -n "$ref" ] || continue
+      case "$ref" in /*) ;; *) ref="$NG/$ref";; esac   # relative paths are resolved against the Nginx prefix
+      [ "$(readlink -m -- "$ref")" = "$real" ] && why="named by ssl_certificate_key/ssl_password_file"
+    done < c5-nginx-key-references.txt
+  fi
+  if [ -n "$why" ]; then echo "nginx/$rel  ($why)" >> c5-nginx-skipped.txt; else echo "nginx/$rel" >> c5-nginx-include.txt; fi
+done < <(sudo find "$NG" -mindepth 1 \( -type f -o -type l \) -printf '%P\n' | LC_ALL=C sort)
+[ -s c5-nginx-include.txt ] || fail "no Nginx configuration files selected"
+sudo tar czf c5-nginx-etc.tgz -C "$ETC" --no-recursion --verbatim-files-from -T c5-nginx-include.txt 2> c5-nginx.err || fail "tar of the Nginx configuration failed (see c5-nginx.err)"
 sudo chown "$(id -un):$(id -gn)" c5-content.tgz c5-nginx-etc.tgz || fail "cannot take ownership of the archives"
 chmod 600 c5-content.tgz c5-nginx-etc.tgz
 tar tzf c5-content.tgz > c5-content-list.txt || fail "c5-content.tgz cannot be read"
@@ -68,7 +104,21 @@ grep -q '^content/settings/routes.yaml$' c5-content-list.txt || fail "content/se
 grep -q '^content/themes/' c5-content-list.txt || fail "content/themes missing from c5-content.tgz"
 tar tzf c5-nginx-etc.tgz > c5-nginx-list.txt || fail "c5-nginx-etc.tgz cannot be read"
 grep -q '^nginx/sites-available/himandme' c5-nginx-list.txt || fail "the himandme site configuration is missing from c5-nginx-etc.tgz"
-if grep -qiE '\.key$|privkey' c5-nginx-list.txt; then fail "a private-key file is inside /etc/nginx; stop and send the file names only"; fi
+tar tvzf c5-nginx-etc.tgz > c5-nginx-types.txt || fail "c5-nginx-etc.tgz cannot be listed"
+[ "$(cut -c1 c5-nginx-types.txt | sort -u | tr -d '\n')" = "$(cut -c1 c5-nginx-types.txt | sort -u | grep -E '^[-l]$' | tr -d '\n')" ] \
+  || fail "c5-nginx-etc.tgz holds an entry that is neither a file nor a symlink"
+# Final guard: extract into a private scratch folder (symlinks stay links; grep -r does not follow them) and scan everything.
+SCAN="$(mktemp -d "$BK/.nginx-scan.XXXXXX")" || fail "cannot create a scratch folder"
+tar xzf c5-nginx-etc.tgz -C "$SCAN" || { rm -rf "$SCAN"; fail "c5-nginx-etc.tgz cannot be extracted for the key scan"; }
+hits="$(grep -rlaE -- "$KEYRE" "$SCAN" | sed "s#^$SCAN/##")"; grc=$?
+rm -rf "$SCAN"
+[ "$grc" -le 1 ] || fail "the private-key scan of c5-nginx-etc.tgz failed"
+[ -z "$hits" ] || fail "private-key material found inside c5-nginx-etc.tgz: $(echo $hits)"
+while IFS= read -r line; do
+  case "$line" in l*) ;; *) fail "a key-style name is archived as file content: ${line##* }";; esac
+done < <(grep -iE '\.(key|pem|p12|pfx|der)( |$)|privkey' c5-nginx-types.txt)
+if [ -s c5-nginx-skipped.txt ]; then echo "C5 Nginx: $(wc -l < c5-nginx-skipped.txt) file(s) NOT archived (names only, for review):"; sed 's/^/  /' c5-nginx-skipped.txt; fi
+echo "C5 Nginx: $(grep -c '^l' < <(tar tvzf c5-nginx-etc.tgz)) symlink(s) stored as links only; key references: $(wc -l < c5-nginx-key-references.txt) path(s) (paths only, no key material)"
 echo "C5 content and Nginx archives OK ($(wc -l < c5-content-list.txt) and $(wc -l < c5-nginx-list.txt) entries)"
 
 # C10: every currently public URL (old site, still public), plan §8.2.

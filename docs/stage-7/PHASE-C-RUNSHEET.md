@@ -5,6 +5,7 @@
 > - **Credentials:** the staff access token is typed **only** at the `ghost backup` prompt. No password, token or key goes into chat, GitHub or these files. The script output you send back contains only file names, counts, versions and public URLs.
 > - **Scripts:** [`phase-c-backup.sh`](phase-c-backup.sh) (server) and [`phase-c-restore-test.sh`](phase-c-restore-test.sh) (WSL). Both stop with `STOP: …` on any failed check and were dry-run against stand-ins before use.
 > - **Revision 2 (23 Nov 2026):** stricter C10 sitemap checks, the original backup zip is kept, a content freeze, encrypted storage of the copies, strict WSL separation, an active-theme comparison and a redirects format check.
+> - **Revision 3 (23 Nov 2026):** the restore test never touches an existing `ghost_restore_test` database. The Nginx archive holds configuration files only, never private-key material.
 > - **Time:** about 60–90 minutes, plus a WSL install if you don't already have one.
 
 **Do not click any Upload, Activate, Import or Delete button** in Ghost Admin during this phase. Only **Export/Download**.
@@ -59,7 +60,13 @@ It does the following, in order:
 - **C3:** copies the backup zip (the original is kept), checks that the copy is identical, and checks its contents.
 - **C4:** makes the MySQL dump with the approved command. The pass rule: exit 0, an empty error file, and "Dump completed".
 - Records the reference counts and the collation used by C8.
-- **C5:** archives `content/` (without the log files) and `/etc/nginx`, and checks that no private-key file is inside.
+- **C5:** archives `content/` (without the log files) and the **Nginx configuration only**:
+  - Only configuration paths are archived: `nginx.conf`, the standard parameter files, `sites-available`, `sites-enabled`, `snippets`, `conf.d` and `modules-*`.
+  - A file is skipped if it isn't plain text, has a key- or certificate-style name, contains a PEM private-key block, or is the file named by any `ssl_certificate_key` / `ssl_password_file` directive. Relative paths count too.
+  - Symlinks (such as the `sites-enabled` links, or any link to `/etc/letsencrypt`) are stored as links only. Their targets are never copied.
+  - The finished archive is extracted to a scratch folder and scanned again. Any private-key block stops the script.
+  - The certificates and keys themselves are **not** backed up here: they live in `/etc/letsencrypt` and are covered by the C1 snapshot.
+  - Skipped files are listed **by name only**, for review.
 - **C10:** fetches the sitemap index and all four sitemaps (posts, pages, tags, authors). **Every request must succeed with HTTP 200 and a real sitemap, and the index must list exactly those four. Otherwise the script stops.** The list holds every URL from the four sitemaps plus the homepage, `/rss/` and `/sitemap.xml`. It is saved in the folder and as `~/backup/old-urls.txt` for D2b. The fetched sitemaps are kept as evidence.
 - Writes `SHA256SUMS`.
 
@@ -91,7 +98,7 @@ cp "$(wslpath "$(powershell.exe -NoProfile -Command '$env:USERPROFILE' | tr -d '
 
 The test does the following, in order:
 - **C7:** checks every copied file against the server checksums.
-- Restores the dump into a temporary database `ghost_restore_test`.
+- **Collision protection:** if a database named `ghost_restore_test` already exists in WSL, the test **stops without touching it** (no drop, no overwrite, no restore). Otherwise it creates that database and restores the dump into it. The database this run created is always dropped at the end, also when the restore or a later check fails.
 - Compares the post and table counts with the server, then drops the test database.
 - Checks that the archives open.
 - **C2:** checks that the export is valid Ghost JSON and compares its count.
@@ -118,4 +125,4 @@ This is confirmed from the evidence above. The rule (`ghost stop` before any dat
 ## If a step fails
 Stop, and send the `STOP:` line. Don't retry with changed commands. I'll propose the smallest safe correction. The `ghost backup` zip always stays in `/var/www/himandme`, so a rerun of the server script needs no token.
 
-**Script tests:** `bash test/phase-c/scripts.test.sh` runs both scripts offline against stand-ins (no production access). Revision 2: 30 checks, all passing.
+**Script tests:** `bash test/phase-c/scripts.test.sh` runs both scripts offline against stand-ins (no production access). Revision 3: 45 checks, all passing. They include the existing-database protection and hostile Nginx key files: keys under configuration-style names, with no extension, binary keys, keys named by a relative `ssl_certificate_key`, and symlinks to a key and to a key directory.

@@ -15,7 +15,11 @@ ok() { "$@" >/dev/null 2>&1; echo $?; }
 # ---------- fixtures ----------
 mkdir -p "$T"/{bin,gh/content/{settings,themes/source,images,logs},etc/nginx/sites-available,zipsrc/{data,images,themes,settings},fx}
 echo "routes: {}" > "$T/gh/content/settings/routes.yaml"; echo x > "$T/gh/content/themes/source/index.hbs"; echo log > "$T/gh/content/logs/a.log"
-echo "server{}" > "$T/etc/nginx/sites-available/himandme.conf"; echo conf > "$T/etc/nginx/nginx.conf"
+mkdir -p "$T/etc/nginx/sites-enabled" "$T/etc/nginx/snippets" "$T/etc/letsencrypt/live/himandme.my"
+printf -- '-----BEGIN PRIVATE KEY-----\nREALKEYMATERIAL\n-----END PRIVATE KEY-----\n' > "$T/etc/letsencrypt/live/himandme.my/privkey.pem"
+printf 'server {\n  ssl_certificate %s/etc/letsencrypt/live/himandme.my/fullchain.pem;\n  ssl_certificate_key %s/etc/letsencrypt/live/himandme.my/privkey.pem;\n}\n' "$T" "$T" > "$T/etc/nginx/sites-available/himandme.conf"
+ln -s ../sites-available/himandme.conf "$T/etc/nginx/sites-enabled/himandme.conf"
+echo "ssl_protocols TLSv1.2 TLSv1.3;" > "$T/etc/nginx/snippets/ssl-params.conf"; echo "user www-data;" > "$T/etc/nginx/nginx.conf"
 echo '{}' > "$T/zipsrc/data/export.json"; for d in images themes settings; do echo x > "$T/zipsrc/$d/f"; done
 S=https://himandme.my
 sm() { printf '<?xml version="1.0"?><urlset>'; for u in "$@"; do printf '<url><loc>%s</loc></url>' "$u"; done; printf '</urlset>'; }
@@ -28,6 +32,7 @@ sm "$S/tag/news/" > "$T/fx/sitemap-tags.xml"; sm "$S/author/dr/" > "$T/fx/sitema
 cat > "$T/bin/sudo" <<'X'
 #!/bin/bash
 [ "$1" = chown ] && exit 0
+if [ -n "${BYPASS_KEYCHECK:-}" ] && [ "$1" = grep ] && [ "$2" = -qE ]; then exit 1; fi
 exec "$@"
 X
 cat > "$T/bin/mysqldump" <<'X'
@@ -35,15 +40,22 @@ cat > "$T/bin/mysqldump" <<'X'
 [ -n "${DUMP_WARN:-}" ] && echo "Warning: something" >&2
 printf -- '-- MySQL dump\nCREATE TABLE `posts` (id int);\n-- Dump completed on 2026-11-23\n'
 X
-cat > "$T/bin/mysql" <<'X'
+mkdir -p "$T/mysql"
+cat > "$T/bin/mysql" <<X
 #!/bin/bash
-case "$*" in
+# Stateful stand-in: databases are files in \$DBS; every action is logged.
+DBS="$T/mysql"; LOG="$T/mysql.log"
+args="\$*"
+case "\$args" in
   --version) echo "mysql  Ver 8.0.46";;
-  *"FROM ghost_restore_test.posts"*) echo 9;;
-  *information_schema*) echo 103;;
-  *active_theme*) echo source;;
-  *DATABASE*) ;;
-  *-N*-B*) cat >/dev/null; printf 'posts_rows\t9\ntables\t103\ncharset_collation\tutf8mb4\tutf8mb4_0900_ai_ci\nactive_theme\t%s\n' "${REF_THEME:-source}";;
+  *SCHEMA_NAME*ghost_restore_test*) [ -e "\$DBS/ghost_restore_test" ] && echo ghost_restore_test; true;;
+  *"CREATE DATABASE"*) echo "CREATE" >> "\$LOG"; [ -e "\$DBS/ghost_restore_test" ] && { echo "ERROR 1007: database exists" >&2; exit 1; }; echo created > "\$DBS/ghost_restore_test";;
+  *"DROP DATABASE"*) echo "DROP" >> "\$LOG"; rm -f "\$DBS/ghost_restore_test";;
+  *ghost_restore_test*.posts*) echo "\${POSTS:-9}";;
+  *information_schema.tables*) echo 103;;
+  *ghost_restore_test*.settings*) echo source;;
+  "-N -B himandme") cat >/dev/null; printf 'posts_rows\t9\ntables\t103\ncharset_collation\tutf8mb4\tutf8mb4_0900_ai_ci\nactive_theme\t%s\n' "\${REF_THEME:-source}";;
+  ghost_restore_test) echo "RESTORE" >> "\$LOG"; cat >/dev/null; [ -n "\${RESTORE_FAIL:-}" ] && { echo "ERROR 1064 at line 2" >&2; exit 1; }; echo restored >> "\$DBS/ghost_restore_test";;
   *) cat >/dev/null;;
 esac
 X
@@ -136,6 +148,51 @@ echo changed > "$R/admin/routes.yaml"; out="$(restore)"; rc=$?
 check "R10 routes.yaml different from the server copy stops the test" "$([ $rc = 1 ] && grep -q 'differs from content/settings/routes.yaml' <<<"$out"; echo $?)"
 out="$(BACKUP_ROOT="$W" timeout 20 bash "$RESTORE_SH" </dev/null 2>&1)"; rc=$?
 check "R11 refuses to run outside WSL" "$([ $rc = 1 ] && grep -q 'never run the restore test on the production server' <<<"$out"; echo $?)"
+
+echo "== Nginx private-key protection (phase-c-backup.sh)"
+NG="$T/etc/nginx"; mkdir -p "$NG/conf.d" "$NG/ssl"
+printf -- '-----BEGIN PRIVATE KEY-----\nKEYA\n-----END PRIVATE KEY-----\n' > "$NG/snippets/tls.conf"                     # key with a config-style name
+printf -- '-----BEGIN RSA PRIVATE KEY-----\nKEYB\n-----END RSA PRIVATE KEY-----\n' > "$NG/sites-available/himandme-cert"  # key with no extension
+printf -- '-----BEGIN EC PRIVATE KEY-----\nKEYC\n-----END EC PRIVATE KEY-----\n-----BEGIN ENCRYPTED PRIVATE KEY-----\nKEYD\n-----END ENCRYPTED PRIVATE KEY-----\n' > "$NG/conf.d/ec.conf"
+printf -- '-----BEGIN OPENSSH PRIVATE KEY-----\nKEYE\n-----END OPENSSH PRIVATE KEY-----\n' > "$NG/snippets/deploy"
+head -c 600 /dev/urandom > "$NG/snippets/server.bin"                                                                   # binary (DER-like) key
+echo "MIIEvQIBADANBgkqhkiG9w0BAQEFAASC" > "$NG/snippets/opaque-material"                                               # no PEM header, but referenced
+echo "server { ssl_certificate_key snippets/opaque-material; }" > "$NG/sites-available/extra.conf"
+echo "KEYF" > "$NG/ssl/server.key"                                                                                       # outside the allowlist
+ln -s "$T/etc/letsencrypt/live/himandme.my/privkey.pem" "$NG/conf.d/le-key.conf"                                        # symlink to a key, config-style name
+ln -s "$T/etc/letsencrypt/live/himandme.my" "$NG/certs"                                                                   # symlink to a key directory
+newzip k; out="$(backup)"; rc=$?; D="$(bkdir)"
+check "K1 backup passes with hostile key files present (they are excluded, not fatal)" "$([ $rc = 0 ] && grep -q '^PHASE C SERVER BACKUP OK' <<<"$out"; echo $?)" "$(grep STOP <<<"$out")"
+X="$T/extract"; rm -rf "$X"; mkdir -p "$X"; tar xzf "$D/c5-nginx-etc.tgz" -C "$X"
+check "K2 no private-key material anywhere in the Nginx archive (symlinks not followed)" "$(! grep -rlaE 'PRIVATE KEY|KEY[A-F]|REALKEYMATERIAL|MIIEvQ' "$X" >/dev/null; echo $?)" "$(grep -rlaE 'PRIVATE KEY|KEY[A-F]|REALKEYMATERIAL|MIIEvQ' "$X")"
+miss=""; for f in snippets/tls.conf sites-available/himandme-cert conf.d/ec.conf snippets/deploy snippets/server.bin snippets/opaque-material ssl/server.key; do
+  grep -qx "nginx/$f" "$D/c5-nginx-list.txt" && miss="$miss $f(archived)"; grep -q "^nginx/$f " "$D/c5-nginx-skipped.txt" || miss="$miss $f(not-listed-as-skipped)"; done
+check "K3 non-standard key files are skipped and listed by name: config-style name, no extension, EC/encrypted/OpenSSH blocks, binary, referenced by a relative ssl_certificate_key, outside the allowlist" "$([ -z "$miss" ]; echo $?)" "$miss"
+check "K4 skip reasons recorded" "$(grep -q 'snippets/tls.conf  (contains a private-key block)' "$D/c5-nginx-skipped.txt" && grep -q 'snippets/server.bin  (not plain text' "$D/c5-nginx-skipped.txt" && grep -q 'snippets/opaque-material  (named by ssl_certificate_key' "$D/c5-nginx-skipped.txt"; echo $?)" "$(cat "$D/c5-nginx-skipped.txt")"
+check "K5 symlinks to a key and to a key directory are stored as links only" "$(grep -q '^l.* nginx/conf.d/le-key.conf -> ' "$D/c5-nginx-types.txt" && grep -q '^l.* nginx/certs -> ' "$D/c5-nginx-types.txt" && [ -L "$X/nginx/conf.d/le-key.conf" ] && [ -L "$X/nginx/certs" ] && [ -z "$(find "$X" -type f -name 'privkey*')" ] && [ -z "$(find "$X" -type d -path '*certs*')" ]; echo $?)"
+check "K6 the real configuration is archived (nginx.conf, site config, enabled link, snippet)" "$(for f in nginx.conf sites-available/himandme.conf sites-enabled/himandme.conf snippets/ssl-params.conf sites-available/extra.conf; do grep -qx "nginx/$f" "$D/c5-nginx-list.txt" || exit 1; done; echo 0)"
+check "K7 key references recorded as paths only" "$(grep -q 'privkey.pem$' "$D/c5-nginx-key-references.txt" && grep -qx 'snippets/opaque-material' "$D/c5-nginx-key-references.txt" && ! grep -q BEGIN "$D/c5-nginx-key-references.txt"; echo $?)"
+check "K8 no key material printed in the script output" "$(! grep -qE 'BEGIN|KEY[A-F]|REALKEYMATERIAL|MIIEvQ' <<<"$out"; echo $?)"
+check "K9 no scratch folder left behind" "$(! ls -a "$D" | grep -q nginx-scan; echo $?)"
+out="$(BYPASS_KEYCHECK=1 backup)"; rc=$?
+check "K10 final guard: if a key slipped past the per-file checks, the archive scan stops the script" "$([ $rc = 1 ] && grep -q 'private-key material found inside c5-nginx-etc.tgz' <<<"$out" && ! grep -qE 'KEY[A-F]|REALKEYMATERIAL' <<<"$out"; echo $?)" "$(tail -2 <<<"$out")"
+rm -rf "$NG/conf.d" "$NG/ssl" "$NG/certs" "$NG/snippets/tls.conf" "$NG/sites-available/himandme-cert" "$NG/snippets/deploy" "$NG/snippets/server.bin" "$NG/snippets/opaque-material" "$NG/sites-available/extra.conf"
+
+echo "== restore database collision protection (phase-c-restore-test.sh)"
+D2="$(ls -d "$W"/pre-launch-*)"; rm -f "$T/mysql.log" "$T/mysql/ghost_restore_test"
+printf '301:\n  /old/: /new/\n' > "$D2/admin/redirects.yaml"; tar xzf "$D2/c5-content.tgz" -O content/settings/routes.yaml > "$D2/admin/routes.yaml"
+out="$(restore)"; rc=$?
+check "D1 clean run: creates, restores and drops its own test database" "$([ $rc = 0 ] && [ "$(tr '\n' ' ' < "$T/mysql.log")" = "CREATE RESTORE DROP " ] && [ ! -e "$T/mysql/ghost_restore_test" ] && grep -q 'created by this run) dropped' <<<"$out"; echo $?)" "$(tail -3 <<<"$out"; cat "$T/mysql.log" 2>/dev/null)"
+rm -f "$T/mysql.log"; echo "precious existing data" > "$T/mysql/ghost_restore_test"; before="$(sha256sum "$T/mysql/ghost_restore_test")"
+out="$(restore)"; rc=$?
+check "D2 an existing ghost_restore_test stops the script with STOP" "$([ $rc = 1 ] && grep -q 'STOP: a database named ghost_restore_test already exists; it was left untouched' <<<"$out"; echo $?)" "$(tail -2 <<<"$out")"
+check "D3 the existing database is preserved: not dropped, not recreated, not restored into" "$([ "$(sha256sum "$T/mysql/ghost_restore_test")" = "$before" ] && [ ! -s "$T/mysql.log" ]; echo $?)" "$(cat "$T/mysql.log" 2>/dev/null)"
+rm -f "$T/mysql/ghost_restore_test" "$T/mysql.log"
+out="$(RESTORE_FAIL=1 restore)"; rc=$?
+check "D4 restore failure: STOP, and the database created by this run is dropped" "$([ $rc = 1 ] && grep -q 'the restore reported errors' <<<"$out" && [ ! -e "$T/mysql/ghost_restore_test" ] && [ "$(tr '\n' ' ' < "$T/mysql.log")" = "CREATE RESTORE DROP " ]; echo $?)" "$(tail -3 <<<"$out")"
+rm -f "$T/mysql.log"
+out="$(POSTS=8 restore)"; rc=$?
+check "D5 a failed check after the restore also drops the database created by this run" "$([ $rc = 1 ] && grep -q 'post count differs' <<<"$out" && [ ! -e "$T/mysql/ghost_restore_test" ]; echo $?)" "$(tail -2 <<<"$out")"
 
 echo; echo "$pass passed, $failn failed"
 [ "$failn" = 0 ]

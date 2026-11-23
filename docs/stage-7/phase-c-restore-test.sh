@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Stage 7 Phase C: C7 integrity check + C8 restore test + C2/C6 cross-checks. NEVER run on production.
 # Runs in a disposable Ubuntu on the owner's computer (WSL) with MySQL 8.0. See docs/stage-7/PHASE-C-RUNSHEET.md.
-# It only reads the copied backup folder; the test database ghost_restore_test is created and dropped again.
+# It only reads the copied backup folder. The test database ghost_restore_test is created by this run and dropped again,
+# also on failure. If a database with that name already exists, it stops without touching it.
 # Prints "C8 RESTORE TEST PASSED" only when every check passes; otherwise "STOP: …".
 set -u -o pipefail
 REVIEW=()   # conditions the owner must review; they prevent the PASSED line
@@ -31,14 +32,30 @@ want_theme="$(awk '$1=="active_theme"{print $2}' "$REF")"
 [ -n "$want_posts" ] && [ -n "$want_tables" ] && [ -n "$collation" ] && [ -n "$want_theme" ] || fail "reference values missing in $REF"
 
 # C8: restore the dump into a disposable database, count, drop.
-sudo mysql -e "DROP DATABASE IF EXISTS ghost_restore_test; CREATE DATABASE ghost_restore_test CHARACTER SET utf8mb4 COLLATE $collation;" \
-  || fail "cannot create ghost_restore_test (is MySQL running? sudo service mysql start)"
-sudo mysql ghost_restore_test < c4-ghost-himandme.sql 2> c8-restore.err; rc=$?
-[ "$rc" -eq 0 ] && [ ! -s c8-restore.err ] || { cat c8-restore.err; sudo mysql -e "DROP DATABASE ghost_restore_test;"; fail "the restore reported errors"; }
-got_posts="$(sudo mysql -N -B -e "SELECT COUNT(*) FROM ghost_restore_test.posts;")"
-got_tables="$(sudo mysql -N -B -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='ghost_restore_test';")"
-got_theme="$(sudo mysql -N -B -e "SELECT value FROM ghost_restore_test.settings WHERE \`key\`='active_theme';")"
-sudo mysql -e "DROP DATABASE ghost_restore_test;" || fail "cannot drop ghost_restore_test"
+TESTDB=ghost_restore_test
+CREATED_DB=0   # 1 only after THIS run created the test database; only then may it be dropped
+cleanup_db() {
+  if [ "$CREATED_DB" = 1 ]; then
+    if sudo mysql -e "DROP DATABASE \`$TESTDB\`;"; then CREATED_DB=0; echo "C8 cleanup: test database $TESTDB (created by this run) dropped"
+    else echo "STOP: could not drop $TESTDB created by this run; drop it by hand in WSL"; fi
+  fi
+}
+trap cleanup_db EXIT
+
+# Collision protection: never drop, overwrite or modify a database this run did not create.
+existing="$(sudo mysql -N -B -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME='$TESTDB';")" \
+  || fail "cannot query MySQL (is it running? sudo service mysql start)"
+[ -z "$existing" ] || fail "a database named $TESTDB already exists; it was left untouched. Inspect it and remove it yourself only if it is disposable, then run this test again"
+sudo mysql -e "CREATE DATABASE \`$TESTDB\` CHARACTER SET utf8mb4 COLLATE $collation;" \
+  || fail "cannot create $TESTDB (it may have appeared meanwhile; nothing was dropped)"
+CREATED_DB=1
+sudo mysql "$TESTDB" < c4-ghost-himandme.sql 2> c8-restore.err; rc=$?
+[ "$rc" -eq 0 ] && [ ! -s c8-restore.err ] || { cat c8-restore.err; fail "the restore reported errors"; }
+got_posts="$(sudo mysql -N -B -e "SELECT COUNT(*) FROM \`$TESTDB\`.posts;")" || fail "cannot count restored posts"
+got_tables="$(sudo mysql -N -B -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$TESTDB';")" || fail "cannot count restored tables"
+got_theme="$(sudo mysql -N -B -e "SELECT value FROM \`$TESTDB\`.settings WHERE \`key\`='active_theme';")" || fail "cannot read the restored active theme"
+cleanup_db
+[ "$CREATED_DB" = 0 ] || fail "cannot drop $TESTDB"
 echo "C8 restored: posts $got_posts (server $want_posts), tables $got_tables (server $want_tables), active theme $got_theme; test database dropped"
 [ "$got_posts" = "$want_posts" ] || fail "post count differs from the server"
 [ "$got_tables" = "$want_tables" ] || fail "table count differs from the server"
