@@ -24,9 +24,9 @@
 
 | # | Item | What is needed | Notes |
 |---|---|---|---|
-| 1 | **O1** doctor's photo | Square, ≥ 400 px | **Deferred – awaiting photoshoot** (23 Nov). Still a launch dependency (needed before the G-gate); see `DAY-0-READINESS.md` §3 |
+| 1 | **O1** doctor's photo | Square, ≥ 400 px | **Deferred – awaiting photoshoot** (23 Nov). **Owner decision A13 (23 Nov): may go public with the photo placeholder graphic** until the photoshoot; text placeholders stay forbidden. See `DAY-0-READINESS.md` §3 |
 | 2 | **O2** biography | ≤ 250 characters | **Deferred – awaiting photoshoot** (23 Nov). Still a launch dependency |
-| 3 | **O3** credentials | The exact text (for example "MD (UKM)") | **Pending owner confirmation.** Replaces the default "Doktor yang sah" |
+| 3 | **O3** credentials | The exact text | ✅ **"MD (UKM)"**, confirmed by the owner (23 Nov) |
 | 4 | **O8–O13, O24** business details | **One confirmation** that the doctor-reviewed details of 5 Nov are still current at launch (see the list after this table), **plus the Google Maps link** (`google_maps_url`, not yet supplied) | A wrong price or number is a rollback trigger (§8.3) |
 | 5 | **O14** Notis Privasi | Confirm that the supplied BM and English text (5 Nov) is final | No analytics at launch, so no change is needed (O22) |
 | 6 | **O5** logo | Confirm that the current files are final | — |
