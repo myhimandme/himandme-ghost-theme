@@ -174,7 +174,8 @@
   .hm-bteaser__head { padding: 0 16px; align-items: baseline; flex-wrap: nowrap; }
   .hm-bteaser__title { font-size: 26px; }
   .hm-bteaser__all { font-size: 14px; }
-  .hm-bteaser__grid { display: flex; gap: 14px; overflow-x: auto; padding: 0 16px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  /* scroll-padding keeps the snap point 16px in, so the strip keeps its side margin (owner request, 1.0.1) */
+  .hm-bteaser__grid { display: flex; gap: 14px; overflow-x: auto; padding: 0 16px; scroll-padding-inline: 16px; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .hm-bteaser__grid::-webkit-scrollbar { display: none; }
   .hm-tcard { flex: 0 0 270px; gap: 10px; scroll-snap-align: start; }
   .hm-tcard__img { height: 170px; border-radius: 12px; }
