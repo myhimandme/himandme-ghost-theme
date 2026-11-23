@@ -38,7 +38,7 @@ These don't depend on the photoshoot or on missing owner inputs. None of them ch
 | A5 | Meta texts | Drafts in §7 (23 Nov). **Awaiting approval.** Applied in Ghost Admin at E5 (homepage: General → Meta data; `/blog/`: the `jurnal` page's meta), not in the repository, so the release files are unchanged | O15 |
 | A6 | Topic descriptions | Drafts in §7 (23 Nov). **Awaiting approval** (clinical wording to be checked by the doctor). Entered in Ghost Admin at D6 (tags) | O16 |
 | A7 | Site icon | ✅ Received (23 Nov): logo mark, PNG, **256 × 256**, transparent background. Uploaded at E6 | O17 |
-| A8 | Social sharing image | ✅ Received (23 Nov): **1200 × 630**, WebP, logo + "Kesihatan Lelaki, Keutamaan Kami." Uploaded at E6. **Note:** a small sparkle mark (✦) in the bottom-right corner looks like an image-generator watermark. The owner may want to remove it | O17 |
+| A8 | Social sharing image | ✅ **Replaced by the owner (23 Nov)**: 1200 × 630, WebP, logo + "Kesihatan Lelaki, Keutamaan Kami.", without the ✦ mark of the first version (SHA-256 begins `a4aef2d76197e304`). Uploaded at E6 | O17 |
 | A9 | Articles at launch | **10** (owner, 23 Nov). **Open:** each needs the final text, verified references (no `[Rujukan]`), a feature image (≥ 1600 px, about 16:7) with alt text and caption, author `dr` only, and one topic. **Owner to confirm the 10 are written and reviewed, and supply them.** They are entered in Ghost Admin while private (Days 2–3) and checked in F | O7, O6, O23 |
 | A10 | Dates | **Open: proposal in §8 awaiting the owner's choice.** Outside 06:00–07:30 | O25 |
 | A11 | Content API exposure during the private window | ✅ **Accepted by the owner (23 Nov)** (recommended option) | O27 |

@@ -151,7 +151,7 @@
 | O14 | Notis Privasi: confirm the current text is final (update it if analytics are added, O22) | `/notis-privasi/` | ✅ **Approved by the owner (23 Nov)** | [x] |
 | O15 | Homepage meta title and description; `/blog/` meta (the `jurnal` page) | SEO | ✋ Drafts ready (`DAY-0-READINESS.md` §7, 23 Nov); **awaiting approval** | [ ] |
 | O16 | Descriptions for the 7 category tags | Topic tiles and pages, SEO | ✋ Drafts ready (`DAY-0-READINESS.md` §7, 23 Nov); **awaiting approval** | [ ] |
-| O17 | Favicon / site icon (≥ 256 px square) and default social image (1200×630) | Browser, sharing | ✅ Received (23 Nov): icon 256 × 256 PNG; social image 1200 × 630 (note a small ✦ mark bottom right) | [x] |
+| O17 | Favicon / site icon (≥ 256 px square) and default social image (1200×630) | Browser, sharing | ✅ Received (23 Nov): icon 256 × 256 PNG; social image 1200 × 630 (replaced 23 Nov with a version without the ✦ mark) | [x] |
 | O18 | Confirm: no memberships, Portal, comments or newsletter | E2–E3 | ✅ **Confirmed** (19 Nov): no membership, subscriptions, comments or newsletters. Portal button + newsletter settings verified (look only) at E2/E3 | [x] |
 | O19 | For each item already live on himandme.my: keep / replace / unpublish | Migration | ✅ **Approved** (19 Nov): unpublish "Coming soon" and "About". **Not yet executed**; due no later than the D-window, before D9 | [ ] |
 | O20 | List of old URLs to redirect (or "none") | `redirects.yaml` | ✅ **Approved** (19 Nov): `/about/`→`/`, `/coming-soon/`→`/`, `/tag/news/`→`/blog/`, `/author/dr/`→`/blog/penulis/dr/` (301). Not yet implemented: prepared in Phase B, uploaded at D10 after re-checking against C10 | [x] |
