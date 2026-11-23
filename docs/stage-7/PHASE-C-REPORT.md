@@ -1,6 +1,6 @@
 # Stage 7 Phase C report: production backup (C1–C10)
 
-> **Status: C1–C10 passed, 23 Nov 2026. Administrative closeout: snapshot (`lhsnap-6jevw0v9`), old-snapshot deletion and BitLocker confirmed by the owner (§6). Still open: C-gate approval and the PR #10 merge. Awaiting the owner's C-gate review.** Phase C was approved by the owner in writing on 23 Nov 2026.
+> **Status: Phase C formally approved by the owner (C-gate, 23 Nov 2026), based on the documented C1–C10 evidence.** Snapshot creation (`lhsnap-6jevw0v9`), old-snapshot deletion and BitLocker On confirmed by the owner (§6). PR #10 is open and not merged. This approval does **not** authorise Phase D, production changes, deletion of the additional backup copies, or merging PR #10; each remains a separate decision. Phase C was approved by the owner in writing on 23 Nov 2026.
 > - **No production change** to Ghost content or settings, MySQL, Nginx, DNS or Cloudflare.
 > - **Production actions taken:**
 >   - a Tencent snapshot was created; an old snapshot was deleted to free the quota;
@@ -53,12 +53,12 @@
 | 4 | Partial folder from run 1 on the server | Delete after the C-gate (optional) |
 | 5 | C1 snapshot ID | ✅ Recorded: `lhsnap-6jevw0v9` (owner, 23 Nov) |
 
-## 5. Owner review needed for the C-gate
+## 5. Owner review for the C-gate (✅ approved 23 Nov 2026; the items below stay separate decisions)
 - The evidence above.
 - PR #10 (Phase C scripts and docs, Revisions 1–4): approve its merge.
 - The five-day launch plan (`LAUNCH-PLAN-5-DAY.md`) and its launch-blocker inputs.
 
-**Phase D is not authorised.** It needs the owner's separate written approval after the C-gate.
+**Phase D is not authorised.** It needs the owner's separate written approval. The C-gate approval does not include it.
 
 ## 6. Administrative closeout (record here; nothing below is assumed)
 
@@ -67,7 +67,7 @@
 | New snapshot ID (`himandme-pre-launch-2026-11-23`) | ✅ **`lhsnap-6jevw0v9`**. Creation and ID confirmed by the owner (23 Nov) | This table; C1 row above; checklist C1; plan §16.14 |
 | Deletion of `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`) to free the quota | ✅ **Confirmed by the owner (23 Nov): deleted** | This table; checklist C1 |
 | BitLocker on the off-server copy drive: encryption complete and protection status **On** | ✅ **Confirmed by the owner (23 Nov)** | This table; checklist C7; plan §16.14 |
-| C-gate approval | **PENDING: owner** | Checklist §10, Phase C row |
+| C-gate approval | ✅ **Approved by the owner in writing (23 Nov 2026)**, based on the documented C1–C10 evidence. This approval does **not** authorise Phase D, production changes, deletion of the additional backup copies, or merging PR #10; each remains a separate decision. | Checklist §10, Phase C row |
 | PR #10 (scripts, run sheet, this report, launch plan) | **Open, not merged** (head `77929e9` before Update 6.11; `main` = `23fc7f1`) | Checklist §10 |
 
 Phase C is closed only when every row above is confirmed. No production backup or file is to be deleted as part of the closeout.

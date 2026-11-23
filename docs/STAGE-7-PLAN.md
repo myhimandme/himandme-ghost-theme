@@ -14,6 +14,7 @@
 > **Update 6.11 (23 Nov 2026):** Phase C administrative closeout items recorded as pending (report §6). Doctor's profile **deferred – awaiting photoshoot**. Day 0 readiness assessment: [`stage-7/DAY-0-READINESS.md`](stage-7/DAY-0-READINESS.md). **Phases D–H remain unauthorised.**
 > **Update 6.12 (23 Nov 2026):** owner confirmed the snapshot creation, the old-snapshot deletion and BitLocker On (§16.14). Still open: the snapshot ID record, **C-gate approval**, PR #10 merge. **Phases D–H remain unauthorised.**
 > **Update 6.13 (23 Nov 2026):** snapshot ID `lhsnap-6jevw0v9` recorded (§16.14). Still open: **C-gate approval**, PR #10 merge. **Phases D–H remain unauthorised.**
+> **Update 6.14 (23 Nov 2026):** **Phase C C-gate approved by the owner** (§16.14). PR #10 open. **Phases D–H remain unauthorised.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -1783,5 +1784,7 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 | C8 | Restored in WSL only: posts, tables and active theme equal the server; test database dropped |
 | C10 | 7 public URLs; they match the O20 redirect list |
 | Findings | `content/settings` is empty (Ghost default routes; the exported `routes.yaml` is byte-identical to Ghost 6.75.0's default, SHA-256 `b2d67526…`). Script Revision 4 fixed the wrong assumption |
+
+**C-gate: approved by the owner on 23 Nov 2026**, based on the documented C1–C10 evidence (snapshot `lhsnap-6jevw0v9`, old-snapshot deletion and BitLocker On confirmed). This approval does **not** authorise Phase D, production changes, deletion of the additional backup copies, or merging PR #10; each remains a separate decision.
 
 **Phase D is not authorised** and needs the owner's separate written approval after the C-gate.

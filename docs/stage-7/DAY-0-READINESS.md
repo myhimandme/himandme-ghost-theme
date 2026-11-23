@@ -1,16 +1,13 @@
 # Phase D – Day 0 readiness
 
-> **Status (23 Nov 2026, Update 6.13):** preparation and documentation only. **Phase D is not authorised and has not started.** No production change has been made for Phase D: no theme upload or activation, no import, no routes or redirects, no settings, DNS, Cloudflare or Nginx change.
+> **Status (23 Nov 2026, Update 6.14):** preparation and documentation only. **Phase D is not authorised and has not started.** No production change has been made for Phase D: no theme upload or activation, no import, no routes or redirects, no settings, DNS, Cloudflare or Nginx change.
 > - **Sources of truth:** `docs/STAGE-7-PLAN.md` (§3.6 cut-over sequence D0–H3, §5, §7, §8, §16.8), `docs/STAGE-7-CHECKLIST.md`, [`LAUNCH-PLAN-5-DAY.md`](LAUNCH-PLAN-5-DAY.md), [`PHASE-C-REPORT.md`](PHASE-C-REPORT.md).
 > - **Nothing is waived.** Every item below stays open until it is done, or until the owner decides it explicitly in writing.
 
 ## Assessment: **NO-GO for Day 1** (as of 23 Nov 2026)
 
 Day 1 cannot start yet, for these reasons:
-1. **Phase C is not closed:**
-   - the C-gate is not approved;
-   - PR #10 is not merged;
-   - (the snapshot ID `lhsnap-6jevw0v9`, old-snapshot deletion and BitLocker On are now confirmed; only the C-gate and PR #10 remain for Phase C).
+1. **PR #10 is not merged.** The Phase C C-gate was approved on 23 Nov 2026. The snapshot `lhsnap-6jevw0v9`, old-snapshot deletion and BitLocker On are confirmed. Merging PR #10 is a separate decision.
 2. **Phase D has no written approval.**
 3. **Owner inputs needed during the Day 1 window are missing:** business details, Maps link, privacy notice, logo, meta texts, topic descriptions, icons, article count, dates (§2).
 4. **Decisions needed before the window are open:** O27, G12, and how Day 1 handles the deferred doctor's profile (§4).
@@ -48,7 +45,7 @@ These don't depend on the photoshoot or on missing owner inputs. None of them ch
 | A12 | G12 second-author test | **Approve building it** (local only), **or** waive it in writing with the restriction "no second staff author until G12 passes" | G12, plan §16.8 |
 | A13 | Deferred doctor's profile and Day 1 | Decide whether Day 1 may run while the profile is deferred (§3) | — |
 | A14 | Doctor's credentials | Confirm the exact text (stated earlier as "MD (UKM)"). **Pending owner confirmation.** The default "Doktor yang sah" must not go live | O3 |
-| A15 | C-gate, and PR #10 | Approve the C-gate and the PR #10 merge | Checklist §10 |
+| A15 | PR #10 | Approve the PR #10 merge (the C-gate itself was approved 23 Nov 2026) | Checklist §10 |
 | A16 | Phase D | Separate written approval | Plan §9 |
 | A17 | On-server personal-data copies | Approve or decline removing the extra copies left by `ghost backup` (`/var/www/himandme/backup-from-…zip` and `content/data/`). Not required for Day 1 | Phase C report §4 |
 
@@ -114,7 +111,7 @@ The 5 Nov details to confirm for A1:
 
 | # | Condition | Status |
 |---|---|---|
-| S1 | C-gate approved by the owner | ☐ |
+| S1 | C-gate approved by the owner | ☑ 23 Nov 2026 |
 | S2 | PR #10 merged (Phase C scripts and record on `main`) | ☐ |
 | S3 | Snapshot ID recorded (`lhsnap-6jevw0v9`); old-snapshot deletion; BitLocker On (T1–T3) | ☑ |
 | S4 | Inputs needed in the window: A1–A10 and A14 | ☐ |
