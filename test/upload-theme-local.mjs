@@ -1,5 +1,5 @@
 // Re-uploads and activates dist/himandme-ghost-theme.zip on a LOCAL Ghost without touching content.
-// Optional: --set key=value … updates theme settings (e.g. --set doctor_author_slug=dr).
+// Optional: --set key=value … updates theme settings (e.g. --set doctor_credentials="MD (UKM)").
 //   npm run zip && GHOST_ADMIN_EMAIL=… GHOST_ADMIN_PASSWORD=… node test/upload-theme-local.mjs
 import { readFileSync } from 'node:fs';
 const BASE = (process.env.GHOST_URL || 'http://localhost:2368').replace(/\/$/, '');

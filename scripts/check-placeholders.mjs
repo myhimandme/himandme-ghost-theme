@@ -36,8 +36,6 @@ export function scanText(text, where) {
 
 // Theme files: documented, intentional occurrences (file + exact match). Anything else fails.
 const THEME_ALLOW = [
-  { file: 'partials/home/team.hbs', match: '[Nama Penuh]', why: 'fallback shown only while the theme setting doctor_author_slug is empty (production sets it to `dr`, E8)' },
-  { file: 'partials/home/team.hbs', match: '[Peranan]', why: 'same fallback as above' },
   { file: 'package.json', match: 'Doktor yang sah', why: 'default of the doctor_credentials setting; production sets the verified value (E8, O3)' },
   { file: 'package.json', id: 'email-address', why: 'author.email is required by GScan; package.json is never served by Ghost' },
   { file: 'package.json', id: 'email-word', why: 'the JSON key of author.email (same field as above)' },

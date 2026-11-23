@@ -71,16 +71,6 @@
 .hm-privacy__list p { font-size: 16px; line-height: 1.6; color: var(--hm-text-on-dark); }
 
 /* Doctor */
-.hm-team { display: flex; flex-wrap: wrap; gap: 56px; align-items: center; padding-top: 120px; padding-bottom: 120px; }
-.hm-team__text { flex: 1 1 420px; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-.hm-team__intro { font-size: 17px; line-height: 1.65; color: var(--hm-text-2); }
-.hm-team__cards { flex: 1 1 520px; display: flex; gap: 20px; flex-wrap: wrap; min-width: 0; }
-.hm-doctor { flex: 0 1 290px; border: 1px solid var(--hm-grey-light); border-radius: var(--hm-radius-card-lg); overflow: hidden; color: var(--hm-charcoal); text-decoration: none; display: flex; flex-direction: column; background: var(--hm-white); }
-.hm-doctor:hover { color: var(--hm-charcoal); }
-.hm-doctor__img { width: 100%; height: 260px; object-fit: cover; display: block; }
-.hm-doctor__body { padding: 22px; display: flex; flex-direction: column; gap: 6px; }
-.hm-doctor__name { font-size: 18px; }
-.hm-doctor__role { font-size: 14px; color: var(--hm-text-2); }
 
 /* Blog teaser */
 .hm-bteaser { border-top: 1px solid var(--hm-grey-light); }
@@ -178,16 +168,6 @@
   .hm-privacy__list ul { gap: 14px; font-size: 15px; }
   .hm-privacy__list li { gap: 12px; }
 
-  .hm-team { flex-direction: column; align-items: stretch; gap: 16px; padding: 64px 16px; }
-  .hm-team__text { flex: none; gap: 16px; }
-  .hm-team .hm-h2 { line-height: 1.15; }
-  .hm-team__intro { display: none; }
-  .hm-team__cards { flex: none; margin-top: 8px; }
-  .hm-doctor { flex: 1 1 auto; flex-direction: row; align-items: center; gap: 16px; padding: 16px; border-radius: var(--hm-radius-card); }
-  .hm-doctor__img { width: 88px; height: 88px; border-radius: 12px; flex-shrink: 0; }
-  .hm-doctor__body { padding: 0; gap: 4px; }
-  .hm-doctor__name { font-size: 17px; }
-  .hm-doctor__role { font-size: 13px; }
 
   .hm-bteaser__inner { gap: 20px; padding: 56px 0 64px; }
   .hm-bteaser__head { padding: 0 16px; align-items: baseline; flex-wrap: nowrap; }

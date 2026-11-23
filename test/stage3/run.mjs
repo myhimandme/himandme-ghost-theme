@@ -85,17 +85,10 @@ const privImg = (h.match(/<img class="hm-privacy__img"[^>]*>/) || [''])[0];
 check('H6b', 'Privacy band photo from its block: responsive, alt text, lazy-loaded below the fold', privImg.includes('alt="Ruang menunggu"') && privImg.includes('loading="lazy"') && privImg.includes(' 1000w'));
 await editPost(priv.id, { feature_image: null, feature_image_alt: null });
 
-// H7 — doctor card from the single staff profile + credentials setting.
-const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
-const setCS = (vals) => admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key in vals ? vals[s.key] : s.value })) } });
-const me = (await admin('/users/me/')).users[0];
-await setCS({ doctor_author_slug: '', doctor_credentials: '' });
-const noSlug = await home();
-await setCS({ doctor_author_slug: me.slug, doctor_credentials: '[Kelayakan yang disahkan]' });
-const withSlug = await home();
-check('H7', 'Doctor card: placeholder without a slug; profile name + credentials + archive link with it',
-  noSlug.includes('[Nama Penuh]') && withSlug.includes(`hm-doctor__name">${esc(me.name)}<`) && withSlug.includes('[Kelayakan yang disahkan]') && withSlug.includes(`href="/blog/penulis/${me.slug}/"`));
-await admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.value })) } });
+// H7 — release 1.0.1: the homepage doctor section ("Kenali doktor anda sebelum datang") was removed at the owner's request.
+const h7 = await home();
+check('H7', 'Homepage has no doctor section (removed in 1.0.1): no team section, no doctor card, no [Nama Penuh]/[Peranan] fallback',
+  !h7.includes('hm-team') && !h7.includes('hm-doctor"') && !h7.includes('hm-doctor__') && !h7.includes('[Nama Penuh]') && !h7.includes('[Peranan]') && !h7.includes('Kenali doktor anda'));
 
 // H8 — links.
 h = await home();

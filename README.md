@@ -85,14 +85,14 @@ Homepage and ED-page section headings and descriptions are **content blocks**: p
 | `blok-utama-servis-konsultasi` / `-servis-shockwave` / `-servis-kegel-ems` | Card title | Card text | — | — |
 | `blok-utama-proses` | Process heading | — | — | — |
 | `blok-utama-privasi` | Privacy heading | — | Bullet list | Photo in the charcoal band |
-| `blok-utama-pasukan` | Doctor-section heading | Text (desktop) | — | — |
+| `blok-utama-pasukan` | **Not shown since 1.0.1** (the homepage doctor section was removed at the owner's request; the block stays in the launch seed, hidden and unused) | — | — | — |
 | `blok-utama-blog` | Blog-teaser heading (desktop) | — | — | — |
 | `blok-utama-faq` | FAQ heading | — | **Toggle cards**, one per question (first opens automatically) | — |
 | `blok-utama-cta` | Closing band heading | Band text | — | — |
 
 The hero label shows the theme setting **`city`** after "KESIHATAN LELAKI" (desktop). If `city` is empty the label shows no city at all, never a blank or placeholder.
 
-The doctor card uses the staff profile named in theme setting **`doctor_author_slug`** (name, photo) and the **`doctor_credentials`** setting. The "Dari blog" cards are the three newest articles and never include blocks. Section labels ("/ PERKHIDMATAN"), the hero checklist, the trust strip and the four process steps are fixed theme text in `locales/ms.json`.
+Since 1.0.1 the homepage has no doctor card (the `doctor_author_slug` setting was removed with it). The doctor's name and photo still appear on articles and the author page, with the **`doctor_credentials`** setting. The "Dari blog" cards are the three newest articles and never include blocks. Section labels ("/ PERKHIDMATAN"), the hero checklist, the trust strip and the four process steps are fixed theme text in `locales/ms.json`.
 
 ### Disfungsi Ereksi page (Stage 4)
 

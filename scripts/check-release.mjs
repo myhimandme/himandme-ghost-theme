@@ -60,7 +60,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     check('zip: required theme files present', missing.length === 0, missing.join(', '));
     const pkgZip = JSON.parse(execFileSync('unzip', ['-p', zip, 'package.json']).toString());
     const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-    check(`zip: package.json version ${pkg.version}`, pkgZip.version === pkg.version && pkg.version === '1.0.0', `zip ${pkgZip.version}`);
+    check(`zip: package.json version ${pkg.version}`, pkgZip.version === pkg.version && /^\d+\.\d+\.\d+$/.test(pkg.version), `zip ${pkgZip.version}`);
     const builtJs = execFileSync('unzip', ['-p', zip, 'assets/built/main.js']).toString();
     const builtCss = execFileSync('unzip', ['-p', zip, 'assets/built/screen.css']).toString();
     check('zip: no sourceMappingURL in built assets', !/sourceMappingURL/.test(builtJs + builtCss));

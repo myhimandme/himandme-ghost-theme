@@ -1,7 +1,7 @@
 {
   "name": "himandme-ghost-theme",
   "description": "Custom Ghost theme for Him & Me (himandme.my): clinical-inspired main site and editorial blog.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "license": "UNLICENSED",
   "author": {
@@ -124,11 +124,6 @@
         "type": "boolean",
         "default": true,
         "description": "Show the fee and price tiles on the Disfungsi Ereksi page."
-      },
-      "doctor_author_slug": {
-        "type": "text",
-        "default": "",
-        "description": "Slug of the doctor's staff profile, used for the homepage doctor card."
       },
       "doctor_credentials": {
         "type": "text",
