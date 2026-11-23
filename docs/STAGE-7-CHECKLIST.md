@@ -11,6 +11,7 @@
 > **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed: the zip permission check now tells files (0644) from directory entries (0755); G12 recorded as **deferred** (an outstanding pre-launch item). Release rebuilt; checksums unchanged. **Awaiting final B-gate approval.** No production change. **Phase C is not authorised.**
 > **Update 6.9 (21 Nov 2026):** **B-gate approved; Phase B closed** (plan §16.13). PR #8 merged into `main` as `d2a014e`. Tag `v1.0.0` on that commit (published by the owner, verified). No production change. **Phase C is not authorised.**
 > **Update 6.10 (23 Nov 2026):** **Phase C approved by the owner and carried out:** C1–C10 passed (plan §16.14, report [`stage-7/PHASE-C-REPORT.md`](stage-7/PHASE-C-REPORT.md)). **Awaiting the C-gate.** No change to Ghost content or settings, MySQL, Nginx, DNS or Cloudflare. **Phase D is not authorised.**
+> **Update 6.11 (23 Nov 2026):** Phase C closeout items recorded as **pending** (snapshot ID, BitLocker completion, old-snapshot deletion, C-gate, PR #10 merge). Doctor's photograph, biography and profile completion: **Deferred – awaiting photoshoot**; credentials pending confirmation. Day 0 readiness: [`stage-7/DAY-0-READINESS.md`](stage-7/DAY-0-READINESS.md). **Phase D is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -130,9 +131,9 @@
 
 | ID | Needed from you | Used for | Status | Done |
 |---|---|---|---|---|
-| O1 | Doctor's profile photo (square, ≥ 400 px) | Byline, author box, homepage team card | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
-| O2 | Final biography (≤ 250 characters; the local draft without dashes can be the starting point) | Author box, author page | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
-| O3 | Exact credentials text (you stated "MD (UKM)"; please confirm the exact form) | `doctor_credentials` | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
+| O1 | Doctor's profile photo (square, ≥ 400 px) | Byline, author box, homepage team card | ⏸ **Deferred – awaiting photoshoot** (owner, 23 Nov; no date set). Not completed, not approved, not waived; an outstanding launch dependency (`DAY-0-READINESS.md` §3) | [ ] |
+| O2 | Final biography (≤ 250 characters; the local draft without dashes can be the starting point) | Author box, author page | ⏸ **Deferred – awaiting photoshoot** (owner, 23 Nov; no date set). Not completed, not approved, not waived; an outstanding launch dependency | [ ] |
+| O3 | Exact credentials text (you stated "MD (UKM)"; please confirm the exact form) | `doctor_credentials` | ✋ **Pending owner confirmation** (23 Nov). Not part of the photoshoot deferral; the default "Doktor yang sah" must not go live | [ ] |
 | O4 | Doctor's **production** staff slug (Admin → Staff → profile → Slug). Phase A: currently **`dr`**; keep it or choose another | `routes.yaml` (G3), `doctor_author_slug` | ✅ **Keep `dr`** (19 Nov) | [x] |
 | O5 | Logo: confirm `logo-him-and-me.png` / `logo-mark.png` are final, or supply new files | Header, footer | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
 | O6 | Feature images (≥ 1600 px, ~16:7), alt text, captions and photo credits for each article | Articles | ⏸ **Deferred to before Phase D** (owner, 19 Nov); does not block the A-gate | [ ] |
@@ -276,13 +277,13 @@
 
 | ID | Item | Status | Done |
 |---|---|---|---|
-| C1 | VPS snapshot | ✅ `himandme-pre-launch-2026-11-23` (23 Nov); oldest snapshot `himandme-pre-m3-updates-2026-11-18` removed for quota; `himandme-pre-m6-2026-11-19` kept | [x] |
+| C1 | VPS snapshot | ✅ `himandme-pre-launch-2026-11-23` created by the owner (23 Nov). **Snapshot ID: PENDING (owner to provide).** Deleting `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`) to free the quota was advised; **owner confirmation pending**. `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) kept | [x] |
 | C2 | Ghost JSON export | ✅ Export zip (Ghost 6.75 format); `export.json` valid, 2 posts/pages = database | [x] |
 | C3 | `ghost backup` (staff token typed at the prompt only; zip contents listed) | ✅ Zip copied and verified; original kept in `/var/www/himandme` | [x] |
 | C4 | MySQL dump: `DB=himandme` (confirmed) then `sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4 "$DB"`; exit 0, empty error file, "Dump completed" | ✅ Exit 0, empty error file, "Dump completed"; 2 posts, 103 tables, `utf8mb4_0900_ai_ci` | [x] |
 | C5 | `content/` + Nginx confs | ✅ Content archived (`content/settings` empty: Ghost default routes); Nginx configuration only, private key correctly excluded | [x] |
 | C6 | Current theme, routes, redirects downloaded | ✅ `source.zip`; `routes.yaml` = Ghost 6.75.0 default routes (SHA-256 verified); `redirects.yaml` 0 rules | [x] |
-| C7 | Copies off the server | ✅ 23/23 files match the server checksums; owner's computer, BitLocker drive | [x] |
+| C7 | Copies off the server | ✅ 23/23 files match the server checksums; owner's computer. **BitLocker:** turned on (whole drive) and still encrypting at the time of the copy; **completion and protection status On: PENDING owner confirmation** | [x] |
 | C8 | Restore test off production: create `ghost_restore_test`, `sudo mysql ghost_restore_test < ghost-pre-launch.sql`, count posts and tables, drop it | ✅ WSL only: restored without errors; posts 2 = 2, tables 103 = 103, theme `source` = server; dropped. Routes review item resolved | [x] |
 | C9 | Rollback rule: `ghost stop` before any database restore, `ghost start` after | ✅ rehearsed | [x] |
 | C10 | List of every currently public URL saved (`old-urls.txt`), for D2b and O20 | ✅ 7 URLs (all sitemap requests HTTP 200); matches the independent check and O20 | [x] |
@@ -297,7 +298,7 @@
 | Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✅ Presented and accepted (19 Nov); decisions recorded (plan §16.9) | [x] |
 | A. Preparation and audit | 🛑 A-gate | ✅ **Signed off by the owner 19 Nov 2026** (plan §16.10). Carried forward: N6, M5, M6, O19, O20, O22, O30 step 2, deferred O34/O38/content inputs. **Phase B needs separate written approval** | [x] |
 | B. GitHub merge and release prep | 🛑 B-gate | ✅ **B-gate approved by the owner 21 Nov 2026; Phase B closed** (plan §16.13). PR #8 merged (merge commit `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`); `main` = that commit. Tag `v1.0.0` on that commit (G1, verified). G12 deferred (outstanding pre-launch item). **Phase C needs separate written approval** | [x] |
-| C. Production backup | 🛑 C-gate | ✅ C1–C10 done 23 Nov 2026 (report `docs/stage-7/PHASE-C-REPORT.md`, plan §16.14). **Awaiting the owner's C-gate review** | [ ] |
+| C. Production backup | 🛑 C-gate | ✅ C1–C10 done 23 Nov 2026 (report `docs/stage-7/PHASE-C-REPORT.md`, plan §16.14). **Administrative closeout pending:** snapshot ID, BitLocker completion, C-gate approval, PR #10 merge (report §6). Day 0 readiness: `docs/stage-7/DAY-0-READINESS.md` | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |
 | E. Production configuration | (with D) | ⛔ D | [ ] |
 | F. Staging and functional testing | 🛑 F-gate | ⛔ E | [ ] |

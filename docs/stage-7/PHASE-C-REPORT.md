@@ -1,6 +1,6 @@
 # Stage 7 Phase C report: production backup (C1–C10)
 
-> **Status: Phase C complete, 23 Nov 2026. Awaiting the owner's C-gate review.** Phase C was approved by the owner in writing on 23 Nov 2026.
+> **Status: C1–C10 passed, 23 Nov 2026. Administrative closeout pending (§6). Awaiting the owner's C-gate review.** Phase C was approved by the owner in writing on 23 Nov 2026.
 > - **No production change** to Ghost content or settings, MySQL, Nginx, DNS or Cloudflare.
 > - **Production actions taken:**
 >   - a Tencent snapshot was created; an old snapshot was deleted to free the quota;
@@ -14,7 +14,7 @@
 
 | # | Item | Result | Evidence |
 |---|---|---|---|
-| C1 | VPS snapshot | ✅ | `himandme-pre-launch-2026-11-23` created; the snapshot ID is to be noted by the owner. To free the 2-snapshot quota, the owner was advised to delete the oldest, superseded snapshot `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`, from before M3/M6/M5). `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) is kept as the older fallback |
+| C1 | VPS snapshot | ✅ | `himandme-pre-launch-2026-11-23` created by the owner. **Snapshot ID: PENDING** (recorded in §6 once provided). To free the 2-snapshot quota, the owner was advised to delete the oldest, superseded snapshot `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`, from before M3/M6/M5). `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) is kept as the older fallback |
 | C2 | Ghost content export | ✅ | Ghost 6.75 exports a single zip: `export.json`, `members.csv`, `post-analytics.csv`, `routes.yaml`, `redirects.yaml`, `themes/`. `export.json` is valid Ghost JSON with **2 posts/pages, equal to the database** |
 | C3 | `ghost backup` | ✅ | `backup-from-v6.75.0-on-2026-11-23-16-25-44.zip`, copied into the backup folder and verified identical. **The original is kept** in `/var/www/himandme`. The token was typed only at the prompt |
 | C4 | MySQL dump | ✅ | `c4-ghost-himandme.sql` (approved command): exit 0, empty error file, "Dump completed". Reference: 2 rows in `posts` (1 published page, 1 published post), 103 tables, `utf8mb4` / `utf8mb4_0900_ai_ci`, active theme `source`, `is_private` false, **`llms_enabled` false** (O30 still in place) |
@@ -51,7 +51,7 @@
 | 2 | Off-server copies hold personal data (`members.csv`) and the database (password hashes, keys) | Keep them only on the BitLocker drive; confirm BitLocker shows "on" |
 | 3 | The www certificate, its key and `dhparam.pem` are only in the C1 snapshot, not in the file backups (by design) | Acceptable: certificates can be reissued (M4 procedure) and DH parameters regenerated |
 | 4 | Partial folder from run 1 on the server | Delete after the C-gate (optional) |
-| 5 | C1 snapshot ID not yet recorded | Owner notes it from the console |
+| 5 | C1 snapshot ID not yet recorded | Owner provides it; recorded in §6 |
 
 ## 5. Owner review needed for the C-gate
 - The evidence above.
@@ -59,3 +59,15 @@
 - The five-day launch plan (`LAUNCH-PLAN-5-DAY.md`) and its launch-blocker inputs.
 
 **Phase D is not authorised.** It needs the owner's separate written approval after the C-gate.
+
+## 6. Administrative closeout (record here; nothing below is assumed)
+
+| Item | Status | Where it is recorded once confirmed |
+|---|---|---|
+| New snapshot ID (`himandme-pre-launch-2026-11-23`, starts with `lhsnap-`) | **PENDING: owner to provide** | This table; C1 row above; checklist C1; plan §16.14 |
+| Deletion of `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`) to free the quota | **PENDING: owner to confirm** whether it was deleted | This table; checklist C1 |
+| BitLocker on the off-server copy drive: encryption complete and protection status **On** | **PENDING: owner to confirm** (it was still encrypting at the time of the copy) | This table; checklist C7; plan §16.14 |
+| C-gate approval | **PENDING: owner** | Checklist §10, Phase C row |
+| PR #10 (scripts, run sheet, this report, launch plan) | **Open, not merged** (head `77929e9` before Update 6.11; `main` = `23fc7f1`) | Checklist §10 |
+
+Phase C is closed only when every row above is confirmed. No production backup or file is to be deleted as part of the closeout.

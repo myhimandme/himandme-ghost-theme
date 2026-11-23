@@ -1,6 +1,7 @@
 # Him & Me: accelerated launch execution plan (Phases D–H in five working days)
 
 > **Status:** proposal for the owner's review, prepared during Phase C (23 Nov 2026). It **compresses the schedule only**. Every gate, check and rollback rule in `docs/STAGE-7-PLAN.md` (§3.6, §5, §7, §8, §9) stays as approved. Nothing here authorises Phase D: each gate still needs the owner's written approval.
+> - **Update 23 Nov 2026:** the doctor's photograph, biography and profile completion are **deferred – awaiting photoshoot** (no date set; not waived). Day 1 sequencing with the deferred profile is owner decision A13. The current readiness assessment (**NO-GO** until its start conditions are met) is in [`DAY-0-READINESS.md`](DAY-0-READINESS.md).
 > - **Day 1** = the first working day after the C-gate is approved **and** every launch blocker in §2 is supplied.
 > - **Priorities:** homepage, Disfungsi Ereksi page, blog structure, privacy notice, the real doctor profile and the business details. Articles can follow after launch (§4).
 
@@ -23,9 +24,9 @@
 
 | # | Item | What is needed | Notes |
 |---|---|---|---|
-| 1 | **O1** doctor's photo | Square, ≥ 400 px | Byline, author box, homepage team card |
-| 2 | **O2** biography | ≤ 250 characters | Author box and page |
-| 3 | **O3** credentials | The exact text (for example "MD (UKM)") | Replaces the default "Doktor yang sah" |
+| 1 | **O1** doctor's photo | Square, ≥ 400 px | **Deferred – awaiting photoshoot** (23 Nov). Still a launch dependency (needed before the G-gate); see `DAY-0-READINESS.md` §3 |
+| 2 | **O2** biography | ≤ 250 characters | **Deferred – awaiting photoshoot** (23 Nov). Still a launch dependency |
+| 3 | **O3** credentials | The exact text (for example "MD (UKM)") | **Pending owner confirmation.** Replaces the default "Doktor yang sah" |
 | 4 | **O8–O13, O24** business details | **One confirmation** that the doctor-reviewed details of 5 Nov are still current at launch (see the list after this table), **plus the Google Maps link** (`google_maps_url`, not yet supplied) | A wrong price or number is a rollback trigger (§8.3) |
 | 5 | **O14** Notis Privasi | Confirm that the supplied BM and English text (5 Nov) is final | No analytics at launch, so no change is needed (O22) |
 | 6 | **O5** logo | Confirm that the current files are final | — |

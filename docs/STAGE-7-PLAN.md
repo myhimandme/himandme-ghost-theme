@@ -11,6 +11,7 @@
 > **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed (zip permission check for directory entries; G12 recorded as deferred). Checksums unchanged. **Awaiting final B-gate approval.**
 > **Update 6.9 (21 Nov 2026)** adds §16.13: **B-gate approved by the owner; Phase B closed.** PR #8 merged into `main` (`d2a014e`); tag `v1.0.0` on that commit (published by the owner, verified). **Phases C–H remain unauthorised** until the owner approves Phase C in writing.
 > **Update 6.10 (23 Nov 2026)** adds §16.14: **Phase C approved by the owner and carried out:** C1–C10 passed, restore proven off production. **Awaiting the C-gate.** **Phases D–H remain unauthorised.**
+> **Update 6.11 (23 Nov 2026):** Phase C administrative closeout items recorded as pending (report §6). Doctor's profile **deferred – awaiting photoshoot**. Day 0 readiness assessment: [`stage-7/DAY-0-READINESS.md`](stage-7/DAY-0-READINESS.md). **Phases D–H remain unauthorised.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -1773,10 +1774,10 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 
 | Item | Result |
 |---|---|
-| C1 snapshot | `himandme-pre-launch-2026-11-23` (the oldest snapshot was removed to free the quota) |
+| C1 snapshot | `himandme-pre-launch-2026-11-23`. **Snapshot ID pending** (owner). Deletion of the oldest snapshot to free the quota was advised; **confirmation pending** |
 | C4 dump | Clean; 2 posts, 103 tables, `utf8mb4_0900_ai_ci`; `llms_enabled` false |
 | C5 | Content archived; Nginx configuration only (the www private key correctly excluded) |
-| C7 | 23/23 files verified off the server (owner's computer, BitLocker) |
+| C7 | 23/23 files verified off the server (owner's computer). **BitLocker completion and protection status On: pending owner confirmation** |
 | C8 | Restored in WSL only: posts, tables and active theme equal the server; test database dropped |
 | C10 | 7 public URLs; they match the O20 redirect list |
 | Findings | `content/settings` is empty (Ghost default routes; the exported `routes.yaml` is byte-identical to Ghost 6.75.0's default, SHA-256 `b2d67526…`). Script Revision 4 fixed the wrong assumption |
