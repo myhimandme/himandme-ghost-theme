@@ -10,6 +10,7 @@
 > **Update 6.8 (21 Nov 2026):** **Phase B approved by the owner and carried out** (plan §16.12, report [`stage-7/PHASE-B-REPORT.md`](stage-7/PHASE-B-REPORT.md)): PRs #1–#7 merged into `main` (Option A); release branch `stage-7-release` built and tested; checksums recorded (G9). **Awaiting the B-gate.** No production change. **Phase C is not authorised.**
 > **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed: the zip permission check now tells files (0644) from directory entries (0755); G12 recorded as **deferred** (an outstanding pre-launch item). Release rebuilt; checksums unchanged. **Awaiting final B-gate approval.** No production change. **Phase C is not authorised.**
 > **Update 6.9 (21 Nov 2026):** **B-gate approved; Phase B closed** (plan §16.13). PR #8 merged into `main` as `d2a014e`. Tag `v1.0.0` on that commit (published by the owner, verified). No production change. **Phase C is not authorised.**
+> **Update 6.10 (23 Nov 2026):** **Phase C approved by the owner and carried out:** C1–C10 passed (plan §16.14, report [`stage-7/PHASE-C-REPORT.md`](stage-7/PHASE-C-REPORT.md)). **Awaiting the C-gate.** No change to Ghost content or settings, MySQL, Nginx, DNS or Cloudflare. **Phase D is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
