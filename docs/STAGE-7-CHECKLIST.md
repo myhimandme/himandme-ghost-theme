@@ -13,6 +13,7 @@
 > **Update 6.10 (23 Nov 2026):** **Phase C approved by the owner and carried out:** C1–C10 passed (plan §16.14, report [`stage-7/PHASE-C-REPORT.md`](stage-7/PHASE-C-REPORT.md)). **Awaiting the C-gate.** No change to Ghost content or settings, MySQL, Nginx, DNS or Cloudflare. **Phase D is not authorised.**
 > **Update 6.11 (23 Nov 2026):** Phase C closeout items recorded as **pending** (snapshot ID, BitLocker completion, old-snapshot deletion, C-gate, PR #10 merge). Doctor's photograph, biography and profile completion: **Deferred – awaiting photoshoot**; credentials pending confirmation. Day 0 readiness: [`stage-7/DAY-0-READINESS.md`](stage-7/DAY-0-READINESS.md). **Phase D is not authorised.**
 > **Update 6.12 (23 Nov 2026):** owner confirmed the snapshot creation, the deletion of `lhsnap-fzsuu5vx`, and BitLocker complete with protection On. **Still open for Phase C:** the snapshot ID record, **C-gate approval** (not given), PR #10 merge. **Phase D is not authorised.**
+> **Update 6.13 (23 Nov 2026):** snapshot ID `lhsnap-6jevw0v9` recorded (owner). **Still open for Phase C:** **C-gate approval** (not given) and the PR #10 merge. **Phase D is not authorised.**
 > The direction and structure were approved on 16 Nov 2026. Revision 2 answered the 5 review points; revision 3 makes the final corrections (see the plan's revision tables and §13).
 > Section numbers below (§) refer to that plan.
 
@@ -278,7 +279,7 @@
 
 | ID | Item | Status | Done |
 |---|---|---|---|
-| C1 | VPS snapshot | ✅ `himandme-pre-launch-2026-11-23` created; **creation confirmed by the owner (23 Nov)**. **Snapshot ID: PENDING (owner to supply in writing).** `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`) **deleted, confirmed by the owner (23 Nov)**. `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) kept | [x] |
+| C1 | VPS snapshot | ✅ `himandme-pre-launch-2026-11-23` created; **creation confirmed by the owner (23 Nov)**. **Snapshot ID: `lhsnap-6jevw0v9`** (owner, 23 Nov). `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`) **deleted, confirmed by the owner (23 Nov)**. `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) kept | [x] |
 | C2 | Ghost JSON export | ✅ Export zip (Ghost 6.75 format); `export.json` valid, 2 posts/pages = database | [x] |
 | C3 | `ghost backup` (staff token typed at the prompt only; zip contents listed) | ✅ Zip copied and verified; original kept in `/var/www/himandme` | [x] |
 | C4 | MySQL dump: `DB=himandme` (confirmed) then `sudo mysqldump --single-transaction --no-tablespaces --default-character-set=utf8mb4 "$DB"`; exit 0, empty error file, "Dump completed" | ✅ Exit 0, empty error file, "Dump completed"; 2 posts, 103 tables, `utf8mb4_0900_ai_ci` | [x] |
@@ -299,7 +300,7 @@
 | Phase A findings | Presented to the owner; Phase B needs **separate written approval** | ✅ Presented and accepted (19 Nov); decisions recorded (plan §16.9) | [x] |
 | A. Preparation and audit | 🛑 A-gate | ✅ **Signed off by the owner 19 Nov 2026** (plan §16.10). Carried forward: N6, M5, M6, O19, O20, O22, O30 step 2, deferred O34/O38/content inputs. **Phase B needs separate written approval** | [x] |
 | B. GitHub merge and release prep | 🛑 B-gate | ✅ **B-gate approved by the owner 21 Nov 2026; Phase B closed** (plan §16.13). PR #8 merged (merge commit `d2a014e65874b4624f5f6be72c7d14214c1ba7b2`); `main` = that commit. Tag `v1.0.0` on that commit (G1, verified). G12 deferred (outstanding pre-launch item). **Phase C needs separate written approval** | [x] |
-| C. Production backup | 🛑 C-gate | ✅ C1–C10 done 23 Nov 2026 (report `docs/stage-7/PHASE-C-REPORT.md`, plan §16.14). Closeout: snapshot creation, old-snapshot deletion and BitLocker **confirmed**; **still open:** snapshot ID record, **C-gate approval**, PR #10 merge (report §6). Day 0 readiness: `docs/stage-7/DAY-0-READINESS.md` | [ ] |
+| C. Production backup | 🛑 C-gate | ✅ C1–C10 done 23 Nov 2026 (report `docs/stage-7/PHASE-C-REPORT.md`, plan §16.14). Closeout: snapshot creation, old-snapshot deletion and BitLocker **confirmed**; snapshot ID `lhsnap-6jevw0v9` recorded; **still open:** **C-gate approval**, PR #10 merge (report §6). Day 0 readiness: `docs/stage-7/DAY-0-READINESS.md` | [ ] |
 | D. Theme and content deployment (**private mode ON at D1; public-domain checks D2b before the import**) | 🛑 D-gate | ⛔ C-gate | [ ] |
 | E. Production configuration | (with D) | ⛔ D | [ ] |
 | F. Staging and functional testing | 🛑 F-gate | ⛔ E | [ ] |

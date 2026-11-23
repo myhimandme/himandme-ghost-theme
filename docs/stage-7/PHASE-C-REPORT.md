@@ -1,6 +1,6 @@
 # Stage 7 Phase C report: production backup (C1–C10)
 
-> **Status: C1–C10 passed, 23 Nov 2026. Administrative closeout: snapshot creation, old-snapshot deletion and BitLocker confirmed by the owner; the snapshot ID is still to be recorded (§6). Awaiting the owner's C-gate review.** Phase C was approved by the owner in writing on 23 Nov 2026.
+> **Status: C1–C10 passed, 23 Nov 2026. Administrative closeout: snapshot (`lhsnap-6jevw0v9`), old-snapshot deletion and BitLocker confirmed by the owner (§6). Still open: C-gate approval and the PR #10 merge. Awaiting the owner's C-gate review.** Phase C was approved by the owner in writing on 23 Nov 2026.
 > - **No production change** to Ghost content or settings, MySQL, Nginx, DNS or Cloudflare.
 > - **Production actions taken:**
 >   - a Tencent snapshot was created; an old snapshot was deleted to free the quota;
@@ -14,7 +14,7 @@
 
 | # | Item | Result | Evidence |
 |---|---|---|---|
-| C1 | VPS snapshot | ✅ | `himandme-pre-launch-2026-11-23` created; **creation confirmed by the owner (23 Nov)**. **Snapshot ID: PENDING** (recorded in §6 once provided). To free the 2-snapshot quota, the owner deleted (**confirmed 23 Nov**) the oldest, superseded snapshot `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`, from before M3/M6/M5). `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) is kept as the older fallback |
+| C1 | VPS snapshot | ✅ | `himandme-pre-launch-2026-11-23` created; **creation confirmed by the owner (23 Nov)**. **Snapshot ID: `lhsnap-6jevw0v9`** (supplied by the owner, 23 Nov). To free the 2-snapshot quota, the owner deleted (**confirmed 23 Nov**) the oldest, superseded snapshot `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`, from before M3/M6/M5). `lhsnap-hty2dne5` (`himandme-pre-m6-2026-11-19`) is kept as the older fallback |
 | C2 | Ghost content export | ✅ | Ghost 6.75 exports a single zip: `export.json`, `members.csv`, `post-analytics.csv`, `routes.yaml`, `redirects.yaml`, `themes/`. `export.json` is valid Ghost JSON with **2 posts/pages, equal to the database** |
 | C3 | `ghost backup` | ✅ | `backup-from-v6.75.0-on-2026-11-23-16-25-44.zip`, copied into the backup folder and verified identical. **The original is kept** in `/var/www/himandme`. The token was typed only at the prompt |
 | C4 | MySQL dump | ✅ | `c4-ghost-himandme.sql` (approved command): exit 0, empty error file, "Dump completed". Reference: 2 rows in `posts` (1 published page, 1 published post), 103 tables, `utf8mb4` / `utf8mb4_0900_ai_ci`, active theme `source`, `is_private` false, **`llms_enabled` false** (O30 still in place) |
@@ -51,7 +51,7 @@
 | 2 | Off-server copies hold personal data (`members.csv`) and the database (password hashes, keys) | Keep them only on the BitLocker-protected drive. **BitLocker encryption complete, protection status On: confirmed by the owner (23 Nov)** |
 | 3 | The www certificate, its key and `dhparam.pem` are only in the C1 snapshot, not in the file backups (by design) | Acceptable: certificates can be reissued (M4 procedure) and DH parameters regenerated |
 | 4 | Partial folder from run 1 on the server | Delete after the C-gate (optional) |
-| 5 | C1 snapshot ID not yet recorded | Owner provides it; recorded in §6 |
+| 5 | C1 snapshot ID | ✅ Recorded: `lhsnap-6jevw0v9` (owner, 23 Nov) |
 
 ## 5. Owner review needed for the C-gate
 - The evidence above.
@@ -64,7 +64,7 @@
 
 | Item | Status | Where it is recorded once confirmed |
 |---|---|---|
-| New snapshot ID (`himandme-pre-launch-2026-11-23`, starts with `lhsnap-`) | Snapshot **creation confirmed by the owner (23 Nov)**. **ID: PENDING: owner to supply in writing** | This table; C1 row above; checklist C1; plan §16.14 |
+| New snapshot ID (`himandme-pre-launch-2026-11-23`) | ✅ **`lhsnap-6jevw0v9`**. Creation and ID confirmed by the owner (23 Nov) | This table; C1 row above; checklist C1; plan §16.14 |
 | Deletion of `lhsnap-fzsuu5vx` (`himandme-pre-m3-updates-2026-11-18`) to free the quota | ✅ **Confirmed by the owner (23 Nov): deleted** | This table; checklist C1 |
 | BitLocker on the off-server copy drive: encryption complete and protection status **On** | ✅ **Confirmed by the owner (23 Nov)** | This table; checklist C7; plan §16.14 |
 | C-gate approval | **PENDING: owner** | Checklist §10, Phase C row |

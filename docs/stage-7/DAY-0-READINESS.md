@@ -1,6 +1,6 @@
 # Phase D – Day 0 readiness
 
-> **Status (23 Nov 2026, Update 6.12):** preparation and documentation only. **Phase D is not authorised and has not started.** No production change has been made for Phase D: no theme upload or activation, no import, no routes or redirects, no settings, DNS, Cloudflare or Nginx change.
+> **Status (23 Nov 2026, Update 6.13):** preparation and documentation only. **Phase D is not authorised and has not started.** No production change has been made for Phase D: no theme upload or activation, no import, no routes or redirects, no settings, DNS, Cloudflare or Nginx change.
 > - **Sources of truth:** `docs/STAGE-7-PLAN.md` (§3.6 cut-over sequence D0–H3, §5, §7, §8, §16.8), `docs/STAGE-7-CHECKLIST.md`, [`LAUNCH-PLAN-5-DAY.md`](LAUNCH-PLAN-5-DAY.md), [`PHASE-C-REPORT.md`](PHASE-C-REPORT.md).
 > - **Nothing is waived.** Every item below stays open until it is done, or until the owner decides it explicitly in writing.
 
@@ -10,7 +10,7 @@ Day 1 cannot start yet, for these reasons:
 1. **Phase C is not closed:**
    - the C-gate is not approved;
    - PR #10 is not merged;
-   - the snapshot ID is not yet recorded. Snapshot creation, old-snapshot deletion and BitLocker On were confirmed by the owner on 23 Nov.
+   - (the snapshot ID `lhsnap-6jevw0v9`, old-snapshot deletion and BitLocker On are now confirmed; only the C-gate and PR #10 remain for Phase C).
 2. **Phase D has no written approval.**
 3. **Owner inputs needed during the Day 1 window are missing:** business details, Maps link, privacy notice, logo, meta texts, topic descriptions, icons, article count, dates (§2).
 4. **Decisions needed before the window are open:** O27, G12, and how Day 1 handles the deferred doctor's profile (§4).
@@ -28,7 +28,7 @@ These don't depend on the photoshoot or on missing owner inputs. None of them ch
 | 1.3 | Prepare the Day 1 window sheet (D0–D10 and E1–E12, with each step's check) and the Day 2 test sheet (F: G6 cookie mode, §7.1–7.3) from plan §3.6, §5 and §7 | Me | Documentation only. The procedure is unchanged |
 | 1.4 | Prepare the Day 2 smoke-test environment on the owner's computer: Node.js in the existing WSL Ubuntu (`sudo apt install -y nodejs`), plus a copy of the repository (GitHub → Code → Download ZIP) | Owner (optional, now) | The smoke test (G6) needs no packages. It sends only GET requests, and its cookie never leaves the computer |
 | 1.5 | Re-verify the release files before D0: `sha256sum -c dist/SHA256SUMS` (zip `cb3d6f74…`, seed `db898cda…`) | Me | Read-only |
-| 1.6 | Supply the new snapshot ID in writing (creation, old-snapshot deletion and BitLocker On: ✅ confirmed 23 Nov) | Owner | Record only. See §4, T1 |
+| 1.6 | Phase C records: snapshot ID `lhsnap-6jevw0v9`, old-snapshot deletion, BitLocker On | Owner | ✅ All confirmed 23 Nov |
 
 ## 2. Awaiting owner input or approval
 
@@ -83,7 +83,7 @@ The 5 Nov details to confirm for A1:
 
 | # | Item | Status | Needed before |
 |---|---|---|---|
-| T1 | New snapshot ID for `himandme-pre-launch-2026-11-23` | Creation ✅ confirmed (23 Nov); **ID pending: owner to supply in writing** | Phase C closeout (C-gate) |
+| T1 | New snapshot ID for `himandme-pre-launch-2026-11-23` | ✅ **`lhsnap-6jevw0v9`** (owner, 23 Nov) | Done |
 | T2 | Deletion of the old snapshot `lhsnap-fzsuu5vx` (to free the quota) | ✅ **Confirmed by the owner (23 Nov)** | Done |
 | T3 | BitLocker encryption complete and protection status **On** (the drive holding the off-server copies) | ✅ **Confirmed by the owner (23 Nov)** | Done |
 | T4 | G12 second-author local test: built and passed, **or** an explicit written waiver with the restriction above | **Open** (A12) | G-gate (plan §16.8). Recommended: settled before Day 1 |
@@ -116,7 +116,7 @@ The 5 Nov details to confirm for A1:
 |---|---|---|
 | S1 | C-gate approved by the owner | ☐ |
 | S2 | PR #10 merged (Phase C scripts and record on `main`) | ☐ |
-| S3 | Snapshot ID recorded (T1, **pending**); old-snapshot deletion (T2 ✅); BitLocker On (T3 ✅) | ☐ (T1 open) |
+| S3 | Snapshot ID recorded (`lhsnap-6jevw0v9`); old-snapshot deletion; BitLocker On (T1–T3) | ☑ |
 | S4 | Inputs needed in the window: A1–A10 and A14 | ☐ |
 | S5 | Decisions A11 (O27), A12 (G12) and A13 (profile sequencing) | ☐ |
 | S6 | Day 1 date and start time agreed, outside 06:00–07:30 | ☐ |
