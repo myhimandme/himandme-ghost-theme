@@ -43,7 +43,7 @@
   /* Layout */
   --hm-container: 1240px;      /* main site */
   --hm-container-blog: 1280px; /* blog */
-  --hm-gutter: 24px;
+  --hm-gutter: clamp(24px, 5vw, 72px); /* side margin: 30px at 600px wide, 64px at 1280px, 72px from 1440px (owner request, 1.0.1) */
   --hm-gutter-mobile: 16px;
 
   /* Elevation — the single shadow from the design system */

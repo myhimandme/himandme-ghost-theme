@@ -35,7 +35,7 @@ These don't depend on the photoshoot or on missing owner inputs. None of them ch
 | A2 | Google Maps link | ✅ Supplied (23 Nov): `https://maps.app.goo.gl/D7z4WBSEvZTS9Eyw8`. Set as theme setting `google_maps_url` at D8 | O9 |
 | A3 | Privacy notice | ✅ **Approved by the owner (23 Nov)**: the BM + English Notis Privasi as supplied | O14 |
 | A4 | Logo | ✅ **Confirmed final (23 Nov)**: the current theme files | O5 |
-| A5 | Meta texts | Drafts in §7 (23 Nov). **Awaiting approval.** Applied in Ghost Admin at E5 (homepage: General → Meta data; `/blog/`: the `jurnal` page's meta), not in the repository, so the release files are unchanged | O15 |
+| A5 | Meta texts | **Homepage description: owner's own text, approved (23 Nov)** (§7). Homepage title and the `/blog/` title and description: drafts in §7, **awaiting approval**. Applied in Ghost Admin at E5, not in the repository | O15 |
 | A6 | Topic descriptions | Drafts in §7 (23 Nov). **Awaiting approval** (clinical wording to be checked by the doctor). Entered in Ghost Admin at D6 (tags) | O16 |
 | A7 | Site icon | ✅ Received (23 Nov): logo mark, PNG, **256 × 256**, transparent background. Uploaded at E6 | O17 |
 | A8 | Social sharing image | ✅ **Replaced by the owner (23 Nov)**: 1200 × 630, WebP, logo + "Kesihatan Lelaki, Keutamaan Kami.", without the ✦ mark of the first version (SHA-256 begins `a4aef2d76197e304`). Uploaded at E6 | O17 |
@@ -74,7 +74,7 @@ The 5 Nov details to confirm for A1:
   - **F/H3:** the placeholder scans.
   - **§8.3 rollback trigger:** a visible placeholder.
 - **Owner decision A13 (23 Nov 2026, in writing):** "it's ok to still have placeholder when the site go public … it's just a small business, audiences will understand." **Recorded scope (narrow):**
-  - **Accepted at launch:** the theme's neutral patterned graphic in place of the doctor's **photo** (homepage team card, article byline and author box, author page), and **no biography** (the theme simply omits it).
+  - **Accepted at launch:** the theme's neutral patterned graphic in place of the doctor's **photo** (article byline and author box, author page; since release 1.0.1 the homepage has no doctor section), and **no biography** (the theme simply omits it).
   - **Not accepted, unchanged:** any text placeholder, such as `[Nama Penuh]`, `[Peranan]`, `[Rujukan]` or test content. These appear only if `doctor_author_slug` is unset or wrong, so D8 must still show the doctor's real name with "MD (UKM)". The placeholder scans (G5, G6) and rollback trigger §8.3 still apply to them.
   - **§8.3 "placeholder visible" trigger:** it does not fire for the photo graphic described above. It still fires for every text placeholder and all test content.
   - **The photo, biography and profile completion stay outstanding** (deferred, awaiting photoshoot). They are added after the photoshoot, with the placeholder and author-archive checks run again. **Nothing else is waived.**
@@ -94,7 +94,7 @@ The 5 Nov details to confirm for A1:
 | T9 | G11 LLM test | Built ✅, 5/5 locally; re-verified by G6 on production | F |
 | T10 | O19: unpublish "Coming soon" and "About" | Approved, **not executed** | During the D window, before D9 |
 | T11 | O20: 4 redirects | Ready (`redirects.yaml`); re-checked against C10 ✅ (the same 4 URLs) | D10 |
-| T12 | Release files unchanged (zip `cb3d6f74…`, tag `v1.0.0` → `d2a014e`) | ✅ Verified 23 Nov | Re-checked at D0 |
+| T12 | Release files | **Release 1.0.1 prepared (23 Nov), awaiting the owner's review:** homepage doctor section removed at the owner's request; zip `365d9a2fa049482b03bd5bdd1d70eb2a63edf35392c004f4d2527d270d49a802` (118 files); seed, routes and redirects checksums **unchanged**. Day 1 uploads 1.0.1 once approved, merged and tagged `v1.0.1`. `v1.0.0` (`cb3d6f74…`, `d2a014e`) stays as is | Before D0 |
 | T13 | O34 long-term mail provider | Deferred (Gmail SMTP works) | After launch, within 30 days |
 | T14 | O38 staff 2FA investigation | Deferred | After launch, within 14 days |
 | T15 | O21 structured data; O22 analytics; O37 cipher review | Open, post-launch | After launch |
@@ -136,7 +136,7 @@ These use only already-approved copy, make no treatment or outcome claims, and c
 | Page | Field | Draft | Length |
 |---|---|---|---|
 | Homepage (Settings → General → Meta data) | Title | Him & Me Mens Health Setiawangsa \| Kesihatan Lelaki | 51 |
-| | Description | Penilaian dan rawatan disfungsi ereksi secara sulit di Setiawangsa, Kuala Lumpur. Konsultasi doktor, Shockwave Therapy dan Kegel EMS. | 133 |
+| | Description | ✅ **Owner's text (23 Nov):** Utamakan kesihatan anda bersama Him & Me. Terokai perkhidmatan kesihatan lelaki dan dapatkan konsultasi profesional. Buat temu janji hari ini. | 142 |
 | `/blog/` (page `jurnal` → meta) | Title | Jurnal Kesihatan Lelaki \| Him & Me | 34 |
 | | Description | Artikel pendidikan tentang kesihatan lelaki: disfungsi ereksi, hormon, kesihatan pelvis, hubungan dan gaya hidup, ditulis dalam bahasa yang mudah. | 146 |
 
@@ -153,6 +153,18 @@ The ED page and Notis Privasi already have approved meta texts in the launch see
 | `kesihatan-mental` | Tekanan, kebimbangan dan kesannya terhadap kesihatan lelaki, termasuk kesihatan seksual. |
 | `gaya-hidup` | Tidur, pemakanan, senaman dan tabiat harian yang menyokong kesihatan lelaki. |
 | `panduan` | Panduan praktikal langkah demi langkah, termasuk apa yang dijangka semasa konsultasi dan rawatan. |
+
+## 7a. Release 1.0.1 (owner request, 23 Nov 2026)
+
+| Item | Detail |
+|---|---|
+| Change | Homepage section "Kenali doktor anda sebelum datang" removed (template, styles, and the `doctor_author_slug` setting it alone used). Its block `blok-utama-pasukan` stays in the launch seed, hidden and unused |
+| Change 2 (owner request, 23 Nov) | **More spacious layout:** the page side margin scales with the screen (30px at 600px wide, 64px at 1280px, 72px from 1440px; was a fixed 24px) on every page; more vertical space between homepage sections and around cards; the services intro text now sits under its heading; the "Fahami disfungsi ereksi" link sits under the homepage statement; on phones the "Dari blog" strip keeps its 16px side margin. Typography, colours, components and the phone layout unchanged. No horizontal overflow on 7 pages at 390–1920px |
+| Zip SHA-256 | `365d9a2fa049482b03bd5bdd1d70eb2a63edf35392c004f4d2527d270d49a802` (118 files; reproducible: rebuilt byte-identical) |
+| Unchanged | `launch-seed.json` `db898cda…`, `routes.yaml` `2f178dcb…`, `redirects.yaml` `aacd2f9c…` |
+| Tests on the 1.0.1 zip (local Ghost 6.75.0) | Stage 1 32/0, 2 23/0, 3 13/0, 4 39/0, 5 21/0, 6 16/0, Stage 7 15/0 + 12/0 + LLM all passed + redirects all passed; GScan compatible, upload 0 errors 0 warnings; release checks passed; zip-mode tests passed; Phase C script tests 50/0 |
+| Effect on Phase D | D8 no longer sets `doctor_author_slug` and no longer checks a homepage card. The doctor's name and "MD (UKM)" are checked on an article and the author page instead. 13 theme settings (was 14) |
+| Status | PR #11 (`stage-7-release` → `main`), awaiting the owner's review. Tag `v1.0.1` after approval |
 
 ## 8. Proposed dates (A10), awaiting the owner's choice
 

@@ -134,7 +134,7 @@ try {
   const art = await get(`/blog/${expected[0]}/`);
   check('A9', 'Article byline and author box link to the new archive URL', (art.body.match(new RegExp(`href="[^"]*/blog/penulis/${SLUG}/"`, 'g')) || []).length >= 2);
   const home = await get('/');
-  check('A10', 'Homepage team card: when the theme setting doctor_author_slug no longer matches the staff slug, the placeholder "[Nama Penuh]" shows (so the setting must be updated together with routes.yaml)', home.body.includes('[Nama Penuh]') || !home.body.includes(me.name), home.body.includes('[Nama Penuh]') ? 'placeholder shown, as expected while the setting is unset' : 'setting points elsewhere');
+  check('A10', 'Homepage (1.0.1): no doctor section, so no "[Nama Penuh]" fallback whatever the staff slug is', home.status === 200 && !home.body.includes('[Nama Penuh]') && !home.body.includes('hm-team'), `HTTP ${home.status}`);
 
   // ---------- N1: negative control: slug changed, routes.yaml left with "dr" ----------
   await uploadRoutes(REPO_ROUTES);

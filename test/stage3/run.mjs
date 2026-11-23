@@ -34,7 +34,9 @@ const posts = (await admin('/posts/?limit=all&filter=tag:hash-blok&formats=html'
 const bySlug = Object.fromEntries(posts.map((p) => [p.slug, p]));
 
 // H1 — every homepage block drives its section, and falls back when unpublished.
-const homeBlocks = BLOCKS.filter((b) => b.slug.startsWith('blok-utama-'));
+// Since 1.0.1 blok-utama-pasukan is in the seed but no longer shown (doctor section removed at the owner's request).
+const UNUSED_HOME_BLOCKS = ['blok-utama-pasukan'];
+const homeBlocks = BLOCKS.filter((b) => b.slug.startsWith('blok-utama-') && !UNUSED_HOME_BLOCKS.includes(b.slug));
 const cycle = [];
 for (const b of homeBlocks) {
   const post = bySlug[b.slug]; if (!post) { cycle.push(`${b.slug}: missing`); continue; }
@@ -49,6 +51,8 @@ for (const b of homeBlocks) {
   if (!usesBlock || !fellBack) cycle.push(`${b.slug}: block ${usesBlock ? 'ok' : 'NOT used'}, fallback ${fellBack ? 'ok' : 'MISSING'}`);
 }
 check('H1', `All ${homeBlocks.length} homepage blocks drive their section and fall back to approved copy when unpublished`, cycle.length === 0, cycle.join('; ') || 'edit → visible; unpublish → approved copy; restored');
+{ const unused = bySlug['blok-utama-pasukan']; const h = await home();
+  check('H1b', 'blok-utama-pasukan (unused since 1.0.1) is not shown on the homepage', !!unused && !h.includes(esc(unused.title))); }
 
 // H2 — "Dari blog": the 3 newest real articles, never a block (even a newly re-dated block).
 const articles = (await admin('/posts/?limit=all&filter=status:published%2Btag:-hash-blok&order=published_at%20desc&fields=slug,title')).posts;
@@ -85,17 +89,10 @@ const privImg = (h.match(/<img class="hm-privacy__img"[^>]*>/) || [''])[0];
 check('H6b', 'Privacy band photo from its block: responsive, alt text, lazy-loaded below the fold', privImg.includes('alt="Ruang menunggu"') && privImg.includes('loading="lazy"') && privImg.includes(' 1000w'));
 await editPost(priv.id, { feature_image: null, feature_image_alt: null });
 
-// H7 — doctor card from the single staff profile + credentials setting.
-const cs = (await admin('/custom_theme_settings/')).custom_theme_settings;
-const setCS = (vals) => admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.key in vals ? vals[s.key] : s.value })) } });
-const me = (await admin('/users/me/')).users[0];
-await setCS({ doctor_author_slug: '', doctor_credentials: '' });
-const noSlug = await home();
-await setCS({ doctor_author_slug: me.slug, doctor_credentials: '[Kelayakan yang disahkan]' });
-const withSlug = await home();
-check('H7', 'Doctor card: placeholder without a slug; profile name + credentials + archive link with it',
-  noSlug.includes('[Nama Penuh]') && withSlug.includes(`hm-doctor__name">${esc(me.name)}<`) && withSlug.includes('[Kelayakan yang disahkan]') && withSlug.includes(`href="/blog/penulis/${me.slug}/"`));
-await admin('/custom_theme_settings/', { method: 'PUT', json: { custom_theme_settings: cs.map((s) => ({ key: s.key, value: s.value })) } });
+// H7 — release 1.0.1: the homepage doctor section ("Kenali doktor anda sebelum datang") was removed at the owner's request.
+const h7 = await home();
+check('H7', 'Homepage has no doctor section (removed in 1.0.1): no team section, no doctor card, no [Nama Penuh]/[Peranan] fallback',
+  !h7.includes('hm-team') && !h7.includes('hm-doctor"') && !h7.includes('hm-doctor__') && !h7.includes('[Nama Penuh]') && !h7.includes('[Peranan]') && !h7.includes('Kenali doktor anda'));
 
 // H8 — links.
 h = await home();
