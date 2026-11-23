@@ -16,7 +16,7 @@
 > **Update 6.13 (23 Nov 2026):** snapshot ID `lhsnap-6jevw0v9` recorded (§16.14). Still open: **C-gate approval**, PR #10 merge. **Phases D–H remain unauthorised.**
 > **Update 6.14 (23 Nov 2026):** **Phase C C-gate approved by the owner** (§16.14). PR #10 open. **Phases D–H remain unauthorised.**
 > **Update 6.15 (23 Nov 2026):** owner Day 0 answers and decisions recorded (O27 accepted; G12 to be built; A13 profile-placeholder decision with narrow scope; 10 launch articles). See [`stage-7/DAY-0-READINESS.md`](stage-7/DAY-0-READINESS.md). **Phases D–H remain unauthorised.**
-> **Update 6.16 (23 Nov 2026):** **Release 1.0.1 prepared at the owner's request:** homepage doctor section removed; zip `67237478…`; seed, routes and redirects unchanged; all local suites green (`stage-7/DAY-0-READINESS.md` §7a). Awaiting the owner's review; not yet pushed or tagged. **Phases D–H remain unauthorised.**
+> **Update 6.16 (23 Nov 2026):** **Release 1.0.1 prepared at the owner's request:** homepage doctor section removed; zip `0edfd2cb…`; seed, routes and redirects unchanged; all local suites green (`stage-7/DAY-0-READINESS.md` §7a). Awaiting the owner's review; not yet pushed or tagged. **Phases D–H remain unauthorised.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
