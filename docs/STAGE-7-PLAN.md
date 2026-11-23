@@ -10,6 +10,12 @@
 > **Update 6.8 (21 Nov 2026)** adds §16.12: **Phase B approved by the owner and carried out.** PRs #1–#7 merged into `main` (Option A, merge commits); release branch `stage-7-release` built and tested on local Ghost; checksums recorded. **Awaiting the B-gate.** No production change. **Phases C–H remain unauthorised.** Report: [`stage-7/PHASE-B-REPORT.md`](stage-7/PHASE-B-REPORT.md).
 > **Update 6.8 Revision 2 (21 Nov 2026):** B-gate review findings addressed (zip permission check for directory entries; G12 recorded as deferred). Checksums unchanged. **Awaiting final B-gate approval.**
 > **Update 6.9 (21 Nov 2026)** adds §16.13: **B-gate approved by the owner; Phase B closed.** PR #8 merged into `main` (`d2a014e`); tag `v1.0.0` on that commit (published by the owner, verified). **Phases C–H remain unauthorised** until the owner approves Phase C in writing.
+> **Update 6.10 (23 Nov 2026)** adds §16.14: **Phase C approved by the owner and carried out:** C1–C10 passed, restore proven off production. **Awaiting the C-gate.** **Phases D–H remain unauthorised.**
+> **Update 6.11 (23 Nov 2026):** Phase C administrative closeout items recorded as pending (report §6). Doctor's profile **deferred – awaiting photoshoot**. Day 0 readiness assessment: [`stage-7/DAY-0-READINESS.md`](stage-7/DAY-0-READINESS.md). **Phases D–H remain unauthorised.**
+> **Update 6.12 (23 Nov 2026):** owner confirmed the snapshot creation, the old-snapshot deletion and BitLocker On (§16.14). Still open: the snapshot ID record, **C-gate approval**, PR #10 merge. **Phases D–H remain unauthorised.**
+> **Update 6.13 (23 Nov 2026):** snapshot ID `lhsnap-6jevw0v9` recorded (§16.14). Still open: **C-gate approval**, PR #10 merge. **Phases D–H remain unauthorised.**
+> **Update 6.14 (23 Nov 2026):** **Phase C C-gate approved by the owner** (§16.14). PR #10 open. **Phases D–H remain unauthorised.**
+> **Update 6.15 (23 Nov 2026):** owner Day 0 answers and decisions recorded (O27 accepted; G12 to be built; A13 profile-placeholder decision with narrow scope; 10 launch articles). See [`stage-7/DAY-0-READINESS.md`](stage-7/DAY-0-READINESS.md). **Phases D–H remain unauthorised.**
 > Phase A documents: [`PHASE-A-FINDINGS.md`](stage-7/PHASE-A-FINDINGS.md), [`PHASE-A-SERVER-INVESTIGATION.md`](stage-7/PHASE-A-SERVER-INVESTIGATION.md).
 > **Historical note:** Revisions 1–6 (16–17 Nov 2026) and the 17 Nov Phase A audit were **read-only**. While they were prepared:
 > - no pull request was merged, created or changed, and no existing branch was modified;
@@ -1764,3 +1770,22 @@ The §15.8 C items are **decisions, not authorised work**. In particular, no mai
 | G12 | Deferred, not completed: an outstanding pre-launch item (Phase B report §8) |
 
 **Phase B is closed. Phase C (production backup) is not authorised** and needs the owner's separate written approval.
+
+### 16.14 Phase C carried out: Update 6.10 (23 Nov 2026)
+
+> **What this section records:** the owner approved Phase C in writing on 23 Nov 2026 and ran it with `docs/stage-7/PHASE-C-RUNSHEET.md` (Revision 4). The full record is [`stage-7/PHASE-C-REPORT.md`](stage-7/PHASE-C-REPORT.md).
+> - **Unchanged:** Ghost content and settings, MySQL, Nginx, DNS and Cloudflare. No theme, routes or redirects were uploaded. No Phase D work.
+
+| Item | Result |
+|---|---|
+| C1 snapshot | `himandme-pre-launch-2026-11-23`; **creation confirmed by the owner (23 Nov)**. **Snapshot ID `lhsnap-6jevw0v9`** (owner, 23 Nov). Oldest snapshot `lhsnap-fzsuu5vx` **deleted (owner confirmed 23 Nov)** |
+| C4 dump | Clean; 2 posts, 103 tables, `utf8mb4_0900_ai_ci`; `llms_enabled` false |
+| C5 | Content archived; Nginx configuration only (the www private key correctly excluded) |
+| C7 | 23/23 files verified off the server (owner's computer). **BitLocker complete, protection On (owner confirmed 23 Nov)** |
+| C8 | Restored in WSL only: posts, tables and active theme equal the server; test database dropped |
+| C10 | 7 public URLs; they match the O20 redirect list |
+| Findings | `content/settings` is empty (Ghost default routes; the exported `routes.yaml` is byte-identical to Ghost 6.75.0's default, SHA-256 `b2d67526…`). Script Revision 4 fixed the wrong assumption |
+
+**C-gate: approved by the owner on 23 Nov 2026**, based on the documented C1–C10 evidence (snapshot `lhsnap-6jevw0v9`, old-snapshot deletion and BitLocker On confirmed). This approval does **not** authorise Phase D, production changes, deletion of the additional backup copies, or merging PR #10; each remains a separate decision.
+
+**Phase D is not authorised** and needs the owner's separate written approval after the C-gate.
