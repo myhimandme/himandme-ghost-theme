@@ -94,7 +94,7 @@ The 5 Nov details to confirm for A1:
 | T9 | G11 LLM test | Built ✅, 5/5 locally; re-verified by G6 on production | F |
 | T10 | O19: unpublish "Coming soon" and "About" | Approved, **not executed** | During the D window, before D9 |
 | T11 | O20: 4 redirects | Ready (`redirects.yaml`); re-checked against C10 ✅ (the same 4 URLs) | D10 |
-| T12 | Release files | **Release 1.0.1 prepared (23 Nov), awaiting the owner's review:** homepage doctor section removed at the owner's request; zip `0edfd2cb88389d95f06f05a75fc19fb24f8b236ba19b427925fa1a1aa1223f42` (118 files); seed, routes and redirects checksums **unchanged**. Day 1 uploads 1.0.1 once approved, merged and tagged `v1.0.1`. `v1.0.0` (`cb3d6f74…`, `d2a014e`) stays as is | Before D0 |
+| T12 | Release files | **Release 1.0.1 prepared (23 Nov), awaiting the owner's review:** homepage doctor section removed at the owner's request; zip `ddbf36d31dbe62f246490fc0cf9b7f6dc3ecb968a9aac319d4e2d694c15a4926` (118 files); seed, routes and redirects checksums **unchanged**. Day 1 uploads 1.0.1 once approved, merged and tagged `v1.0.1`. `v1.0.0` (`cb3d6f74…`, `d2a014e`) stays as is | Before D0 |
 | T13 | O34 long-term mail provider | Deferred (Gmail SMTP works) | After launch, within 30 days |
 | T14 | O38 staff 2FA investigation | Deferred | After launch, within 14 days |
 | T15 | O21 structured data; O22 analytics; O37 cipher review | Open, post-launch | After launch |
@@ -159,8 +159,8 @@ The ED page and Notis Privasi already have approved meta texts in the launch see
 | Item | Detail |
 |---|---|
 | Change | Homepage section "Kenali doktor anda sebelum datang" removed (template, styles, and the `doctor_author_slug` setting it alone used). Its block `blok-utama-pasukan` stays in the launch seed, hidden and unused |
-| Change 2 (owner request, 23 Nov) | **More spacious layout:** the page side margin scales with the screen (30px at 600px wide, 64px at 1280px, 72px from 1440px; was a fixed 24px) on every page; more vertical space between homepage sections and around cards; the services intro text now sits under its heading. Typography, colours, components and the phone layout unchanged. No horizontal overflow on 7 pages at 390–1920px |
-| Zip SHA-256 | `0edfd2cb88389d95f06f05a75fc19fb24f8b236ba19b427925fa1a1aa1223f42` (118 files; reproducible: rebuilt byte-identical) |
+| Change 2 (owner request, 23 Nov) | **More spacious layout:** the page side margin scales with the screen (30px at 600px wide, 64px at 1280px, 72px from 1440px; was a fixed 24px) on every page; more vertical space between homepage sections and around cards; the services intro text now sits under its heading; the "Fahami disfungsi ereksi" link sits under the homepage statement. Typography, colours, components and the phone layout unchanged. No horizontal overflow on 7 pages at 390–1920px |
+| Zip SHA-256 | `ddbf36d31dbe62f246490fc0cf9b7f6dc3ecb968a9aac319d4e2d694c15a4926` (118 files; reproducible: rebuilt byte-identical) |
 | Unchanged | `launch-seed.json` `db898cda…`, `routes.yaml` `2f178dcb…`, `redirects.yaml` `aacd2f9c…` |
 | Tests on the 1.0.1 zip (local Ghost 6.75.0) | Stage 1 32/0, 2 23/0, 3 13/0, 4 39/0, 5 21/0, 6 16/0, Stage 7 15/0 + 12/0 + LLM all passed + redirects all passed; GScan compatible, upload 0 errors 0 warnings; release checks passed; zip-mode tests passed; Phase C script tests 50/0 |
 | Effect on Phase D | D8 no longer sets `doctor_author_slug` and no longer checks a homepage card. The doctor's name and "MD (UKM)" are checked on an article and the author page instead. 13 theme settings (was 14) |
